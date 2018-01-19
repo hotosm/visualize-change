@@ -11,22 +11,22 @@ amqp.connect("amqp://rabbitmq", (err, conn) => {
     // docker-compose will pick this up and restart
     console.log(err);
     process.exit(1);
-  } else {
-    console.log("RabbitMQ connected");
-
-    conn.createChannel((err, ch) => {
-      if (err) {
-        console.log(err);
-      } else {
-        const queue = "test-queue";
-
-        ch.assertQueue(queue, { durable: false });
-        ch.sendToQueue(queue, Buffer.from("Hello World!"));
-
-        console.log("sent message!");
-      }
-    });
   }
+
+  console.log("RabbitMQ connected");
+
+  conn.createChannel((err, ch) => {
+    if (err) {
+      console.log(err);
+    } else {
+      const queue = "test-queue";
+
+      ch.assertQueue(queue, { durable: false });
+      ch.sendToQueue(queue, Buffer.from("Hello World!"));
+
+      console.log("sent message!");
+    }
+  });
 });
 
 // db

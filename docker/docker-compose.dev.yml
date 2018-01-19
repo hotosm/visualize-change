@@ -4,7 +4,7 @@ services:
     build:
       context: ../.
       dockerfile: docker/server/Dockerfile.dev
-    image: app-server
+    image: hot-mapping-vis-server
     restart: unless-stopped
     ports:
       - "8080:80"
@@ -16,7 +16,7 @@ services:
     build:
       context: ../.
       dockerfile: docker/frontend/Dockerfile.dev
-    image: app-frontend
+    image: hot-mapping-vis-frontend
     restart: unless-stopped
     environment:
       - NODE_ENV=development
@@ -25,11 +25,23 @@ services:
     ports:
       - "3000:3000"
 
+  renderer:
+    build:
+      context: ../.
+      dockerfile: docker/renderer/Dockerfile.dev
+    image: hot-mapping-vis-renderer
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./../renderer:/app
+      - ./capture:/capture
+
   api:
     build:
       context: ../.
       dockerfile: docker/api/Dockerfile.dev
-    image: app-api
+    image: hot-mapping-vis-api
     restart: unless-stopped
     environment:
       - NODE_ENV=development
@@ -47,7 +59,7 @@ services:
   db:
     image: mongo
     volumes:
-      - "./data:/data/db"
+      - ./data:/data/db
     ports:
       - "27017:27017"
 
