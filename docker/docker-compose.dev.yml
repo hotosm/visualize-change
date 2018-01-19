@@ -1,0 +1,45 @@
+version: "3"
+services:
+  server:
+    build:
+      context: ../.
+      dockerfile: docker/server/Dockerfile.dev
+    image: app-server
+    ports:
+      - "8080:80"
+    links:
+      - api:api
+      - frontend:frontend
+
+  frontend:
+    build:
+      context: ../.
+      dockerfile: docker/frontend/Dockerfile.dev
+    image: app-frontend
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./../frontend:/app
+    ports:
+      - "3000:3000"
+
+  api:
+    build:
+      context: ../.
+      dockerfile: docker/api/Dockerfile.dev
+    image: app-api
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./../api:/app
+    links:
+      - db
+    ports:
+      - "4000:4000"
+
+  db:
+    image: mongo
+    volumes:
+      - "./data:/data/db"
+    ports:
+      - "27017:27017"

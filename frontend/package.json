@@ -1,0 +1,14 @@
+{
+  "name": "hot-mapping-vis-frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "budo index.js --live --port 3000"
+  },
+  "author": "Szymon Kaliski <hi@szymonkaliski.com> (http://szymonkaliski.com)",
+  "license": "MIT",
+  "devDependencies": {
+    "budo": "^10.0.4"
+  }
+}
