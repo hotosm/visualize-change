@@ -2,7 +2,7 @@ FROM node:carbon-alpine
 
 WORKDIR /app
 
-RUN apk --no-cache add xvfb
+RUN apk --no-cache add xvfb ffmpeg
 RUN yarn install
 
 EXPOSE 3000
