@@ -5,6 +5,7 @@ services:
       context: ../.
       dockerfile: docker/server/Dockerfile.dev
     image: app-server
+    restart: unless-stopped
     ports:
       - "8080:80"
     links:
@@ -16,6 +17,7 @@ services:
       context: ../.
       dockerfile: docker/frontend/Dockerfile.dev
     image: app-frontend
+    restart: unless-stopped
     environment:
       - NODE_ENV=development
     volumes:
@@ -28,12 +30,17 @@ services:
       context: ../.
       dockerfile: docker/api/Dockerfile.dev
     image: app-api
+    restart: unless-stopped
     environment:
       - NODE_ENV=development
     volumes:
       - ./../api:/app
     links:
       - db
+      - rabbitmq
+    depends_on:
+      - db
+      - rabbitmq
     ports:
       - "4000:4000"
 
@@ -43,3 +50,9 @@ services:
       - "./data:/data/db"
     ports:
       - "27017:27017"
+
+  rabbitmq:
+    image: rabbitmq:3
+    ports:
+      - "15672:15672"
+      - "5672:5672"
