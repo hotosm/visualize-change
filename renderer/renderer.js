@@ -1,3 +1,7 @@
+// HACK: move errors to cli console
+const NodeConsole = require("console").Console;
+window.console = new NodeConsole(process.stdout, process.stderr);
+
 const mapboxgl = require("mapbox-gl");
 const { ipcRenderer } = require("electron");
 
@@ -27,7 +31,8 @@ const styleByDay = day => {
   });
 };
 
-const MAX_IMAGES = 400;
+// const MAX_IMAGES = 400;
+const MAX_IMAGES = 10;
 
 const isLoaded = cb => {
   const loadedHandle = setInterval(() => {

@@ -1,6 +1,3 @@
-// TODO: react to rabbitmq and spawn electron
-// TODO: run electron with xvfb: `xvfb-run -a --server-args='-screen 0, 1280x800x24' electron electron.js`
-
 const amqp = require("amqplib/callback_api");
 
 amqp.connect("amqp://rabbitmq", (err, conn) => {
@@ -11,20 +8,51 @@ amqp.connect("amqp://rabbitmq", (err, conn) => {
     process.exit(1);
   }
 
-  conn.createChannel((err, ch) => {
-    const queue = "test-queue";
+  // TODO: spawn electron on message!
+  // conn.createChannel((err, ch) => {
+  //   const queue = "test-queue";
 
-    ch.assertQueue(queue, { durable: false });
+  //   ch.assertQueue(queue, { durable: false });
 
-    ch.consume(
-      queue,
-      msg => {
-        console.log("Renderer received", msg.content.toString());
-      },
-      { noAck: true }
-    );
-  });
+  //   ch.consume(
+  //     queue,
+  //     msg => {
+  //       console.log("Renderer received", msg.content.toString());
+  //     },
+  //     { noAck: true }
+  //   );
+  // });
 });
 
-// const fs = require("fs");
-// fs.writeFileSync("/capture/test", "test", "utf8");
+// this below works!
+
+// const { spawn } = require("child_process");
+
+// const electron = spawn(
+//   "./scripts/xvfb-run",
+//   [
+//     "--auto-servernum",
+//     "--server-args='-screen 0 1280x720x24'",
+//     "-e /capture/error.log",
+//     "./scripts/run-electron"
+//   ],
+//   { cwd: __dirname, shell: true }
+// );
+
+// electron.stdout.on("data", data => {
+//   console.log("stdout", data.toString());
+// });
+
+// electron.stderr.on("data", data => {
+//   console.log("stderr", data.toString());
+// });
+
+// electron.on("error", error => {
+//   console.log({ error });
+// });
+
+// electron.on("close", close => {
+//   console.log({ close });
+// });
+
+// console.log("renderer!");

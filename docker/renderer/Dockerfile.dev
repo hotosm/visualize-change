@@ -1,8 +1,10 @@
-FROM node:carbon-alpine
+FROM node:carbon-stretch
 
 WORKDIR /app
 
-RUN apk --no-cache add xvfb ffmpeg
+RUN apt-get update
+RUN apt-get install -y xvfb ffmpeg libgconf-2-4 libnss3
+RUN npm install -g electron --unsafe-perm=true --allow-root
 RUN yarn install
 
 EXPOSE 3000

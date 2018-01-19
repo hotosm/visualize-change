@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# https://medium.com/social-tables-tech/how-we-test-webgl-on-continuous-integration-37a1ead55fd7
+
+/usr/local/bin/electron electron.js --ignore-gpu-blacklist

@@ -5,7 +5,7 @@ services:
       context: ../.
       dockerfile: docker/server/Dockerfile.dev
     image: hot-mapping-vis-server
-    restart: unless-stopped
+    restart: always
     ports:
       - "8080:80"
     links:
@@ -17,7 +17,7 @@ services:
       context: ../.
       dockerfile: docker/frontend/Dockerfile.dev
     image: hot-mapping-vis-frontend
-    restart: unless-stopped
+    restart: always
     environment:
       - NODE_ENV=development
     volumes:
@@ -30,7 +30,7 @@ services:
       context: ../.
       dockerfile: docker/renderer/Dockerfile.dev
     image: hot-mapping-vis-renderer
-    restart: unless-stopped
+    restart: always
     environment:
       - NODE_ENV=development
     volumes:
@@ -42,7 +42,7 @@ services:
       context: ../.
       dockerfile: docker/api/Dockerfile.dev
     image: hot-mapping-vis-api
-    restart: unless-stopped
+    restart: always
     environment:
       - NODE_ENV=development
     volumes:

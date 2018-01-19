@@ -2,3 +2,6 @@ node_modules/
 
 # mongo data volume
 docker/data/
+
+# renderer data volume
+docker/capture/
