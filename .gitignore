@@ -1,6 +1,9 @@
 node_modules/
 yarn-error.log
 
+# actual tile files
+api/tiles/
+
 # mongo data volume
 docker/data/
 

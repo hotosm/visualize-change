@@ -1,6 +1,6 @@
-# dockerized-webapp-template
+# visualize-change
 
-Based on https://blog.bam.tech/developper-news/dockerize-your-app-and-keep-hot-reloading
+A toolkit to visualize changes in OSM, part of the OSM Analytics ecosystem. Work in Progress.
 
 ## structure
 
@@ -9,12 +9,14 @@ Based on https://blog.bam.tech/developper-news/dockerize-your-app-and-keep-hot-r
 - `frontend` - frontend code
 - `server` - ngnix config
 - `scripts` - common scripts
+- `renderer` - electron renderer
 - `build.sh` - run after changing docker-related things, and on first pull
 - `run.sh` - to start everything
 
 ## setup
 
-`./build.sh`
+1. `./scripts/get-indonesia-tiles.sh` (test tiles for `dev`)
+2. `./build.sh`
 
 ## run
 
