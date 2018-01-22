@@ -2,8 +2,6 @@ FROM node:carbon-alpine
 
 WORKDIR /app
 
-RUN yarn install
-
 EXPOSE 3000
 
-CMD ["yarn", "run", "dev"]
+CMD ["/bin/sh", "-c", "yarn install; yarn dev" ]

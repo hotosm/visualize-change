@@ -4,7 +4,7 @@ const leftPad = require("left-pad");
 const ffmpeg = require("fluent-ffmpeg");
 
 // this is shared via docker volume
-const CAPTURE_DIR = "/capture";
+const CAPTURE_DIR = "/data/capture";
 
 const width = 1280;
 const height = 720;

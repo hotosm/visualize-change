@@ -4,9 +4,5 @@ WORKDIR /app
 
 RUN apt-get update
 RUN apt-get install -y xvfb ffmpeg libgconf-2-4 libnss3
-RUN npm install -g electron --unsafe-perm=true --allow-root
-RUN yarn install
 
-EXPOSE 3000
-
-CMD ["yarn", "run", "dev"]
+CMD ["/bin/sh", "-c", "yarn install; yarn dev" ]

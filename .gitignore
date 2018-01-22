@@ -4,8 +4,5 @@ yarn-error.log
 # actual tile files
 api/tiles/
 
-# mongo data volume
+# data volumes
 docker/data/
-
-# renderer data volume
-docker/capture/
