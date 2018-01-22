@@ -6,7 +6,9 @@ const DIST = path.resolve(__dirname, "dist");
 module.exports = Object.assign({}, config, {
   devServer: {
     publicPath: "/",
-    contentBase: DIST
+    contentBase: DIST,
+    port: 3000,
+    host: "0.0.0.0" // for docker
   },
   devtool: "source-map"
 });
