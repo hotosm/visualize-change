@@ -1,0 +1,4 @@
+module.exports = {
+  RENDERING_DONE: "RENDERING_DONE",
+  RENDERING_SHOT: "RENDERING_SHOT"
+};

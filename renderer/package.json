@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon -L --exitcrash index.js"
+    "dev": "nodemon -L --exitcrash index.js",
+    "test:local-render": "LOCAL_DEBUG=1 CAPTURE_DIR=./data/capture electron electron.js"
   },
   "author": "Szymon Kaliski <hi@szymonkaliski.com> (http://szymonkaliski.com)",
   "license": "MIT",
@@ -13,7 +14,8 @@
     "electron": "^1.7.10",
     "fluent-ffmpeg": "^2.1.2",
     "left-pad": "^1.2.0",
-    "mapbox-gl": "^0.43.0"
+    "mapbox-gl": "^0.43.0",
+    "moment": "^2.20.1"
   },
   "devDependencies": {
     "nodemon": "^1.14.11"

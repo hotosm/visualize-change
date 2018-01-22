@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
-# https://medium.com/social-tables-tech/how-we-test-webgl-on-continuous-integration-37a1ead55fd7
+# gpu: https://medium.com/social-tables-tech/how-we-test-webgl-on-continuous-integration-37a1ead55fd7
+# $1 is rendering config json string that electron assumes is first argument
 
-/usr/local/bin/electron electron.js --ignore-gpu-blacklist
+./node_modules/.bin/electron electron.js "$1" --ignore-gpu-blacklist

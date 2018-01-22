@@ -26,7 +26,7 @@ module.exports = ({ channel }) => {
   });
 
   // serve tiles
-  new MBTiles("./tiles/tiles.mbtiles", (err, mbtiles) => {
+  new MBTiles(`${__dirname}/tiles/tiles.mbtiles`, (err, mbtiles) => {
     if (err) {
       console.log(err);
       return;
