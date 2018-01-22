@@ -1,4 +1,6 @@
+const MBTiles = require("@mapbox/mbtiles");
 const express = require("express");
+
 const router = express.Router();
 
 module.exports = ({ channel }) => {
@@ -16,10 +18,33 @@ module.exports = ({ channel }) => {
     res.send("OK");
   });
 
+  // queue rendering
   router.post("/queue-render", (req, res) => {
     console.log(req.body);
     queueRender(req.body);
     res.send("OK");
+  });
+
+  // serve tiles
+  new MBTiles("./tiles/tiles.mbtiles", (err, mbtiles) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    router.get("/tile/:z/:x/:y", (req, res) => {
+      const { z, x, y } = req.params;
+
+      mbtiles.getTile(z, x, y, (err, data, headers) => {
+        if (err) {
+          console.log(err);
+          res.end();
+        } else {
+          res.writeHead(200, headers);
+          res.end(data);
+        }
+      });
+    });
   });
 
   return router;
