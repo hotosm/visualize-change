@@ -1,6 +1,7 @@
 const MBTiles = require("@mapbox/mbtiles");
 const crypto = require("crypto");
 const express = require("express");
+const nodemailer = require("nodemailer");
 
 const router = express.Router();
 
@@ -11,8 +12,10 @@ const md5 = str =>
     .digest("hex");
 
 module.exports = ({ channel }) => {
-  // TODO: refactor so we don't use let here, api should be probably set up
-  // asynchronously?
+  // TODO: email stuff
+  // const transporter = nodemailer.createTransport({})
+
+  // TODO: refactor so we don't use let here, api should be probably set up asynchronously?
   let queueRender;
 
   channel.assertQueue("", { exclusive: true }, (err, { queue }) => {
@@ -20,6 +23,9 @@ module.exports = ({ channel }) => {
       console.log("got back msg");
       console.log(msg.properties.correlationId);
       console.log(msg.content.toString());
+
+      // TODO: transporter.sendMail - we know the email to send to, but maybe renderer should return the directory as well?
+      // TODO: we also need to host the rendered mp4s, with ngnix?
     });
 
     queueRender = renderConfig => {

@@ -13,7 +13,8 @@
     "amqplib": "^0.5.2",
     "async": "^2.6.0",
     "express": "^4.16.2",
-    "mongojs": "^2.4.1"
+    "mongojs": "^2.4.1",
+    "nodemailer": "^4.4.2"
   },
   "devDependencies": {
     "nodemon": "^1.14.11"
