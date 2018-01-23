@@ -1,15 +1,17 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const crypto = require("crypto");
+const ffmpeg = require("fluent-ffmpeg");
 const fs = require("fs");
 const leftPad = require("left-pad");
-const ffmpeg = require("fluent-ffmpeg");
+const path = require("path");
+const { app, BrowserWindow, ipcMain } = require("electron");
 
 const { RENDERING_SHOT, RENDERING_DONE } = require("./common");
 
-// "/data/capture" is docker volume, env allows us to test outside of docker
-const CAPTURE_DIR = process.env.CAPTURE_DIR || "/data/capture";
-
-const width = 1280;
-const height = 720;
+const md5 = str =>
+  crypto
+    .createHash("md5")
+    .update(str)
+    .digest("hex");
 
 if (!process.argv[2]) {
   console.log("pass stringified JSON data for rendering!");
@@ -25,12 +27,30 @@ try {
   process.exit(1);
 }
 
+// TODO: get that from renderingConfig
+const width = 1280;
+const height = 720;
+
+// "/data/capture" is docker volume, env.captureDir allows us to test outside of docker
+const captureDir = path.join(
+  process.env.captureDir || "/data/capture",
+  md5(JSON.stringify(renderingConfig))
+);
+
+if (!fs.existsSync(captureDir)) {
+  fs.mkdirSync(captureDir);
+}
+
 const convertToVideo = callback => {
+  const outputFile = path.join(captureDir, "render.mp4");
+  const imageFiles = path.join(captureDir, "%04d.png");
+
+  // in the future just return if we already have that rendered?
   try {
-    fs.unlinkSync(`${CAPTURE_DIR}/out.mp4`);
+    fs.unlinkSync(outputFile);
   } catch (e) {}
 
-  ffmpeg(`${CAPTURE_DIR}/%04d.png`)
+  ffmpeg(imageFiles)
     .inputFPS(10) // TODO: ?
     .fps(10)
     .format("mp4")
@@ -47,7 +67,7 @@ const convertToVideo = callback => {
       console.log("ffmpeg error", err.message);
     })
     .on("end", () => callback())
-    .save(`${CAPTURE_DIR}/out.mp4`);
+    .save(outputFile);
 };
 
 let mainWindow;
@@ -74,10 +94,10 @@ app.on("ready", () => {
 
 ipcMain.on(RENDERING_SHOT, (event, arg) => {
   mainWindow.webContents.capturePage(image => {
-    fs.writeFileSync(
-      `${CAPTURE_DIR}/${leftPad(arg, 4, "0")}.png`,
-      image.toPNG()
-    );
+    const imgPath = path.join(captureDir, `${leftPad(arg, 4, "0")}.png`);
+    fs.writeFileSync(imgPath, image.toPNG());
+
+    // we need return value because we do this synchronously
     event.returnValue = true;
   });
 });
@@ -98,3 +118,4 @@ app.on("window-all-closed", () => {
     app.quit();
   }
 });
+

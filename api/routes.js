@@ -1,14 +1,39 @@
 const MBTiles = require("@mapbox/mbtiles");
+const crypto = require("crypto");
 const express = require("express");
 
 const router = express.Router();
 
+const md5 = str =>
+  crypto
+    .createHash("md5")
+    .update(str)
+    .digest("hex");
+
 module.exports = ({ channel }) => {
-  // setup renderer queue - durable channel should handle renderer crashing, and re-render when it's up again
-  // renderer should have { noAck: false } and channel.ack(msg) when done rendering
-  channel.assertQueue("renderer", { durable: true });
-  const queueRender = msg =>
-    channel.sendToQueue("renderer", Buffer.from(JSON.stringify(msg)));
+  // TODO: refactor so we don't use let here, api should be probably set up
+  // asynchronously?
+  let queueRender;
+
+  channel.assertQueue("", { exclusive: true }, (err, { queue }) => {
+    channel.consume(queue, msg => {
+      console.log("got back msg");
+      console.log(msg.properties.correlationId);
+      console.log(msg.content.toString());
+    });
+
+    queueRender = renderConfig => {
+      const msg = JSON.stringify(renderConfig);
+      const correlationId = md5(msg);
+
+      console.log({ msg, correlationId });
+
+      channel.sendToQueue("renderer", Buffer.from(msg), {
+        correlationId,
+        replyTo: queue
+      });
+    };
+  });
 
   // main api
   router.use(express.json());

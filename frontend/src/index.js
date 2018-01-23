@@ -22,7 +22,8 @@ class App extends React.Component {
       lat: -8.343,
       lon: 115.507,
       startDate: null,
-      endDate: null
+      endDate: null,
+      email: ""
     };
   }
 
@@ -61,6 +62,11 @@ class App extends React.Component {
           <DatePicker onInput={e => this.setState({ startDate: e })} />
           &mdash;
           <DatePicker onInput={e => this.setState({ endDate: e })} />
+        </div>
+
+        <div>
+          Email:
+          <input onChange={e => this.setState({ email: e.target.value })} />
         </div>
 
         <button

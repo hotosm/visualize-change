@@ -33,21 +33,30 @@ amqp.connect("amqp://rabbitmq", (err, connection) => {
   connection.createChannel((err, channel) => {
     channel.assertQueue("renderer", { durable: true });
 
-    channel.consume(
-      "renderer",
-      msg => {
-        console.log("received message, rendering:");
-        console.log(JSON.parse(msg.content.toString()));
+    channel.consume("renderer", msg => {
+      const renderConfig = JSON.parse(msg.content.toString());
 
-        runElectron(msg.content.toString(), error => {
-          if (!error) {
-            channel.ack(msg);
-          } else {
-            channel.nack(msg);
-          }
-        });
-      },
-      { noAck: false }
-    );
+      console.log("received msg, rendering");
+      console.log(renderConfig);
+
+      runElectron(msg.content.toString(), error => {
+        console.log("electron done", { error });
+
+        if (error) {
+          channel.nack(msg);
+        } else {
+          const replyMsg = JSON.stringify({ email: renderConfig.email });
+
+          console.log({ replyMsg });
+
+          // if all went ok, notify back that we are done
+          channel.sendToQueue(msg.properties.replyTo, Buffer.from(replyMsg), {
+            correlationId: msg.properties.correlationId
+          });
+
+          channel.ack(msg);
+        }
+      });
+    });
   });
 });
