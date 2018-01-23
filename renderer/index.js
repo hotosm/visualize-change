@@ -3,6 +3,8 @@
 const { spawn } = require("child_process");
 const amqp = require("amqplib/callback_api");
 
+const RENDER_QUEUE = process.env.RENDER_QUEUE || "render_queue";
+
 const runElectron = (renderingConfig, callback) => {
   const electron = spawn(
     "./scripts/xvfb-run",
@@ -31,9 +33,9 @@ amqp.connect("amqp://rabbitmq", (err, connection) => {
   }
 
   connection.createChannel((err, channel) => {
-    channel.assertQueue("renderer", { durable: true });
+    channel.assertQueue(RENDER_QUEUE , { durable: true });
 
-    channel.consume("renderer", msg => {
+    channel.consume(RENDER_QUEUE, msg => {
       const renderConfig = JSON.parse(msg.content.toString());
 
       console.log("received msg, rendering");

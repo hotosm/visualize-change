@@ -2,8 +2,9 @@ const MBTiles = require("@mapbox/mbtiles");
 const crypto = require("crypto");
 const express = require("express");
 const nodemailer = require("nodemailer");
+const path = require("path");
 
-const router = express.Router();
+const RENDER_QUEUE = process.env.RENDER_QUEUE || "render_queue";
 
 const md5 = str =>
   crypto
@@ -15,7 +16,7 @@ module.exports = ({ channel }) => {
   // TODO: email stuff
   // const transporter = nodemailer.createTransport({})
 
-  // TODO: refactor so we don't use let here, api should be probably set up asynchronously?
+  // TODO: refactor so we don't use `let` here, api should be probably set up asynchronously?
   let queueRender;
 
   channel.assertQueue("", { exclusive: true }, (err, { queue }) => {
@@ -34,7 +35,7 @@ module.exports = ({ channel }) => {
 
       console.log({ msg, correlationId });
 
-      channel.sendToQueue("renderer", Buffer.from(msg), {
+      channel.sendToQueue(RENDER_QUEUE, Buffer.from(msg), {
         correlationId,
         replyTo: queue
       });
@@ -42,6 +43,7 @@ module.exports = ({ channel }) => {
   });
 
   // main api
+  const router = express.Router();
   router.use(express.json());
 
   // api health check
@@ -53,11 +55,12 @@ module.exports = ({ channel }) => {
   router.post("/queue-render", (req, res) => {
     console.log(req.body);
     queueRender(req.body);
+
     res.send("OK");
   });
 
   // serve tiles
-  new MBTiles(`${__dirname}/tiles/tiles.mbtiles`, (err, mbtiles) => {
+  new MBTiles(path(__dirname, "tiles", "tiles.mbtiles"), (err, mbtiles) => {
     if (err) {
       console.log(err);
       return;

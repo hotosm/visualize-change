@@ -34,6 +34,7 @@ services:
     restart: always
     environment:
       - NODE_ENV=development
+      - RENDER_QUEUE=render_queue
     volumes:
       - ./../renderer:/app
       - ./data/capture:/data/capture
@@ -47,6 +48,7 @@ services:
     restart: always
     environment:
       - NODE_ENV=development
+      - RENDER_QUEUE=render_queue
     volumes:
       - ./../api:/app
       - /app/node_modules # prefer container's node_modules instead of volume-mounted ones
