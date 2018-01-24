@@ -133,7 +133,9 @@ map.on("load", () => {
 
     const timestamp = currentDate.getTime();
 
-    console.log(`${currentDate} (${n}/${numDays})`);
+    console.log(
+      `${moment(currentDate).format("YYYY-MM-DD")} (${n}/${numDays})`
+    );
 
     const filter = [
       "all",

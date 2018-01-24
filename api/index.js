@@ -1,11 +1,11 @@
+const amqp = require("amqplib/callback_api");
 const express = require("express");
 const mongojs = require("mongojs");
-const amqp = require("amqplib/callback_api");
+const morgan = require("morgan");
 const { parallel } = require("async");
 
 const createRoutes = require("./routes");
-
-const app = express();
+const logger = require("./logger");
 
 const createRabbitMQ = callback => {
   amqp.connect("amqp://rabbitmq", (err, connection) => {
@@ -37,11 +37,11 @@ const createDB = callback => {
 
   db.healthCheck.remove({ works: true }, err => {
     if (err) {
-      console.log(err);
+      logger.error(err);
     } else {
       db.healthCheck.insert({ works: true, ts: new Date().getTime() }, err => {
         if (err) {
-          console.log(err);
+          logger.error(err);
         } else {
           callback(null, db);
         }
@@ -59,12 +59,15 @@ parallel(
     if (err) {
       // exit if we can't connect to db or rabbit
       // docker-compose will pick this up and restart
-      console.log(err);
+      logger.error(err);
       process.exit(1);
     }
 
-    app.use("/", createRoutes(results));
+    const app = express();
 
-    app.listen(4000, () => console.log("api listening on port 4000"));
+    app.use(morgan("combined"));
+    createRoutes(results, routes => app.use("/", routes));
+
+    app.listen(4000, () => logger.info("api listening on port 4000"));
   }
 );

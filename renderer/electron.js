@@ -5,6 +5,7 @@ const leftPad = require("left-pad");
 const path = require("path");
 const { app, BrowserWindow, ipcMain } = require("electron");
 
+const logger = require("./logger");
 const { RENDERING_SHOT, RENDERING_DONE } = require("./common");
 
 const md5 = str =>
@@ -14,7 +15,7 @@ const md5 = str =>
     .digest("hex");
 
 if (!process.argv[2]) {
-  console.log("pass stringified JSON data for rendering!");
+  logger.info("pass stringified JSON data for rendering");
   process.exit(1);
 }
 
@@ -22,8 +23,8 @@ let renderingConfig;
 
 try {
   renderingConfig = JSON.parse(process.argv[2]);
-} catch (e) {
-  console.log(e);
+} catch (err) {
+  logger.error(err);
   process.exit(1);
 }
 
@@ -64,7 +65,7 @@ const convertToVideo = callback => {
     ])
     .size(`${width}x${height}`)
     .on("error", err => {
-      console.log("ffmpeg error", err.message);
+      logger.error("ffmpeg error", err);
     })
     .on("end", () => callback())
     .save(outputFile);
@@ -104,10 +105,9 @@ ipcMain.on(RENDERING_SHOT, (event, arg) => {
 
 ipcMain.on(RENDERING_DONE, () => {
   convertToVideo(() => {
-    console.log("rendering done");
+    logger.debug("rendering finished");
 
     if (!process.env.LOCAL_DEBUG) {
-      console.log("exiting...");
       app.quit();
     }
   });
@@ -118,4 +118,3 @@ app.on("window-all-closed", () => {
     app.quit();
   }
 });
-
