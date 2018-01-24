@@ -44,6 +44,8 @@ const initRoutes = ({ queueRender }, callback) => {
       router.get("/tile/:z/:x/:y", (req, res) => {
         const { z, x, y } = req.params;
 
+        logger.info("tile", { z, x, y });
+
         mbtiles.getTile(z, x, y, (err, data, headers) => {
           if (err) {
             logger.error(err);

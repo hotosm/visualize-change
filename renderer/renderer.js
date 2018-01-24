@@ -23,7 +23,7 @@ const map = new mapboxgl.Map({
   style: "mapbox://styles/mapbox/basic-v9",
   hash: true,
   zoom: renderingConfig.zoom || 12,
-  center: [renderingConfig.lon, renderingConfig.lat]
+  center: [renderingConfig.lng, renderingConfig.lat]
 });
 
 const isLoaded = cb => {
