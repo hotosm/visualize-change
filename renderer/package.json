@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon -L --exitcrash index.js",
+    "dev:no-crash": "nodemon -L index.js",
     "test:local-render": "LOCAL_DEBUG=1 CAPTURE_DIR=./data/capture electron electron.js"
   },
   "author": "Szymon Kaliski <hi@szymonkaliski.com> (http://szymonkaliski.com)",

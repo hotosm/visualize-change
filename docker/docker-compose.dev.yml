@@ -1,4 +1,5 @@
 version: "3"
+
 services:
   server:
     build:
@@ -9,8 +10,8 @@ services:
     ports:
       - "8080:80"
     links:
-      - api:api
-      - frontend:frontend
+      - api
+      - frontend
 
   frontend:
     build:
@@ -23,6 +24,8 @@ services:
     volumes:
       - ./../frontend:/app
       - /app/node_modules # prefer container's node_modules instead of volume-mounted ones
+    links:
+      - api
     ports:
       - "3000:3000"
 
@@ -35,6 +38,8 @@ services:
     environment:
       - NODE_ENV=development
       - RENDER_QUEUE=render_queue
+    links:
+      - rabbitmq
     volumes:
       - ./../renderer:/app
       - ./data/capture:/data/capture
@@ -53,9 +58,6 @@ services:
       - ./../api:/app
       - /app/node_modules # prefer container's node_modules instead of volume-mounted ones
     links:
-      - db
-      - rabbitmq
-    depends_on:
       - db
       - rabbitmq
     ports:
