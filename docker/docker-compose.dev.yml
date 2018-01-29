@@ -9,6 +9,8 @@ services:
     restart: on-failure
     ports:
       - "8080:80"
+    volumes:
+      - ./data/capture:/data/capture # volume shared with ngnix
     depends_on:
       - api
       - frontend
@@ -42,7 +44,7 @@ services:
       - rabbitmq
     volumes:
       - ./../renderer:/app
-      - ./data/capture:/data/capture
+      - ./data/capture:/data/capture # volume shared with ngnix
       - /app/node_modules # prefer container's node_modules instead of volume-mounted ones
 
   api:
@@ -85,3 +87,4 @@ services:
     ports:
       - "15672:15672"
       - "5672:5672"
+

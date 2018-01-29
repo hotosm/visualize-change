@@ -76,6 +76,7 @@ module.exports = ({ channel }, callback) => {
       // TODO: transporter.sendMail - we know the email to send to,
       // but maybe renderer should return the directory as well?
       // TODO: we also need to host the rendered mp4s, with ngnix?
+      // NOTE: link to hosted video is currently: `${SERVER_URL}/renders/${renderConfigHash}/render.mp4`
     });
 
     const queueRender = renderConfig => {
