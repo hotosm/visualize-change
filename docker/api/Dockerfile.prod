@@ -2,11 +2,15 @@ FROM node:carbon-alpine
 
 WORKDIR /app
 
+# bash for ./wait-for
+RUN apk add --update bash
+
 COPY api .
+COPY scripts/wait-for .
 
 ENV NODE_ENV=production
 RUN yarn install
 
 EXPOSE 4000
 
-CMD [ "yarn", "start" ]
+CMD [ "./wait-for", "db:27017", "rabbitmq:15672", "--", "yarn", "start" ]

@@ -1,0 +1,18 @@
+FROM node:carbon-alpine
+
+WORKDIR /app
+
+COPY frontend .
+
+# install deps for dev version
+# this allows us to build the webpack prod version
+RUN yarn install
+
+RUN yarn global add http-server
+
+ENV NODE_ENV=production
+RUN yarn build
+
+EXPOSE 3000
+
+CMD [ "http-server", "./dist/", "-p", "3000", "-g" ]

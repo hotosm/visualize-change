@@ -1,6 +1,42 @@
 version: "3"
 
 services:
+  server:
+    build:
+      context: ../.
+      dockerfile: docker/server/Dockerfile
+    image: hot-mapping-vis-server
+    restart: on-failure
+    ports:
+      - "8080:80"
+    volumes:
+      - ./data/capture:/data/capture # volume shared with nginx
+    depends_on:
+      - api
+      - frontend
+
+  frontend:
+    build:
+      context: ../.
+      dockerfile: docker/frontend/Dockerfile.prod
+    image: hot-mapping-vis-frontend-prod
+    restart: on-failure
+    ports:
+      - "3000:3000"
+
+  renderer:
+    build:
+      context: ../.
+      dockerfile: docker/renderer/Dockerfile.prod
+    image: hot-mapping-vis-renderer-prod
+    restart: on-failure
+    environment:
+      - RENDER_QUEUE=render_queue
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./data/capture:/data/capture # volume shared with nginx
+
   api:
     build:
       context: ../.
@@ -14,6 +50,7 @@ services:
       - rabbitmq
     ports:
       - "4000:4000"
+
   db:
     image: mongo
     volumes:

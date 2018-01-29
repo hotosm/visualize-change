@@ -66,6 +66,7 @@ parallel(
     const app = express();
 
     app.use(morgan("combined"));
+
     createRoutes(results, routes => app.use("/", routes));
 
     app.listen(4000, () => logger.info("api listening on port 4000"));

@@ -4,13 +4,13 @@ services:
   server:
     build:
       context: ../.
-      dockerfile: docker/server/Dockerfile.dev
+      dockerfile: docker/server/Dockerfile
     image: hot-mapping-vis-server
     restart: on-failure
     ports:
       - "8080:80"
     volumes:
-      - ./data/capture:/data/capture # volume shared with ngnix
+      - ./data/capture:/data/capture # volume shared with nginx
     depends_on:
       - api
       - frontend
@@ -19,15 +19,13 @@ services:
     build:
       context: ../.
       dockerfile: docker/frontend/Dockerfile.dev
-    image: hot-mapping-vis-frontend
+    image: hot-mapping-vis-frontend-dev
     restart: on-failure
     environment:
       - NODE_ENV=development
     volumes:
       - ./../frontend:/app
       - /app/node_modules # prefer container's node_modules instead of volume-mounted ones
-    depends_on:
-      - api
     ports:
       - "3000:3000"
 
@@ -35,7 +33,7 @@ services:
     build:
       context: ../.
       dockerfile: docker/renderer/Dockerfile.dev
-    image: hot-mapping-vis-renderer
+    image: hot-mapping-vis-renderer-dev
     restart: on-failure
     environment:
       - NODE_ENV=development
@@ -44,14 +42,14 @@ services:
       - rabbitmq
     volumes:
       - ./../renderer:/app
-      - ./data/capture:/data/capture # volume shared with ngnix
+      - ./data/capture:/data/capture # volume shared with nginx
       - /app/node_modules # prefer container's node_modules instead of volume-mounted ones
 
   api:
     build:
       context: ../.
       dockerfile: docker/api/Dockerfile.dev
-    image: hot-mapping-vis-api
+    image: hot-mapping-vis-api-dev
     restart: on-failure
     environment:
       - NODE_ENV=development
