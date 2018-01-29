@@ -34,7 +34,7 @@ const height = 720;
 
 // "/data/capture" is docker volume, env.captureDir allows us to test outside of docker
 const captureDir = path.join(
-  process.env.captureDir || "/data/capture",
+  process.env.CAPTURE_DIR || "/data/capture",
   md5(JSON.stringify(renderingConfig))
 );
 

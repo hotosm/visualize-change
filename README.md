@@ -25,13 +25,13 @@ A toolkit to visualize changes in OSM, part of the OSM Analytics ecosystem. Work
 
 ## dev workflow
 
-Each app should crash on error, and will be picked up by `docker` and restarted. So crash errors while starting up are expected (for example when RabbitMQ or Mongo is still starting up).
+Each app should crash on error, and will be picked up by `docker` and restarted.
 
 On start each app first installs missing deps (`yarn install`), and then starts.
 
-Frontend app doesn't exit on missing deps, but can be restarted by hand (to trigger deps update) using `./scripts/restart.sh frontend` (this should be solved at some point).
+All dockerized apps shadow `node_modules` folder to avoid native code problems (for example Electron installed on macOS wont run in docker).
 
-All parts of docker shadow `node_modules` folder to avoid native code problems (for example Electron installed on macOS wont run in docker).
+All dockerized apps in dev mode run file watcher on `package.json` and re-install (`yarn install`) deps on changes to that file.
 
 ## renderer notes
 

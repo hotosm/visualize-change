@@ -6,10 +6,10 @@ services:
       context: ../.
       dockerfile: docker/server/Dockerfile.dev
     image: hot-mapping-vis-server
-    restart: always
+    restart: on-failure
     ports:
       - "8080:80"
-    links:
+    depends_on:
       - api
       - frontend
 
@@ -18,13 +18,13 @@ services:
       context: ../.
       dockerfile: docker/frontend/Dockerfile.dev
     image: hot-mapping-vis-frontend
-    restart: always
+    restart: on-failure
     environment:
       - NODE_ENV=development
     volumes:
       - ./../frontend:/app
       - /app/node_modules # prefer container's node_modules instead of volume-mounted ones
-    links:
+    depends_on:
       - api
     ports:
       - "3000:3000"
@@ -34,11 +34,11 @@ services:
       context: ../.
       dockerfile: docker/renderer/Dockerfile.dev
     image: hot-mapping-vis-renderer
-    restart: always
+    restart: on-failure
     environment:
       - NODE_ENV=development
       - RENDER_QUEUE=render_queue
-    links:
+    depends_on:
       - rabbitmq
     volumes:
       - ./../renderer:/app
@@ -50,14 +50,14 @@ services:
       context: ../.
       dockerfile: docker/api/Dockerfile.dev
     image: hot-mapping-vis-api
-    restart: always
+    restart: on-failure
     environment:
       - NODE_ENV=development
       - RENDER_QUEUE=render_queue
     volumes:
       - ./../api:/app
       - /app/node_modules # prefer container's node_modules instead of volume-mounted ones
-    links:
+    depends_on:
       - db
       - rabbitmq
     ports:
@@ -67,11 +67,21 @@ services:
     image: mongo
     volumes:
       - ./data/db:/data/db
+    healthcheck:
+      test: [ "CMD", "nc", "-zv", "localhost", "27017" ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
     ports:
       - "27017:27017"
 
   rabbitmq:
     image: rabbitmq:3
+    healthcheck:
+      test: [ "CMD", "nc", "-zv", "localhost", "15672" ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
     ports:
       - "15672:15672"
       - "5672:5672"

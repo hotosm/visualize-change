@@ -44,7 +44,7 @@ amqp.connect("amqp://rabbitmq", (err, connection) => {
     channel.consume(RENDER_QUEUE, msg => {
       const renderConfig = JSON.parse(msg.content.toString());
 
-      logger.debug("renderer received message", { renderConfig });
+      logger.debug("renderer received message", renderConfig);
 
       runElectron(msg.content.toString(), error => {
         logger.debug("electron rendering finsished");

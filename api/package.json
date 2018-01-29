@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon -L --exitcrash index.js",
-    "dev:no-crash": "nodemon -L index.js"
+    "dev": "concurrently 'yarn dev:watch-deps' 'yarn dev:run'",
+    "dev:run": "nodemon -L index.js",
+    "dev:watch-deps": "nodemon -w package.json -x 'yarn install'"
   },
   "author": "Szymon Kaliski <hi@szymonkaliski.com> (http://szymonkaliski.com)",
   "license": "MIT",
@@ -20,6 +21,7 @@
     "winston": "^3.0.0-rc1"
   },
   "devDependencies": {
+    "concurrently": "^3.5.1",
     "nodemon": "^1.14.11"
   }
 }

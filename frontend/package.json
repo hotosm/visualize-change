@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server --config webpack.dev.js"
+    "dev": "concurrently 'yarn dev:watch-deps' 'yarn dev:run'",
+    "dev:run": "webpack-dev-server --config webpack.dev.js",
+    "dev:watch-deps": "nodemon -w package.json -x 'yarn install'"
   },
   "author": "Szymon Kaliski <hi@szymonkaliski.com> (http://szymonkaliski.com)",
   "license": "MIT",
@@ -14,6 +16,7 @@
     "babel-loader": "^7.1.2",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-stage-1": "^6.24.1",
+    "concurrently": "^3.5.1",
     "css-loader": "^0.28.9",
     "eslint": "^4.16.0",
     "eslint-config-node-style-guide": "^3.0.0",

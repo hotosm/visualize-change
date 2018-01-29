@@ -5,4 +5,4 @@ WORKDIR /app
 RUN apt-get update
 RUN apt-get install -y xvfb ffmpeg libgconf-2-4 libnss3
 
-CMD ["/bin/sh", "-c", "yarn install; yarn dev" ]
+CMD [ "/bin/sh", "-c", "yarn install; yarn dev" ]

@@ -4,4 +4,4 @@ WORKDIR /app
 
 EXPOSE 4000
 
-CMD ["/bin/sh", "-c", "yarn install; yarn dev" ]
+CMD [ "/bin/sh", "-c", "yarn install; yarn dev" ]
