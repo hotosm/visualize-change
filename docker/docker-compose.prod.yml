@@ -1,0 +1,39 @@
+version: "3"
+
+services:
+  api:
+    build:
+      context: ../.
+      dockerfile: docker/api/Dockerfile.prod
+    image: hot-mapping-vis-api-prod
+    restart: on-failure
+    environment:
+      - RENDER_QUEUE=render_queue
+    depends_on:
+      - db
+      - rabbitmq
+    ports:
+      - "4000:4000"
+  db:
+    image: mongo
+    volumes:
+      - ./data/db:/data/db
+    healthcheck:
+      test: [ "CMD", "nc", "-zv", "localhost", "27017" ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    ports:
+      - "27017:27017"
+
+  rabbitmq:
+    image: rabbitmq:3
+    healthcheck:
+      test: [ "CMD", "nc", "-zv", "localhost", "15672" ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+

@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "webpack --config webpack.prod.js",
     "dev": "concurrently 'yarn dev:watch-deps' 'yarn dev:run'",
     "dev:run": "webpack-dev-server --config webpack.dev.js",
     "dev:watch-deps": "nodemon -w package.json -x 'yarn install'"

@@ -1,0 +1,12 @@
+FROM node:carbon-alpine
+
+WORKDIR /app
+
+COPY api .
+
+ENV NODE_ENV=production
+RUN yarn install
+
+EXPOSE 4000
+
+CMD [ "yarn", "start" ]

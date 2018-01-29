@@ -10,17 +10,19 @@ A toolkit to visualize changes in OSM, part of the OSM Analytics ecosystem. Work
 - `server` - `nginx` config (`nginx` binds frontend and api together and exposes port `8080` in dev)
 - `scripts` - common scripts
 - `renderer` - electron renderer
-- `build.sh` - run after changing docker-related things, and on first pull
-- `run.sh` - to start everything
+- `build.dev.sh` - build docker dev version
+- `run.dev.sh` - start docker dev version
+- `build.prod.sh` - build docker production version
+- `run.prod.sh` - start docker production version
 
 ## setup
 
 1. `./scripts/get-indonesia-tiles.sh` (test tiles for `dev`, final application will use tiles for the whole earth)
-2. `./build.sh`
+2. `./build.dev.sh`
 
 ## run
 
-1. `./run.sh`
+1. `./run.dev.sh`
 2. `open http://localhost:8080`
 
 ## dev workflow

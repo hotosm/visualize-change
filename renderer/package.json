@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "dev": "concurrently 'yarn dev:watch-deps' 'yarn dev:run'",
     "dev:run": "nodemon -L index.js",
     "dev:watch-deps": "nodemon -w package.json -x 'yarn install'",
