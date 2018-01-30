@@ -27,7 +27,7 @@ A toolkit to visualize changes in OSM, part of the OSM Analytics ecosystem. Work
 
 ## prod setup
 
-1. `./scripts/get-indonesia-tiles.sh` (test tiles for now)
+1. `./scripts/get-indonesia-tiles.sh` (test tiles for now) OR `./scripts/get-earth-tiles.sh` (whole earth if you have the hard drive space)
 2. `./build.prod.sh`
 
 ## prod run
