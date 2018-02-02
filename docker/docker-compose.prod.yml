@@ -1,6 +1,14 @@
 version: "3"
 
 services:
+  tile-processor:
+    build:
+      context: ../.
+      dockerfile: docker/tile-processor/Dockerfile.prod
+    image: hot-mapping-vis-tile-processor
+    volumes:
+      - ./data/tiles:/data/tiles # volume shared with api
+
   server:
     build:
       context: ../.
@@ -45,6 +53,8 @@ services:
     restart: on-failure
     environment:
       - RENDER_QUEUE=render_queue
+    volumes:
+      - ./data/tiles:/data/tiles # volume shared with api
     depends_on:
       - db
       - rabbitmq

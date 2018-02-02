@@ -2,7 +2,7 @@ FROM ubuntu:latest
 
 RUN apt-get update
 RUN apt-get -y upgrade
-RUN apt-get -y install git build-essential libsqlite3-dev zlib1g-dev
+RUN apt-get -y install git build-essential libsqlite3-dev zlib1g-dev cron rsyslog wget
 
 # build tippecanoe
 RUN mkdir -p /tmp/tippecanoe-src
@@ -15,5 +15,15 @@ WORKDIR /
 RUN rm -rf /tmp/tippecanoe-src
 RUN apt-get -y remove --purge build-essential && apt-get -y autoremove
 
-# test
-CMD tippecanoe --help
+# setup cron
+COPY tile-processor/crontab /etc/cron.d/crontab
+RUN touch /var/log/cron.log
+RUN crontab /etc/cron.d/crontab
+RUN crontab -l
+
+# set up script
+WORKDIR /app
+COPY tile-processor/get-and-process-tiles.sh .
+
+CMD rsyslogd && cron && tail -F /var/log/cron.log /var/log/syslog
+
