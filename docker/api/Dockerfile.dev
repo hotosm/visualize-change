@@ -1,7 +1,11 @@
 FROM node:carbon-alpine
 
+# bash for wait-for
+RUN apk add --update bash
+
 WORKDIR /app
+COPY scripts/wait-for /usr/bin
 
 EXPOSE 4000
 
-CMD [ "/bin/sh", "-c", "yarn install; yarn dev" ]
+CMD [ "wait-for", "db:27017", "rabbitmq:5672", "--", "yarn", "dev:first-run" ]

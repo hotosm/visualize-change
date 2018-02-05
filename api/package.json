@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "concurrently 'yarn dev:watch-deps' 'yarn dev:run'",
+    "dev:first-run": "yarn install && yarn dev",
     "dev:run": "nodemon -L index.js",
     "dev:watch-deps": "nodemon -w package.json -x 'yarn install'"
   },

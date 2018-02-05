@@ -1,8 +1,9 @@
 FROM node:carbon-stretch
 
 WORKDIR /app
+COPY scripts/wait-for /usr/bin
 
 RUN apt-get update
 RUN apt-get install -y xvfb ffmpeg libgconf-2-4 libnss3
 
-CMD [ "/bin/sh", "-c", "yarn install; yarn dev" ]
+CMD [ "wait-for", "rabbitmq:5672", "--", "yarn", "dev:first-run" ]
