@@ -63,6 +63,3 @@ Renderer can be tested on host machine, so the Electron window is visible, to ru
 $ yarn run test:local-render '{ "lat": -8.343, "lng": 115.507, "startDate": "2017-09-01", "endDate": "2017-11-01"  }'
 ```
 
-## prod docker notes
-
-API and renderer wait for db/rabbitmq using modified `wait-for` script from: https://github.com/Forever-Young/wait-for-it
