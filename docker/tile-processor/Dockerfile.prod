@@ -25,9 +25,6 @@ RUN crontab -l
 WORKDIR /app
 COPY tile-processor/get-and-process-tiles.sh .
 
-# run cron
-# CMD rsyslogd && cron && tail -F /var/log/cron.log /var/log/syslog
-
-# test download and process
-CMD /app/get-and-process-tiles.sh
+run cron
+CMD rsyslogd && cron && tail -F /var/log/cron.log /var/log/syslog
 
