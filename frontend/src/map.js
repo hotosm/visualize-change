@@ -15,9 +15,10 @@ module.exports = map => {
     map.addSource(sourceId, {
       type: "vector",
       tiles: [
-        process.env.LOCAL_DEBUG
-          ? "http://localhost:4000/tile/{z}/{x}/{y}" // tiles from docker when running electron on host machine
-          : "http://localhost:8080/api/tile/{z}/{x}/{y}" // TODO: document.location...
+        document.location.origin +
+          (process.env.LOCAL_DEBUG
+            ? "/tile/{z}/{x}/{y}" // tiles from docker when running electron on host machine
+            : "/api/tile/{z}/{x}/{y}") // TODO: document.location...
       ]
     });
 
