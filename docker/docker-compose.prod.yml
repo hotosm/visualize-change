@@ -6,6 +6,8 @@ services:
       context: ../.
       dockerfile: docker/tile-processor/Dockerfile.prod
     image: hot-mapping-vis-tile-processor
+    environment:
+      - GENERATE_UNDERZOOM=0 # set to 1 to generate underzooms, this requires A LOT of CPU/RAM
     volumes:
       - ./data/tiles:/data/tiles # volume shared with api
 
