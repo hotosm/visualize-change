@@ -3,6 +3,7 @@
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # docker/data/tiles is shared volume with api component
+mkdir -p "$DIR"/../docker/data/tiles
 cd "$DIR"/../docker/data/tiles || exit 1
 
 rm indonesia.mbtiles.gz
