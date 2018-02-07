@@ -1,90 +1,71 @@
 module.exports = map => {
-  const layers = {
-    pts: [],
-    lines: [],
-    polygons: []
-  };
-
-  map.on("load", () => {
+  map.on('load', () => {
     // sources and layers
+    const sourceId = 'osm';
+    const roadsColor = '#50E3C2';
+    const layerId = 'osm';
 
-    const sourceId = "osm";
-    const layerId = "osm";
-    const layerColor = "#FF0000";
+    const layers = {
+      pts: [],
+      lines: [],
+      polygons: []
+    };
+
+    const filters = {
+      [`${layerId}-roads`]: [
+        ['==', '$type', 'LineString'],
+        ['==', '@type', 'way'],
+        ['has', 'highway'],
+        ['!has', 'building'],
+        ['!has', 'landuse']
+      ],
+      [`${layerId}-buildings-outline`]: [['==', '$type', 'Polygon'], ['has', 'building']]
+    };
 
     map.addSource(sourceId, {
-      type: "vector",
+      type: 'vector',
       tiles: [
-        document.location.origin +
-          (process.env.LOCAL_DEBUG
-            ? "/tile/{z}/{x}/{y}" // tiles from docker when running electron on host machine
-            : "/api/tile/{z}/{x}/{y}") // TODO: document.location...
+        process.env.LOCAL_DEBUG
+          ? 'http://localhost:4000/tile/{z}/{x}/{y}' // tiles from docker when running electron on host machine
+          : 'http://localhost:8080/api/tile/{z}/{x}/{y}' // TODO: document.location...
       ]
     });
 
     map.addLayer({
-      id: `${layerId}-polygons`,
-      type: "fill",
+      id: `${layerId}-buildings-outline`,
+      type: 'line',
       source: `${sourceId}`,
-      "source-layer": `${layerId}`,
-      filter: ["==", "$type", "Polygon"],
-      layout: {},
-      paint: {
-        "fill-opacity": 0.5,
-        "fill-color": layerColor
-      }
-    });
-    layers.polygons.push(`${layerId}-polygons`);
-
-    map.addLayer({
-      id: `${layerId}-polygons-outline`,
-      type: "line",
-      source: `${sourceId}`,
-      "source-layer": `${layerId}`,
-      filter: ["==", "$type", "Polygon"],
+      'source-layer': `${layerId}`,
+      filter: ['all'].concat(filters[`${layerId}-buildings-outline`]),
       layout: {
-        "line-join": "round",
-        "line-cap": "round"
+        'line-join': 'round',
+        'line-cap': 'round'
       },
       paint: {
-        "line-color": layerColor,
-        "line-width": 0,
-        "line-opacity": 0.75
+        'line-color': '#D00244',
+        'line-width': 2,
+        'line-opacity': 0.4
       }
     });
-    layers.polygons.push(`${layerId}-polygons-outline`);
+    layers.polygons.push(`${layerId}-buildings-outline`);
 
     map.addLayer({
-      id: `${layerId}-lines`,
-      type: "line",
+      id: `${layerId}-roads`,
+      type: 'line',
       source: `${sourceId}`,
-      "source-layer": `${layerId}`,
-      filter: ["==", "$type", "LineString"],
+      'source-layer': `${layerId}`,
+      filter: ['all'].concat(filters[`${layerId}-roads`]),
       layout: {
-        "line-join": "round",
-        "line-cap": "round"
+        'line-join': 'round',
+        'line-cap': 'round'
       },
       paint: {
-        "line-color": layerColor,
-        "line-width": 1,
-        "line-opacity": 0.75
+        'line-color': '#50E3C2',
+        'line-width': 5,
+        'line-opacity': 0.5
       }
     });
-    layers.lines.push(`${layerId}-lines`);
-
-    map.addLayer({
-      id: `${layerId}-pts`,
-      type: "circle",
-      source: `${sourceId}`,
-      "source-layer": `${layerId}`,
-      filter: ["==", "$type", "Point"],
-      paint: {
-        "circle-color": layerColor,
-        "circle-radius": 2.5,
-        "circle-opacity": 0.75
-      }
-    });
-    layers.pts.push(`${layerId}-pts`);
+    layers.lines.push(`${layerId}-roads`);
   });
 
   return {
@@ -92,14 +73,13 @@ module.exports = map => {
       const timestamp = date.getTime();
 
       const filter = [
-        "all",
-        ["<=", "@timestamp", Math.round(timestamp / 1000)], // VERY IMPORTANT - timestamp is of by 1000!
-        ["has", "highway"]
+        'all',
+        ['<=', '@timestamp', Math.round(timestamp / 1000)] // VERY IMPORTANT - timestamp is of by 1000!
       ];
 
       Object.keys(layers).forEach(layerGroupKey => {
         layers[layerGroupKey].forEach(layer => {
-          map.setFilter(layer, filter);
+          map.setFilter(layer, filter.concat(filters[layer]));
         });
       });
     }
