@@ -2,7 +2,6 @@
 const MBTiles = require("@mapbox/mbtiles");
 const crypto = require("crypto");
 const express = require("express");
-const path = require("path");
 
 const logger = require("./logger");
 
@@ -34,7 +33,7 @@ const initRoutes = ({ queueRender }, callback) => {
 
   // serve tiles
   new MBTiles(
-    path.join(__dirname, "tiles", "tiles.mbtiles"),
+    "/data/tiles/tiles.mbtiles",
     (err, mbtiles) => {
       if (err) {
         logger.error(err);

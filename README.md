@@ -10,6 +10,7 @@ A toolkit to visualize changes in OSM, part of the OSM Analytics ecosystem. Work
 - `server` - `nginx` config (`nginx` binds frontend and api together and exposes port `8080` in dev)
 - `scripts` - common scripts
 - `renderer` - electron renderer
+- `tile-processor` - crontab and script that download and processes earth QA tiles daily, run only in production environment
 - `build.dev.sh` - build docker dev version
 - `run.dev.sh` - start docker dev version
 - `build.prod.sh` - build docker production version
@@ -18,7 +19,8 @@ A toolkit to visualize changes in OSM, part of the OSM Analytics ecosystem. Work
 ## dev setup
 
 1. `./scripts/get-indonesia-tiles.sh` (test tiles for `dev`, final application will use tiles for the whole earth)
-2. `./build.dev.sh`
+2. optionally generated underzoom for tiles (this takes a while) `./scripts/tiles-add-underzoom.sh`
+3. `./build.dev.sh`
 
 ## dev run
 
@@ -28,7 +30,8 @@ A toolkit to visualize changes in OSM, part of the OSM Analytics ecosystem. Work
 ## prod setup
 
 1. `./scripts/get-indonesia-tiles.sh` (test tiles for now) OR `./scripts/get-earth-tiles.sh` (whole earth if you have the hard drive space)
-2. `./build.prod.sh`
+2. optionally generated underzoom for tiles (this takes a while) `./scripts/tiles-add-underzoom.sh`
+3. `./build.prod.sh`
 
 ## prod run
 
@@ -62,7 +65,3 @@ Renderer can be tested on host machine, so the Electron window is visible, to ru
 ```sh
 $ yarn run test:local-render '{ "lat": -8.343, "lng": 115.507, "startDate": "2017-09-01", "endDate": "2017-11-01"  }'
 ```
-
-## prod docker notes
-
-API and renderer wait for db/rabbitmq using modified `wait-for` script from: https://github.com/Forever-Young/wait-for-it

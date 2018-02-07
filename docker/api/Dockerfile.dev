@@ -1,11 +1,8 @@
 FROM node:carbon-alpine
 
-# bash for wait-for
-RUN apk add --update bash
-
 WORKDIR /app
-COPY scripts/wait-for /usr/bin
+RUN yarn global add wait-on
 
 EXPOSE 4000
 
-CMD [ "wait-for", "db:27017", "rabbitmq:5672", "--", "yarn", "dev:first-run" ]
+CMD wait-on -l tcp:db:27017 tcp:rabbitmq:5672 && yarn install && yarn dev
