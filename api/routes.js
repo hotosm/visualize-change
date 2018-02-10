@@ -1,4 +1,5 @@
-// const nodemailer = require("nodemailer");
+const nodemailer = require("nodemailer");
+const mailgunTransport = require("nodemailer-mailgun-transport");
 const MBTiles = require("@mapbox/mbtiles");
 const crypto = require("crypto");
 const express = require("express");
@@ -32,38 +33,41 @@ const initRoutes = ({ queueRender }, callback) => {
   });
 
   // serve tiles
-  new MBTiles(
-    "/data/tiles/tiles.mbtiles",
-    (err, mbtiles) => {
-      if (err) {
-        logger.error(err);
-        return;
-      }
-
-      router.get("/tile/:z/:x/:y", (req, res) => {
-        const { z, x, y } = req.params;
-
-        logger.info("tile", { z, x, y });
-
-        mbtiles.getTile(z, x, y, (err, data, headers) => {
-          if (err) {
-            logger.error(err);
-            res.end();
-          } else {
-            res.writeHead(200, headers);
-            res.end(data);
-          }
-        });
-      });
+  new MBTiles("/data/tiles/tiles.mbtiles", (err, mbtiles) => {
+    if (err) {
+      logger.error(err);
+      return;
     }
-  );
+
+    router.get("/tile/:z/:x/:y", (req, res) => {
+      const { z, x, y } = req.params;
+
+      logger.info("tile", { z, x, y });
+
+      mbtiles.getTile(z, x, y, (err, data, headers) => {
+        if (err) {
+          logger.error(err);
+          res.end();
+        } else {
+          res.writeHead(200, headers);
+          res.end(data);
+        }
+      });
+    });
+  });
 
   callback(router);
 };
 
 module.exports = ({ channel }, callback) => {
-  // TODO: email stuff
-  // const transporter = nodemailer.createTransport({})
+  const nodemailerMailgun = nodemailer.createTransport(
+    mailgunTransport({
+      auth: {
+        ["api_key"]: process.env.MAILGUN_API_KEY,
+        domain: process.env.MAILGUN_DOMAIN
+      }
+    })
+  );
 
   channel.assertQueue("", { exclusive: true }, (err, { queue }) => {
     channel.consume(queue, msg => {
@@ -72,7 +76,7 @@ module.exports = ({ channel }, callback) => {
         content: msg.content.toString()
       });
 
-      // TODO: transporter.sendMail - we know the email to send to,
+      // TODO: nodemailerMailgun.sendMail - we know the email to send to,
       // but maybe renderer should return the directory as well?
       // TODO: we also need to host the rendered mp4s, with ngnix?
       // NOTE: link to hosted video is currently: `${SERVER_URL}/renders/${renderConfigHash}/render.mp4`

@@ -16,6 +16,17 @@ A toolkit to visualize changes in OSM, part of the OSM Analytics ecosystem. Work
 - `build.prod.sh` - build docker production version
 - `run.prod.sh` - start docker production version
 
+## env
+
+Some keys are required for app to work properly:
+
+```
+MAILGUN_API_KEY=... # api key for mailgun
+MAILGUN_DOMAIN=... # domain from mailgun
+```
+
+For dev, this could be set in `PROJECT_ROOT/.env`, for production use it's preffered to `export` them in the shell.
+
 ## dev setup
 
 1. `./scripts/get-indonesia-tiles.sh` (test tiles for `dev`, final application will use tiles for the whole earth)

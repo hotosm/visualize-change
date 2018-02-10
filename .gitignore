@@ -3,3 +3,6 @@ yarn-error.log
 
 # data volumes
 docker/data/
+
+# env
+.env

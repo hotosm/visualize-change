@@ -54,6 +54,9 @@ services:
     environment:
       - NODE_ENV=development
       - RENDER_QUEUE=render_queue
+      - MAILGUN_FROM=visualize@hotosmmail.org
+      - MAILGUN_API_KEY # env passed from shell
+      - MAILGUN_DOMAIN # env passed from shell
     volumes:
       - ./../api:/app
       - ./data/tiles:/data/tiles
