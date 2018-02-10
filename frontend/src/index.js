@@ -51,7 +51,8 @@ class App extends React.Component {
       // FIXME: setting position from updatePosition triggers this as well, not a problem for now though..?
       this.setState({
         lat: this.map.getCenter().lat,
-        lng: this.map.getCenter().lng
+        lng: this.map.getCenter().lng,
+        zoom: this.map.getZoom()
       });
     });
   }
@@ -63,12 +64,21 @@ class App extends React.Component {
   onClickRender = () => {
     console.log("render", this.state);
 
+    const mapConfig = {
+      lat: this.state.lat,
+      lng: this.state.lng,
+      zoom: this.state.zoom,
+      email: this.state.email,
+      startDate: moment(this.state.startDate).toISOString(),
+      endDate: moment(this.state.endDate).toISOString()
+    };
+
     fetch("/api/queue-render", {
       headers: {
         "Content-Type": "application/json"
       },
       method: "post",
-      body: JSON.stringify(this.state)
+      body: JSON.stringify(mapConfig)
     }).then(res => console.log(res));
   };
 

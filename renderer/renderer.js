@@ -20,7 +20,7 @@ const map = new mapboxgl.Map({
   container: "map",
   style: "mapbox://styles/mapbox/basic-v9",
   hash: true,
-  zoom: renderingConfig.zoom || 12,
+  zoom: renderingConfig.zoom,
   center: [renderingConfig.lng, renderingConfig.lat]
 });
 

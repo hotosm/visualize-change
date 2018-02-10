@@ -1,12 +1,28 @@
-const nodemailer = require("nodemailer");
-const mailgunTransport = require("nodemailer-mailgun-transport");
 const MBTiles = require("@mapbox/mbtiles");
 const crypto = require("crypto");
 const express = require("express");
+const j = require("joi");
+const mailgunTransport = require("nodemailer-mailgun-transport");
+const nodemailer = require("nodemailer");
 
 const logger = require("./logger");
 
 const RENDER_QUEUE = process.env.RENDER_QUEUE || "render_queue";
+
+// prettier-ignore
+const MAP_CONFIG_SCHEMA = j.object().keys({
+  lng: j.number().min(-180).max(180),
+  lat: j.number().min(-90).max(90),
+  zoom: j.number().min(0).max(18),
+  startDate: j.date().iso(), // YYYY-MM-DDThh:mm:ss.sssZ
+  endDate: j.date().iso()
+});
+
+const RENDER_CONFIG_SCHEMA = j.object().keys({
+  map: MAP_CONFIG_SCHEMA,
+  dir: j.string(),
+  email: j.string().email()
+});
 
 const md5 = str =>
   crypto
@@ -24,12 +40,38 @@ const initRoutes = ({ queueRender }, callback) => {
     res.send("OK");
   });
 
-  // queue rendering
   router.post("/queue-render", (req, res) => {
-    logger.debug("queue renderer req body", req.body);
-    queueRender(req.body);
+    // this is more wordy than just passing `req.body` to `queueRender` but
+    // allows us to validate, and see the keys clearly
+    const mapConfig = {
+      lat: req.body.lat,
+      lng: req.body.lng,
+      zoom: req.body.zoom,
+      startDate: req.body.startDate,
+      endDate: req.body.endDate
+    };
 
-    res.send("OK");
+    const renderConfig = {
+      email: req.body.email,
+      map: mapConfig,
+      dir: md5(
+        JSON.stringify({
+          mapConfig,
+          email: req.body.email
+        })
+      )
+    };
+
+    j.validate(renderConfig, RENDER_CONFIG_SCHEMA, err => {
+      if (err) {
+        logger.error("queue render error", { err: err.toString() });
+        res.status(400).send(err.toString());
+      } else {
+        logger.debug("queue render", { renderConfig });
+        queueRender(renderConfig);
+        res.send("OK");
+      }
+    });
   });
 
   // serve tiles
@@ -83,8 +125,9 @@ module.exports = ({ channel }, callback) => {
     });
 
     const queueRender = renderConfig => {
+      // correlationId is now dir, which should be uniqe based on map config and email
+      const correlationId = renderConfig.dir;
       const msg = JSON.stringify(renderConfig);
-      const correlationId = md5(msg);
 
       logger.debug("sending msg to renderer", {
         renderConfig,
