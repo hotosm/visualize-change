@@ -1,4 +1,5 @@
 const path = require("path");
+const webpack = require("webpack");
 
 const DIST = path.resolve(__dirname, "dist");
 
@@ -8,6 +9,13 @@ module.exports = {
     filename: "bundle.js",
     path: DIST
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      "process.env.MAPBOX_ACCESS_TOKEN": JSON.stringify(
+        process.env.MAPBOX_ACCESS_TOKEN
+      )
+    })
+  ],
   module: {
     rules: [
       {

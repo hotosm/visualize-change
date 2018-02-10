@@ -7,9 +7,7 @@ require("mapbox-gl/dist/mapbox-gl.css");
 
 const setupMap = require("./map");
 
-// TODO: move to docker env: https://docs.docker.com/compose/environment-variables/ (passing environment variables through to containers"
-mapboxgl.accessToken =
-  "pk.eyJ1Ijoic3p5bW9uayIsImEiOiJjamNmenY2d2oxOHJsMzNyd2dkdXAweWpsIn0.EnpGgGzuSUfAtE7WLkXdyQ";
+mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
 
 const DatePicker = ({ onInput }) => (
   <input type="date" onInput={e => onInput(e.target.value)} />

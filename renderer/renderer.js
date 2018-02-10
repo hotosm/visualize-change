@@ -14,9 +14,7 @@ const { ipcRenderer, remote } = require("electron");
 
 const { renderingConfig } = remote.getCurrentWindow();
 
-// TODO: move to docker env: https://docs.docker.com/compose/environment-variables/ (passing environment variables through to containers"
-mapboxgl.accessToken =
-  "pk.eyJ1Ijoic3p5bW9uayIsImEiOiJjamNmenY2d2oxOHJsMzNyd2dkdXAweWpsIn0.EnpGgGzuSUfAtE7WLkXdyQ";
+mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
 
 const map = new mapboxgl.Map({
   container: "map",

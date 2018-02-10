@@ -31,6 +31,8 @@ services:
       dockerfile: docker/frontend/Dockerfile.prod
     image: hot-mapping-vis-frontend-prod
     restart: on-failure
+    environment:
+      - MAPBOX_ACCESS_TOKEN # env passed from shell
     ports:
       - "3000:3000"
 
@@ -55,6 +57,9 @@ services:
     restart: on-failure
     environment:
       - RENDER_QUEUE=render_queue
+      - MAILGUN_FROM=visualize@hotosmmail.org
+      - MAILGUN_API_KEY # env passed from shell
+      - MAILGUN_DOMAIN # env passed from shell
     volumes:
       - ./data/tiles:/data/tiles # volume shared with api
     depends_on:

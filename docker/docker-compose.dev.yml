@@ -23,6 +23,7 @@ services:
     restart: on-failure
     environment:
       - NODE_ENV=development
+      - MAPBOX_ACCESS_TOKEN # env passed from shell
     volumes:
       - ./../frontend:/app
       - /app/node_modules # prefer container's node_modules instead of volume-mounted ones
