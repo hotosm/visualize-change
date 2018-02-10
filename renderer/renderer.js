@@ -1,4 +1,4 @@
-// HACK: move errors to cli console when running in non-debug mode
+// move errors to cli console when running in non-debug mode
 if (!process.env.LOCAL_DEBUG) {
   const NodeConsole = require("console").Console;
 
@@ -12,7 +12,7 @@ const moment = require("moment");
 const mapboxgl = require("mapbox-gl");
 const { ipcRenderer, remote } = require("electron");
 
-const { renderingConfig } = remote.getCurrentWindow();
+const { mapConfig } = remote.getCurrentWindow();
 
 mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
 
@@ -20,15 +20,15 @@ const map = new mapboxgl.Map({
   container: "map",
   style: "mapbox://styles/mapbox/basic-v9",
   hash: true,
-  zoom: renderingConfig.zoom,
-  center: [renderingConfig.lng, renderingConfig.lat]
+  zoom: mapConfig.zoom,
+  center: [mapConfig.lng, mapConfig.lat]
 });
 
 const isLoaded = cb => {
   const loadedHandle = setInterval(() => {
     if (map.isStyleLoaded() && map.areTilesLoaded() && map.loaded()) {
-      cb();
       clearInterval(loadedHandle);
+      cb();
     }
   }, 1);
 };
@@ -120,19 +120,16 @@ map.on("load", () => {
   layers.pts.push(`${layerId}-pts`);
 
   // actual rendering
-  const startDate = new Date(renderingConfig.startDate);
-  const endDate = new Date(renderingConfig.endDate);
+  const startDate = moment(mapConfig.startDate);
+  const endDate = moment(mapConfig.endDate);
   const numDays = moment(endDate).diff(moment(startDate), "days");
 
   const filterLayers = n => {
-    const currentDate = moment(startDate)
-      .add(n, "d")
-      .toDate();
-
+    const currentDate = startDate.add(n, "d").toDate();
     const timestamp = currentDate.getTime();
 
     console.log(
-      `${moment(currentDate).format("YYYY-MM-DD")} (${n}/${numDays})`
+      `${moment(currentDate).format("YYYY-MM-DD HH:mm:ss")} (${n}/${numDays})`
     );
 
     const filter = [

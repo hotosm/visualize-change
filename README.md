@@ -24,6 +24,7 @@ Some keys are required for app to work properly:
 MAILGUN_API_KEY=...     # api key for mailgun
 MAILGUN_DOMAIN=...      # domain from mailgun
 MAPBOX_ACCESS_TOKEN=... # access token for mapbox
+SERVER_DOMAIN=...       # main domain of the server (http://SERVER_DOMAIN/), used for making URL in email
 ```
 
 For dev, this could be set in `PROJECT_ROOT/.env`, for production use it's preffered to `export` them in the shell.

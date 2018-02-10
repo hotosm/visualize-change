@@ -29,9 +29,10 @@ class App extends React.Component {
     this.state = {
       lat: -8.343,
       lng: 115.507,
-      startDate: null,
-      endDate: null,
-      email: ""
+      zoom: 12,
+      startDate: "2018-01-01",
+      endDate: "2018-02-01",
+      email: "test@test.test"
     };
   }
 
@@ -40,7 +41,7 @@ class App extends React.Component {
       container: this.elMap,
       style: "mapbox://styles/mapbox/basic-v9",
       center: [this.state.lng, this.state.lat],
-      zoom: 12
+      zoom: this.state.zoom
     });
 
     // add layers

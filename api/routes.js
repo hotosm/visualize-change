@@ -8,6 +8,7 @@ const nodemailer = require("nodemailer");
 const logger = require("./logger");
 
 const RENDER_QUEUE = process.env.RENDER_QUEUE || "render_queue";
+const SERVER_DOMAIN = process.env.SERVER_DOMAIN || "http://localhost:8080";
 
 // prettier-ignore
 const MAP_CONFIG_SCHEMA = j.object().keys({
@@ -113,15 +114,36 @@ module.exports = ({ channel }, callback) => {
 
   channel.assertQueue("", { exclusive: true }, (err, { queue }) => {
     channel.consume(queue, msg => {
+      const replyContent = JSON.parse(msg.content.toString());
+
       logger.debug("channel consumed msg", {
         properties: msg.properties,
-        content: msg.content.toString()
+        replyContent
       });
 
-      // TODO: nodemailerMailgun.sendMail - we know the email to send to,
-      // but maybe renderer should return the directory as well?
-      // TODO: we also need to host the rendered mp4s, with ngnix?
-      // NOTE: link to hosted video is currently: `${SERVER_URL}/renders/${renderConfigHash}/render.mp4`
+      nodemailerMailgun.sendMail(
+        {
+          from: process.env.MAILGUN_FROM,
+          to: replyContent.email,
+          subject: "HOT Mapping Vis Render",
+          text: `
+            Hi,
+
+            your render is ready at:
+
+            ${SERVER_DOMAIN}/renders/${replyContent.dir}/render.mp4
+
+            Cheers!
+          `
+        },
+        (err, res) => {
+          if (err) {
+            logger.error("mail", { err });
+          } else {
+            logger.debug("mail", { res });
+          }
+        }
+      );
     });
 
     const queueRender = renderConfig => {
