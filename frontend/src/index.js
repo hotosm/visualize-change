@@ -38,6 +38,8 @@ class App extends React.Component {
       zoom: 12
     });
 
+    this.map.addControl(new mapboxgl.NavigationControl());
+
     // add layers
     const { filter: filterMap } = setupMap(this.map);
     this.filterMap = filterMap;
