@@ -16,6 +16,19 @@ A toolkit to visualize changes in OSM, part of the OSM Analytics ecosystem. Work
 - `build.prod.sh` - build docker production version
 - `run.prod.sh` - start docker production version
 
+## env
+
+Some keys are required for app to work properly:
+
+```
+MAILGUN_API_KEY=...     # api key for mailgun
+MAILGUN_DOMAIN=...      # domain from mailgun
+MAPBOX_ACCESS_TOKEN=... # access token for mapbox
+SERVER_DOMAIN=...       # main domain of the server (http://SERVER_DOMAIN/), used for making URL in email
+```
+
+For dev, this could be set in `PROJECT_ROOT/.env`, for production use it's preffered to `export` them in the shell.
+
 ## dev setup
 
 1. `./scripts/get-indonesia-tiles.sh` (test tiles for `dev`, final application will use tiles for the whole earth)
@@ -63,5 +76,8 @@ Export flow is as follows:
 Renderer can be tested on host machine, so the Electron window is visible, to run: `yarn run test:local-render` providing proper rendering config as JSON, for example:
 
 ```sh
-$ yarn run test:local-render '{ "lat": -8.343, "lng": 115.507, "startDate": "2017-09-01", "endDate": "2017-11-01"  }'
+$ yarn run test:local-render '$STRINGIFIED_RENDER_CONFIG'
 ```
+
+Where `$STRINGIFIED_RENDER_CONFIG` should conform to api render config validation.
+

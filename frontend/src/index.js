@@ -7,9 +7,7 @@ require("mapbox-gl/dist/mapbox-gl.css");
 
 const setupMap = require("./map");
 
-// TODO: move to docker env: https://docs.docker.com/compose/environment-variables/ (passing environment variables through to containers"
-mapboxgl.accessToken =
-  "pk.eyJ1Ijoic3p5bW9uayIsImEiOiJjamNmenY2d2oxOHJsMzNyd2dkdXAweWpsIn0.EnpGgGzuSUfAtE7WLkXdyQ";
+mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
 
 const DatePicker = ({ onInput }) => (
   <input type="date" onInput={e => onInput(e.target.value)} />
@@ -31,9 +29,10 @@ class App extends React.Component {
     this.state = {
       lat: -8.343,
       lng: 115.507,
-      startDate: null,
-      endDate: null,
-      email: ""
+      zoom: 12,
+      startDate: "2018-01-01",
+      endDate: "2018-02-01",
+      email: "test@test.test"
     };
   }
 
@@ -42,7 +41,7 @@ class App extends React.Component {
       container: this.elMap,
       style: "mapbox://styles/mapbox/basic-v9",
       center: [this.state.lng, this.state.lat],
-      zoom: 12
+      zoom: this.state.zoom
     });
 
     // add layers
@@ -53,7 +52,8 @@ class App extends React.Component {
       // FIXME: setting position from updatePosition triggers this as well, not a problem for now though..?
       this.setState({
         lat: this.map.getCenter().lat,
-        lng: this.map.getCenter().lng
+        lng: this.map.getCenter().lng,
+        zoom: this.map.getZoom()
       });
     });
   }
@@ -65,12 +65,21 @@ class App extends React.Component {
   onClickRender = () => {
     console.log("render", this.state);
 
+    const mapConfig = {
+      lat: this.state.lat,
+      lng: this.state.lng,
+      zoom: this.state.zoom,
+      email: this.state.email,
+      startDate: moment(this.state.startDate).toISOString(),
+      endDate: moment(this.state.endDate).toISOString()
+    };
+
     fetch("/api/queue-render", {
       headers: {
         "Content-Type": "application/json"
       },
       method: "post",
-      body: JSON.stringify(this.state)
+      body: JSON.stringify(mapConfig)
     }).then(res => console.log(res));
   };
 
