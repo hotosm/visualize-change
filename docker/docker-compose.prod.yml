@@ -29,6 +29,9 @@ services:
     build:
       context: ../.
       dockerfile: docker/frontend/Dockerfile.prod
+      args:
+        - NODE_ENV=production
+        - MAPBOX_ACCESS_TOKEN # env passed from shell, to dockerfile arg, so we can build using env variables
     image: hot-mapping-vis-frontend-prod
     restart: on-failure
     environment:
@@ -41,6 +44,8 @@ services:
     build:
       context: ../.
       dockerfile: docker/renderer/Dockerfile.prod
+      args:
+        - NODE_ENV=production
     image: hot-mapping-vis-renderer-prod
     restart: on-failure
     environment:
@@ -56,6 +61,8 @@ services:
     build:
       context: ../.
       dockerfile: docker/api/Dockerfile.prod
+      args:
+        - NODE_ENV=production
     image: hot-mapping-vis-api-prod
     restart: on-failure
     environment:
