@@ -5,10 +5,12 @@ const DIST = path.resolve(__dirname, "dist");
 
 module.exports = {
   entry: "./src/index",
+
   output: {
     filename: "bundle.js",
     path: DIST
   },
+
   plugins: [
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
@@ -17,6 +19,7 @@ module.exports = {
       )
     })
   ],
+
   module: {
     rules: [
       {
