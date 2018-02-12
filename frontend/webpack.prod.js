@@ -7,9 +7,6 @@ module.exports = Object.assign({}, config, {
     new webpack.LoaderOptionsPlugin({
       minimize: true,
       debug: false
-    }),
-    new webpack.DefinePlugin({
-      "process.env.NODE_ENV": JSON.stringify("production")
     })
     // FIXME: using MinifyPlugin ends in "k is not defined" error
     // new MinifyPlugin({ removeConsole: true, removeDebugger: true }, { comments: false })
