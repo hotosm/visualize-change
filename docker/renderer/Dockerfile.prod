@@ -8,8 +8,6 @@ RUN apt-get update
 RUN apt-get install -y xvfb ffmpeg libgconf-2-4 libnss3
 
 RUN yarn global add wait-on
-
-ENV NODE_ENV=production
 RUN yarn install
 
 CMD wait-on -l tcp:rabbitmq:5672 && yarn start

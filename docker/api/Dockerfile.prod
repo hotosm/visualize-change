@@ -4,8 +4,6 @@ WORKDIR /app
 COPY api .
 
 RUN yarn global add wait-on
-
-ENV NODE_ENV=production
 RUN yarn install
 
 EXPOSE 4000
