@@ -1,27 +1,27 @@
+const sourceId = 'osm';
+const roadsColor = '#50E3C2';
+const layerId = 'osm';
+
+const layers = {
+  pts: [],
+  lines: [],
+  polygons: []
+};
+
+const filters = {
+  [`${layerId}-roads`]: [
+    ['==', '$type', 'LineString'],
+    ['==', '@type', 'way'],
+    ['has', 'highway'],
+    ['!has', 'building'],
+    ['!has', 'landuse']
+  ],
+  [`${layerId}-buildings-outline`]: [['==', '$type', 'Polygon'], ['has', 'building']]
+};
+
 module.exports = map => {
   map.on('load', () => {
     // sources and layers
-    const sourceId = 'osm';
-    const roadsColor = '#50E3C2';
-    const layerId = 'osm';
-
-    const layers = {
-      pts: [],
-      lines: [],
-      polygons: []
-    };
-
-    const filters = {
-      [`${layerId}-roads`]: [
-        ['==', '$type', 'LineString'],
-        ['==', '@type', 'way'],
-        ['has', 'highway'],
-        ['!has', 'building'],
-        ['!has', 'landuse']
-      ],
-      [`${layerId}-buildings-outline`]: [['==', '$type', 'Polygon'], ['has', 'building']]
-    };
-
     map.addSource(sourceId, {
       type: 'vector',
       tiles: [

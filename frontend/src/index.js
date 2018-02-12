@@ -25,6 +25,7 @@ class App extends React.Component {
       lng: 115.507,
       startDate: null,
       endDate: null,
+      interval: 'day',
       email: '',
       features: {}
     };
@@ -99,6 +100,10 @@ class App extends React.Component {
     this.filterMap(sliderDate);
   };
 
+  onIntervalChange = value => {
+    this.setState({ interval: value });
+  };
+
   render() {
     return (
       <div>
@@ -127,6 +132,14 @@ class App extends React.Component {
             <DatePicker onInput={e => this.setState({ startDate: e })} />
             &mdash;
             <DatePicker onInput={e => this.setState({ endDate: e })} />
+          </div>
+
+          <div>
+            <select value={this.state.interval} onChange={e => this.onIntervalChange(ev.target.value)}>
+              <option value="hour">Hour</option>
+              <option value="day">Day</option>
+              <option value="week">week</option>
+            </select>
           </div>
 
           <div>
