@@ -1,4 +1,3 @@
-const crypto = require("crypto");
 const ffmpeg = require("fluent-ffmpeg");
 const fs = require("fs");
 const leftPad = require("left-pad");
@@ -7,12 +6,6 @@ const { app, BrowserWindow, ipcMain } = require("electron");
 
 const logger = require("./logger");
 const { RENDERING_SHOT, RENDERING_DONE } = require("./common");
-
-const md5 = str =>
-  crypto
-    .createHash("md5")
-    .update(str)
-    .digest("hex");
 
 if (!process.argv[2]) {
   logger.info("pass stringified JSON data for rendering");
@@ -35,7 +28,7 @@ const height = 720;
 // "/data/capture" is docker volume, env.captureDir allows us to test outside of docker
 const captureDir = path.join(
   process.env.CAPTURE_DIR || "/data/capture",
-  md5(JSON.stringify(renderingConfig))
+  renderingConfig.dir
 );
 
 if (!fs.existsSync(captureDir)) {
@@ -61,7 +54,7 @@ const convertToVideo = callback => {
       "-pix_fmt yuv420p",
       "-preset veryslow",
       "-tune stillimage",
-      "-crf 0"
+      "-crf 24"
     ])
     .size(`${width}x${height}`)
     .on("error", err => {
@@ -83,7 +76,7 @@ app.on("ready", () => {
   mainWindow.loadURL(`file://${__dirname}/index.html`);
 
   // share renderer config with window (https://github.com/electron/electron/issues/1095#issuecomment-300767465)
-  mainWindow.renderingConfig = renderingConfig;
+  mainWindow.mapConfig = renderingConfig.map;
 
   // open dev tools only in debug mode
   if (process.env.LOCAL_DEBUG) {

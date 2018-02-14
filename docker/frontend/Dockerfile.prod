@@ -6,13 +6,17 @@ COPY frontend .
 
 # install deps for dev version
 # this allows us to build the webpack prod version
-RUN yarn install
+RUN yarn install --dev
 
-RUN yarn global add http-server
+# info on ARG/ENV and build step: https://github.com/docker/compose/issues/1837
+ARG MAPBOX_ACCESS_TOKEN
+ARG NODE_ENV
+ENV MAPBOX_ACCESS_TOKEN "$MAPBOX_ACCESS_TOKEN"
+ENV NODE_ENV "$NODE_ENV"
 
-ENV NODE_ENV=production
 RUN yarn build
+RUN yarn global add http-server
 
 EXPOSE 3000
 
-CMD [ "http-server", "./dist/", "-p", "3000", "-g" ]
+CMD http-server ./dist/ -p 3000 -g

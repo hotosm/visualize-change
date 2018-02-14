@@ -23,6 +23,7 @@ services:
     restart: on-failure
     environment:
       - NODE_ENV=development
+      - MAPBOX_ACCESS_TOKEN # env passed from shell
     volumes:
       - ./../frontend:/app
       - /app/node_modules # prefer container's node_modules instead of volume-mounted ones
@@ -38,6 +39,7 @@ services:
     environment:
       - NODE_ENV=development
       - RENDER_QUEUE=render_queue
+      - MAPBOX_ACCESS_TOKEN # env passed from shell
     depends_on:
       - rabbitmq
     volumes:
@@ -54,6 +56,10 @@ services:
     environment:
       - NODE_ENV=development
       - RENDER_QUEUE=render_queue
+      - MAILGUN_FROM=visualize@hotosmmail.org
+      - MAILGUN_API_KEY # env passed from shell
+      - MAILGUN_DOMAIN # env passed from shell
+      - SERVER_DOMAIN # env passed from shell
     volumes:
       - ./../api:/app
       - ./data/tiles:/data/tiles

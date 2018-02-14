@@ -16,12 +16,13 @@ const runElectron = (renderingConfig, callback) => {
       "./scripts/run-electron",
       `'${renderingConfig}'` // computers are terrible - block shell from dropping quotes
     ],
-    { cwd: __dirname, shell: true }
+    { cwd: __dirname, shell: true, env: process.env }
   );
 
   electron.stdout.on("data", data =>
     logger.info(`electron process: ${data.toString()}`)
   );
+
   electron.stderr.on("data", data =>
     logger.error(`electron process: ${data.toString()}`)
   );
@@ -53,7 +54,10 @@ amqp.connect("amqp://rabbitmq", (err, connection) => {
           logger.error(error);
           channel.nack(msg);
         } else {
-          const replyMsg = JSON.stringify({ email: renderConfig.email });
+          const replyMsg = JSON.stringify({
+            email: renderConfig.email,
+            dir: renderConfig.dir
+          });
 
           logger.debug("renderer replying to server", { msg: replyMsg });
 

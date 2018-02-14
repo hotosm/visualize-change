@@ -25,11 +25,13 @@
     "eslint-config-prettier": "^2.9.0",
     "eslint-loader": "^1.9.0",
     "eslint-plugin-react": "^7.5.1",
+    "nodemon": "^1.14.12",
     "style-loader": "^0.19.1",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.11.1"
   },
   "dependencies": {
+    "lodash.set": "^4.3.2",
     "mapbox-gl": "^0.43.0",
     "moment": "^2.20.1",
     "react": "^16.2.0",

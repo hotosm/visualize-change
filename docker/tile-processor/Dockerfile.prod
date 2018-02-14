@@ -16,15 +16,14 @@ RUN rm -rf /tmp/tippecanoe-src
 RUN apt-get -y remove --purge build-essential && apt-get -y autoremove
 
 # setup cron
-COPY tile-processor/crontab /etc/cron.d/crontab
+COPY tile-processor/crontab /tmp/crontab
 RUN touch /var/log/cron.log
-RUN crontab /etc/cron.d/crontab
+RUN cat /tmp/crontab | crontab -
 RUN crontab -l
 
 # set up script
 WORKDIR /app
 COPY tile-processor/get-and-process-tiles.sh .
 
-run cron
 CMD rsyslogd && cron && tail -F /var/log/cron.log /var/log/syslog
 

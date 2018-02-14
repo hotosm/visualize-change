@@ -1,4 +1,2 @@
-SHELL=/bin/bash
-
-* * * * * root date > /data/tiles/health-check 2>&1 | logger -t "health-check"
-0 0 * * * root /app/get-and-process-tiles.sh | logger -t "get-and-process-tiles"
+* * * * * date > /data/tiles/health-check 2>&1
+0 0 * * * /app/get-and-process-tiles.sh | logger -t "get-and-process-tiles"
