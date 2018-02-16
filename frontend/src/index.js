@@ -38,20 +38,24 @@ class App extends React.Component {
           enabled: true,
           "line-color": "#02D0CA",
           "line-opacity": 0.7,
+          "line-width": 1,
           highlight: {
             enabled: false,
             "line-color": "#CCF5E1",
-            "line-opacity": 0.5
+            "line-opacity": 0.5,
+            "line-width": 1
           }
         },
         "buildings-outline": {
           enabled: true,
           "line-color": "#D00244",
           "line-opacity": 0.7,
+          "line-width": 1,
           highlight: {
             enabled: false,
             "line-color": "#EB96D7",
-            "line-opacity": 0.8
+            "line-opacity": 0.8,
+            "line-width": 1
           }
         }
       },
@@ -244,6 +248,17 @@ class App extends React.Component {
                   onChange={this.onInputChange}
                 />
               </label>
+              <label style={{ display: "block" }}>
+                Line Width:
+                <input
+                  type="number"
+                  step="0.1"
+                  min="0"
+                  name="style.buildings-outline.line-width"
+                  value={this.state.style["buildings-outline"]["line-width"]}
+                  onChange={this.onInputChange}
+                />
+              </label>
               Highlight
               <input
                 type="checkbox"
@@ -269,6 +284,17 @@ class App extends React.Component {
                   min="0"
                   name="style.buildings-outline.highlight.line-opacity"
                   value={this.state.style["buildings-outline"].highlight["line-opacity"]}
+                  onChange={this.onInputChange}
+                />
+              </label>
+              <label style={{ display: "block" }}>
+                Highlight Line Width:
+                <input
+                  type="number"
+                  step="0.1"
+                  min="0"
+                  name="style.buildings-outline.highlight.line-width"
+                  value={this.state.style["buildings-outline"].highlight["line-width"]}
                   onChange={this.onInputChange}
                 />
               </label>
@@ -303,6 +329,17 @@ class App extends React.Component {
                   onChange={this.onInputChange}
                 />
               </label>
+              <label style={{ display: "block" }}>
+                Line Width:
+                <input
+                  type="number"
+                  step="0.1"
+                  min="0"
+                  name="style.roads.line-width"
+                  value={this.state.style["roads"]["line-width"]}
+                  onChange={this.onInputChange}
+                />
+              </label>
               Highlight
               <input
                 type="checkbox"
@@ -331,7 +368,17 @@ class App extends React.Component {
                   onChange={this.onInputChange}
                 />
               </label>
-              <hr />
+              <label style={{ display: "block" }}>
+                Highlight Line Width:
+                <input
+                  type="number"
+                  step="0.1"
+                  min="0"
+                  name="style.roads.highlight.line-width"
+                  value={this.state.style["roads"].highlight["line-width"]}
+                  onChange={this.onInputChange}
+                />
+              </label>
             </div>
           </div>
 

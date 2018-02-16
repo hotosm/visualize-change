@@ -40,19 +40,23 @@ map.on("load", () => {
 
   const roadsColor = mapConfig.style.roads["line-color"];
   const roadsOpacity = mapConfig.style.roads.enabled ? parseFloat(mapConfig.style.roads["line-opacity"]) : 0;
+  const roadsLineWidth = parseFloat(mapConfig.style.roads["line-width"]);
   const roadsHighlightColor = mapConfig.style.roads.highlight["line-color"];
   const roadsHighlightOpacity = mapConfig.style.roads.highlight.enabled
     ? parseFloat(mapConfig.style.roads.highlight["line-opacity"])
     : 0;
+  const roadsHighlightLineWidth = parseFloat(mapConfig.style.roads.highlight["line-width"]);
 
   const buildingsColor = mapConfig.style["buildings-outline"]["line-color"];
   const buildingsOpacity = mapConfig.style["buildings-outline"].enabled
     ? parseFloat(mapConfig.style["buildings-outline"]["line-opacity"])
     : 0;
+  const buildingsLineWidth = parseFloat(mapConfig.style["buildings-outline"]["line-width"]);
   const buildingsHighlightColor = mapConfig.style["buildings-outline"].highlight["line-color"];
   const buildingsHighlightOpacity = mapConfig.style["buildings-outline"].highlight.enabled
     ? parseFloat(mapConfig.style["buildings-outline"].highlight["line-opacity"])
     : 0;
+  const buildingsHighlightLineWidth = parseFloat(mapConfig.style["buildings-outline"].highlight["line-width"]);
 
   const layerId = "osm";
 
@@ -100,7 +104,7 @@ map.on("load", () => {
     },
     paint: {
       "line-color": buildingsColor,
-      "line-width": 2,
+      "line-width": buildingsLineWidth,
       "line-opacity": buildingsOpacity
     }
   });
@@ -118,7 +122,7 @@ map.on("load", () => {
     },
     paint: {
       "line-color": buildingsHighlightColor,
-      "line-width": 2,
+      "line-width": buildingsHighlightLineWidth,
       "line-opacity": buildingsHighlightOpacity
     }
   });
@@ -136,7 +140,7 @@ map.on("load", () => {
     },
     paint: {
       "line-color": roadsColor,
-      "line-width": 5,
+      "line-width": roadsLineWidth,
       "line-opacity": roadsOpacity
     }
   });
@@ -154,7 +158,7 @@ map.on("load", () => {
     },
     paint: {
       "line-color": roadsHighlightColor,
-      "line-width": 5,
+      "line-width": roadsHighlightLineWidth,
       "line-opacity": roadsHighlightOpacity
     }
   });

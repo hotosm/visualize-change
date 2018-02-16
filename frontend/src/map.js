@@ -50,7 +50,6 @@ module.exports = (map, styles) => {
       },
       paint: {
         "line-color": "#D00244",
-        "line-opacity": 0.7,
         "line-opacity": 0.4
       }
     });
@@ -87,7 +86,7 @@ module.exports = (map, styles) => {
       paint: {
         "line-color": "#02D0CA",
         "line-opacity": 0.7,
-        "line-width": 5
+        "line-width": 2
       }
     });
     layers.lines.push(`${layerId}-roads`);
@@ -144,6 +143,7 @@ module.exports = (map, styles) => {
         });
       });
     },
+
     update: styles => {
       Object.keys(styles).forEach(styleKey => {
         const style = styles[styleKey];
@@ -152,12 +152,16 @@ module.exports = (map, styles) => {
 
         const opacity = style.enabled ? parseFloat(style["line-opacity"]) : 0;
         const highlightOpacity = style.highlight.enabled ? parseFloat(style.highlight["line-opacity"]) : 0;
+        const lineWidth = parseFloat(style["line-width"]);
+        const highlightLineWidth = parseFloat(style.highlight["line-width"]);
 
         map.setPaintProperty(layerName, "line-color", style["line-color"]);
         map.setPaintProperty(layerName, "line-opacity", opacity);
+        map.setPaintProperty(layerName, "line-width", lineWidth);
 
         map.setPaintProperty(highlightedLayerName, "line-color", style.highlight["line-color"]);
         map.setPaintProperty(highlightedLayerName, "line-opacity", highlightOpacity);
+        map.setPaintProperty(highlightedLayerName, "line-width", highlightLineWidth);
       });
     }
   };
