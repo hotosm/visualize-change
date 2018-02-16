@@ -1,24 +1,24 @@
 // move errors to cli console when running in non-debug mode
 if (!process.env.LOCAL_DEBUG) {
-  const NodeConsole = require("console").Console;
+  const NodeConsole = require('console').Console;
 
   window.console = new NodeConsole(process.stdout, process.stderr);
   console = new NodeConsole(process.stdout, process.stderr);
 }
 
-const { RENDERING_SHOT, RENDERING_DONE } = require("./common");
+const { RENDERING_SHOT, RENDERING_DONE } = require('./common');
 
-const moment = require("moment");
-const mapboxgl = require("mapbox-gl");
-const { ipcRenderer, remote } = require("electron");
+const moment = require('moment');
+const mapboxgl = require('mapbox-gl');
+const { ipcRenderer, remote } = require('electron');
 
 const { mapConfig } = remote.getCurrentWindow();
 
 mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
 
 const map = new mapboxgl.Map({
-  container: "map",
-  style: "mapbox://styles/mapbox/basic-v9",
+  container: 'map',
+  style: 'mapbox://styles/mapbox/dark-v9',
   hash: true,
   zoom: mapConfig.zoom,
   center: [mapConfig.lng, mapConfig.lat]
@@ -33,12 +33,22 @@ const isLoaded = cb => {
   }, 1);
 };
 
-map.on("load", () => {
+map.on('load', () => {
   // sources and layers
 
-  const sourceId = "osm";
-  const layerId = "osm";
-  const layerColor = "#FF0000";
+  const sourceId = 'osm';
+
+  const roadsColor = mapConfig.style.roads['line-color'];
+	const roadsOpacity = mapConfig.style.roads.enabled ? parseFloat(mapConfig.style.roads['line-opacity']) : 0;
+	const roadsHighlightColor = mapConfig.style.roads.highlight['line-color'];
+	const roadsHighlightOpacity = mapConfig.style.roads.highlight.enabled ? parseFloat(mapConfig.style.roads.highlight['line-opacity']) : 0;
+
+	const buildingsColor = mapConfig.style['buildings-outline']['line-color'];
+	const buildingsOpacity = mapConfig.style['buildings-outline'].enabled ? parseFloat(mapConfig.style['buildings-outline']['line-opacity']) : 0;
+	const buildingsHighlightColor = mapConfig.style['buildings-outline'].highlight['line-color'];
+	const buildingsHighlightOpacity = mapConfig.style['buildings-outline'].highlight.enabled ? parseFloat(mapConfig.style['buildings-outline'].highlight['line-opacity']) : 0;
+
+  const layerId = 'osm';
 
   const layers = {
     pts: [],
@@ -46,101 +56,134 @@ map.on("load", () => {
     polygons: []
   };
 
+  const highlighted = {
+    pts: [],
+    lines: [],
+    polygons: []
+  }
+
+  const filters = {
+    [`${layerId}-roads`]: [
+      ['==', '$type', 'LineString'],
+      ['==', '@type', 'way'],
+      ['has', 'highway'],
+      ['!has', 'building'],
+      ['!has', 'landuse']
+    ],
+    [`${layerId}-buildings-outline`]: [['==', '$type', 'Polygon'], ['has', 'building']]
+  };
+
   map.addSource(sourceId, {
-    type: "vector",
+    type: 'vector',
     tiles: [
       process.env.LOCAL_DEBUG
-        ? "http://localhost:4000/tile/{z}/{x}/{y}" // tiles from docker when running electron on host machine
-        : "http://api:4000/tile/{z}/{x}/{y}" // docker api address inside of docker-compoes
+        ? 'http://localhost:4000/tile/{z}/{x}/{y}' // tiles from docker when running electron on host machine
+        : 'http://api:4000/tile/{z}/{x}/{y}' // docker api address inside of docker-compoes
     ]
   });
 
   map.addLayer({
-    id: `${layerId}-polygons`,
-    type: "fill",
+    id: `${layerId}-buildings-outline`,
+    type: 'line',
     source: `${sourceId}`,
-    "source-layer": `${layerId}`,
-    filter: ["==", "$type", "Polygon"],
-    layout: {},
-    paint: {
-      "fill-opacity": 0.5,
-      "fill-color": layerColor
-    }
-  });
-  layers.polygons.push(`${layerId}-polygons`);
-
-  map.addLayer({
-    id: `${layerId}-polygons-outline`,
-    type: "line",
-    source: `${sourceId}`,
-    "source-layer": `${layerId}`,
-    filter: ["==", "$type", "Polygon"],
+    'source-layer': `${layerId}`,
+    filter: ['all'].concat(filters[`${layerId}-buildings-outline`]),
     layout: {
-      "line-join": "round",
-      "line-cap": "round"
+      'line-join': 'round',
+      'line-cap': 'round'
     },
     paint: {
-      "line-color": layerColor,
-      "line-width": 0,
-      "line-opacity": 0.75
+      'line-color': buildingsColor,
+      'line-width': 2,
+      'line-opacity': buildingsOpacity
     }
   });
-  layers.polygons.push(`${layerId}-polygons-outline`);
+  layers.polygons.push(`${layerId}-buildings-outline`);
 
   map.addLayer({
-    id: `${layerId}-lines`,
-    type: "line",
+    id: `${layerId}-buildings-outline-highlighted`,
+    type: 'line',
     source: `${sourceId}`,
-    "source-layer": `${layerId}`,
-    filter: ["==", "$type", "LineString"],
+    'source-layer': `${layerId}`,
+    filter: ['all'].concat(filters[`${layerId}-buildings-outline`]),
     layout: {
-      "line-join": "round",
-      "line-cap": "round"
+      'line-join': 'round',
+      'line-cap': 'round'
     },
     paint: {
-      "line-color": layerColor,
-      "line-width": 1,
-      "line-opacity": 0.75
+      'line-color': buildingsHighlightColor,
+      'line-width': 2,
+      'line-opacity': buildingsHighlightOpacity
     }
   });
-  layers.lines.push(`${layerId}-lines`);
+  highlighted.polygons.push(`${layerId}-buildings-outline-highlighted`);
 
   map.addLayer({
-    id: `${layerId}-pts`,
-    type: "circle",
+    id: `${layerId}-roads`,
+    type: 'line',
     source: `${sourceId}`,
-    "source-layer": `${layerId}`,
-    filter: ["==", "$type", "Point"],
+    'source-layer': `${layerId}`,
+    filter: ['all'].concat(filters[`${layerId}-roads`]),
+    layout: {
+      'line-join': 'round',
+      'line-cap': 'round'
+    },
     paint: {
-      "circle-color": layerColor,
-      "circle-radius": 2.5,
-      "circle-opacity": 0.75
+      'line-color': roadsColor,
+      'line-width': 5,
+      'line-opacity': roadsOpacity
     }
   });
-  layers.pts.push(`${layerId}-pts`);
+  layers.lines.push(`${layerId}-roads`);
+
+  map.addLayer({
+    id: `${layerId}-roads-highlighted`,
+    type: 'line',
+    source: `${sourceId}`,
+    'source-layer': `${layerId}`,
+    filter: ['all'].concat(filters[`${layerId}-roads`]),
+    layout: {
+      'line-join': 'round',
+      'line-cap': 'round'
+    },
+    paint: {
+      'line-color': roadsHighlightColor,
+      'line-width': 5,
+      'line-opacity': roadsHighlightOpacity
+    }
+  });
+  highlighted.lines.push(`${layerId}-roads-highlighted`);
 
   // actual rendering
-  const startDate = moment(mapConfig.startDate);
-  const endDate = moment(mapConfig.endDate);
-  const numDays = moment(endDate).diff(moment(startDate), "days");
+  const numUnits = moment(mapConfig.endDate).diff(moment(mapConfig.startDate), mapConfig.interval);
 
   const filterLayers = n => {
-    const currentDate = startDate.add(n, "d").toDate();
-    const timestamp = currentDate.getTime();
+    const currentDate = moment(mapConfig.startDate).add(n, mapConfig.interval).toDate();
+    const currentDateTimestamp = currentDate.getTime();
+    const lastDate = moment(currentDate).subtract(1, mapConfig.interval).toDate();
+    const lastDateTimestamp = lastDate.getTime();
 
     console.log(
-      `${moment(currentDate).format("YYYY-MM-DD HH:mm:ss")} (${n}/${numDays})`
+      `${moment(currentDate).format("YYYY-MM-DD HH:mm:ss")} (${n}/${numUnits} [${mapConfig.interval}])`
     );
 
     const filter = [
-      "all",
-      ["<=", "@timestamp", Math.round(timestamp / 1000)], // VERY IMPORTANT - timestamp is of by 1000!
-      ["has", "highway"]
+      'all',
+      ['<=', '@timestamp', Math.round(currentDateTimestamp / 1000)] // VERY IMPORTANT - timestamp is of by 1000!
     ];
+
+    const highlightedFilter = filter.concat([['>=', '@timestamp', Math.round(lastDateTimestamp / 1000)]]);
 
     Object.keys(layers).forEach(layerGroupKey => {
       layers[layerGroupKey].forEach(layer => {
-        map.setFilter(layer, filter);
+        map.setFilter(layer, filter.concat(filters[layer]));
+      });
+    });
+
+    Object.keys(highlighted).forEach(layerGroupKey => {
+      highlighted[layerGroupKey].forEach(layer => {
+        // TODO: (it cuts '-highlight') nicer way of passing this things arround when the final data format will be ready
+        map.setFilter(layer, highlightedFilter.concat(filters[layer.split('-').slice(0, -1).join('-')]));
       });
     });
   };
@@ -151,7 +194,7 @@ map.on("load", () => {
         ipcRenderer.sendSync(RENDERING_SHOT, n);
         filterLayers(n);
 
-        if (n < numDays) {
+        if (n < numUnits) {
           renderImg(n + 1);
         } else {
           ipcRenderer.sendSync(RENDERING_DONE);

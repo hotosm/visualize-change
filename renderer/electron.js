@@ -54,7 +54,7 @@ const convertToVideo = callback => {
       "-pix_fmt yuv420p",
       "-preset veryslow",
       "-tune stillimage",
-      "-crf 0"
+      "-crf 24"
     ])
     .size(`${width}x${height}`)
     .on("error", err => {

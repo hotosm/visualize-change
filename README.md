@@ -61,7 +61,7 @@ All dockerized apps shadow `node_modules` folder to avoid native code problems (
 
 All dockerized apps in dev mode run file watcher on `package.json` and re-install (`yarn install`) deps on changes to that file.
 
-## renderer notes
+## offline renderer notes
 
 Exported `mp4` are stored in `./docker/data/capture` for now, mongodb (unused for now) data is stored in `./docker/data/db`. Both are docker shared volumes.
 

@@ -1,90 +1,115 @@
-module.exports = map => {
+module.exports = (map, styles) => {
+  const sourceId = 'osm';
+  const layerId = 'osm';
+
   const layers = {
     pts: [],
     lines: [],
     polygons: []
   };
 
-  map.on("load", () => {
+  const highlighted = {
+    pts: [],
+    lines: [],
+    polygons: []
+  }
+
+  const filters = {
+    [`${layerId}-roads`]: [
+      ['==', '$type', 'LineString'],
+      ['==', '@type', 'way'],
+      ['has', 'highway'],
+      ['!has', 'building'],
+      ['!has', 'landuse']
+    ],
+    [`${layerId}-buildings-outline`]: [['==', '$type', 'Polygon'], ['has', 'building']]
+  };
+
+  console.log('s', styles);
+
+  map.on('load', () => {
     // sources and layers
-
-    const sourceId = "osm";
-    const layerId = "osm";
-    const layerColor = "#FF0000";
-
     map.addSource(sourceId, {
-      type: "vector",
+      type: 'vector',
       tiles: [
-        document.location.origin +
-          (process.env.LOCAL_DEBUG
-            ? "/tile/{z}/{x}/{y}" // tiles from docker when running electron on host machine
-            : "/api/tile/{z}/{x}/{y}") // TODO: document.location...
+        process.env.LOCAL_DEBUG
+          ? 'http://localhost:4000/tile/{z}/{x}/{y}' // tiles from docker when running electron on host machine
+          : 'http://localhost:8080/api/tile/{z}/{x}/{y}' // TODO: document.location...
       ]
     });
 
     map.addLayer({
-      id: `${layerId}-polygons`,
-      type: "fill",
+      id: `${layerId}-buildings-outline`,
+      type: 'line',
       source: `${sourceId}`,
-      "source-layer": `${layerId}`,
-      filter: ["==", "$type", "Polygon"],
-      layout: {},
-      paint: {
-        "fill-opacity": 0.5,
-        "fill-color": layerColor
-      }
-    });
-    layers.polygons.push(`${layerId}-polygons`);
-
-    map.addLayer({
-      id: `${layerId}-polygons-outline`,
-      type: "line",
-      source: `${sourceId}`,
-      "source-layer": `${layerId}`,
-      filter: ["==", "$type", "Polygon"],
+      'source-layer': `${layerId}`,
+      filter: ['all'].concat(filters[`${layerId}-buildings-outline`]),
       layout: {
-        "line-join": "round",
-        "line-cap": "round"
+        'line-join': 'round',
+        'line-cap': 'round'
       },
       paint: {
-        "line-color": layerColor,
-        "line-width": 0,
-        "line-opacity": 0.75
+        'line-color': '#D00244',
+        'line-opacity': 0.7,
+        'line-opacity': 0.4
       }
     });
-    layers.polygons.push(`${layerId}-polygons-outline`);
+    layers.polygons.push(`${layerId}-buildings-outline`);
 
     map.addLayer({
-      id: `${layerId}-lines`,
-      type: "line",
+      id: `${layerId}-buildings-outline-highlighted`,
+      type: 'line',
       source: `${sourceId}`,
-      "source-layer": `${layerId}`,
-      filter: ["==", "$type", "LineString"],
+      'source-layer': `${layerId}`,
+      filter: ['all'].concat(filters[`${layerId}-buildings-outline`]),
       layout: {
-        "line-join": "round",
-        "line-cap": "round"
+        'line-join': 'round',
+        'line-cap': 'round'
       },
       paint: {
-        "line-color": layerColor,
-        "line-width": 1,
-        "line-opacity": 0.75
+        'line-color': '#EB96D7',
+        'line-opacity': 0.8,
+        'line-width': 2
       }
     });
-    layers.lines.push(`${layerId}-lines`);
+    highlighted.polygons.push(`${layerId}-buildings-outline-highlighted`);
 
     map.addLayer({
-      id: `${layerId}-pts`,
-      type: "circle",
+      id: `${layerId}-roads`,
+      type: 'line',
       source: `${sourceId}`,
-      "source-layer": `${layerId}`,
-      filter: ["==", "$type", "Point"],
+      'source-layer': `${layerId}`,
+      filter: ['all'].concat(filters[`${layerId}-roads`]),
+      layout: {
+        'line-join': 'round',
+        'line-cap': 'round'
+      },
       paint: {
-        "circle-color": layerColor,
-        "circle-radius": 2.5,
-        "circle-opacity": 0.75
+        'line-color': '#02D0CA',
+        'line-opacity': 0.7,
+        'line-width': 5
       }
     });
-    layers.pts.push(`${layerId}-pts`);
+    layers.lines.push(`${layerId}-roads`);
+
+    map.addLayer({
+      id: `${layerId}-roads-highlighted`,
+      type: 'line',
+      source: `${sourceId}`,
+      'source-layer': `${layerId}`,
+      filter: ['all'].concat(filters[`${layerId}-roads`]),
+      layout: {
+        'line-join': 'round',
+        'line-cap': 'round'
+      },
+      paint: {
+        'line-color': '#CCF5E1',
+        'line-opacity': 0.5,
+        'line-width': 5
+      }
+    });
+    highlighted.lines.push(`${layerId}-roads-highlighted`);
+
   });
 
   return {
@@ -92,15 +117,40 @@ module.exports = map => {
       const timestamp = date.getTime();
 
       const filter = [
-        "all",
-        ["<=", "@timestamp", Math.round(timestamp / 1000)], // VERY IMPORTANT - timestamp is of by 1000!
-        ["has", "highway"]
+        'all',
+        ['<=', '@timestamp', Math.round(timestamp / 1000)] // VERY IMPORTANT - timestamp is of by 1000!
       ];
+
+      const highlightedFilter = filter.concat([['>=', '@timestamp', Math.round(timestamp / 1000) - 86400]]);
 
       Object.keys(layers).forEach(layerGroupKey => {
         layers[layerGroupKey].forEach(layer => {
-          map.setFilter(layer, filter);
+          map.setFilter(layer, filter.concat(filters[layer]));
         });
+      });
+
+      Object.keys(highlighted).forEach(layerGroupKey => {
+        highlighted[layerGroupKey].forEach(layer => {
+          map.setFilter(layer, highlightedFilter.concat(filters[layer.split('-').slice(0, -1).join('-')]));
+        });
+      });
+
+    },
+    update: styles => {
+      Object.keys(styles).forEach(styleKey => {
+        const style = styles[styleKey];
+        const layerName = `${layerId}-${styleKey}`;
+        const highlightedLayerName = `${layerName}-highlighted`;
+
+
+        const opacity = style.enabled ? parseFloat(style['line-opacity']) : 0;
+        const highlightOpacity = style.highlight.enabled ? parseFloat(style.highlight['line-opacity']) : 0;
+
+        map.setPaintProperty(layerName, 'line-color', style['line-color']);
+        map.setPaintProperty(layerName, 'line-opacity', opacity);
+			
+				map.setPaintProperty(highlightedLayerName, 'line-color', style.highlight['line-color']);
+				map.setPaintProperty(highlightedLayerName, 'line-opacity', highlightOpacity);
       });
     }
   };

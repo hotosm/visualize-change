@@ -16,7 +16,10 @@ const MAP_CONFIG_SCHEMA = j.object().keys({
   lat: j.number().min(-90).max(90),
   zoom: j.number().min(0).max(18),
   startDate: j.date().iso(), // YYYY-MM-DDThh:mm:ss.sssZ
-  endDate: j.date().iso()
+  endDate: j.date().iso(),
+  interval: j.string().valid('hours', 'days', 'weeks'),
+	// TODO: Need to add better validation for this
+	style: j.object()
 });
 
 const RENDER_CONFIG_SCHEMA = j.object().keys({
@@ -49,7 +52,9 @@ const initRoutes = ({ queueRender }, callback) => {
       lng: req.body.lng,
       zoom: req.body.zoom,
       startDate: req.body.startDate,
-      endDate: req.body.endDate
+      endDate: req.body.endDate,
+      interval: req.body.interval,
+			style: req.body.style
     };
 
     const renderConfig = {
