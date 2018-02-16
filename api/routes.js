@@ -54,7 +54,7 @@ const initRoutes = ({ queueRender }, callback) => {
       startDate: req.body.startDate,
       endDate: req.body.endDate,
       interval: req.body.interval,
-			style: req.body.style
+      style: req.body.style
     };
 
     const renderConfig = {

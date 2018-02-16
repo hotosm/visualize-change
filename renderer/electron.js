@@ -26,10 +26,7 @@ const width = 1280;
 const height = 720;
 
 // "/data/capture" is docker volume, env.captureDir allows us to test outside of docker
-const captureDir = path.join(
-  process.env.CAPTURE_DIR || "/data/capture",
-  renderingConfig.dir
-);
+const captureDir = path.join(process.env.CAPTURE_DIR || "/data/capture", renderingConfig.dir);
 
 if (!fs.existsSync(captureDir)) {
   fs.mkdirSync(captureDir);
@@ -50,12 +47,7 @@ const convertToVideo = callback => {
     .format("mp4")
     .noAudio()
     .videoCodec("libx264")
-    .outputOptions([
-      "-pix_fmt yuv420p",
-      "-preset veryslow",
-      "-tune stillimage",
-      "-crf 24"
-    ])
+    .outputOptions(["-pix_fmt yuv420p", "-preset veryslow", "-tune stillimage", "-crf 24"])
     .size(`${width}x${height}`)
     .on("error", err => {
       logger.error("ffmpeg error", err);
