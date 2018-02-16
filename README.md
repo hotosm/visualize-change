@@ -27,14 +27,14 @@ For dev, this could be set in `PROJECT_ROOT/.env`, for production use it's preff
 
 ## dev setup
 
-0. `yarn install`
-1. `./scripts/get-indonesia-tiles.sh` (test tiles for `dev`, final application will use tiles for the whole earth)
-2. optionally generated underzoom for tiles (this takes a while) `./scripts/tiles-add-underzoom.sh`
-3. `yarn run build:dev`
+1. `yarn install`
+2. `./scripts/get-indonesia-tiles.sh` (test tiles for `dev`, final application will use tiles for the whole earth)
+3. optionally generated underzoom for tiles (this takes a while) `./scripts/tiles-add-underzoom.sh`
+4. `yarn run build:dev` or `./scripts/build.dev.sh`
 
 ## dev run
 
-1. `yarn run start:dev`
+1. `yarn run start:dev` or `./scripts/start.dev.sh`
 2. `open http://localhost:8080`
 
 ## prod setup
@@ -45,7 +45,7 @@ For dev, this could be set in `PROJECT_ROOT/.env`, for production use it's preff
 
 ## prod run
 
-3. `yarn run start:prod` or `./scripts/start.prod.sh`
+1. `yarn run start:prod` or `./scripts/start.prod.sh`
 2. `open http://localhost:8080`
 
 ## dev workflow
