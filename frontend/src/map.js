@@ -25,17 +25,11 @@ module.exports = (map, styles) => {
     [`${layerId}-buildings-outline`]: [["==", "$type", "Polygon"], ["has", "building"]]
   };
 
-  console.log("s", styles);
-
   map.on("load", () => {
     // sources and layers
     map.addSource(sourceId, {
       type: "vector",
-      tiles: [
-        process.env.LOCAL_DEBUG
-          ? "http://localhost:4000/tile/{z}/{x}/{y}" // tiles from docker when running electron on host machine
-          : "http://localhost:8080/api/tile/{z}/{x}/{y}" // TODO: document.location...
-      ]
+      tiles: [document.location.origin + "/api/tile/{z}/{x}/{y}"]
     });
 
     map.addLayer({
