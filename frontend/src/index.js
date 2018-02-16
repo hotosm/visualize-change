@@ -31,6 +31,7 @@ class App extends React.Component {
       startDate: "2018-01-01",
       endDate: "2018-02-01",
       interval: "days",
+      format: "video",
       email: "test@test.test",
       style: {
         roads: {
@@ -109,6 +110,7 @@ class App extends React.Component {
       startDate: moment(this.state.startDate).toISOString(),
       endDate: moment(this.state.endDate).toISOString(),
       interval: this.state.interval,
+      format: this.state.format,
       style: this.state.style
     };
 
@@ -147,6 +149,10 @@ class App extends React.Component {
 
   onIntervalChange = value => {
     this.setState({ interval: value });
+  };
+
+  onFormatChange = value => {
+    this.setState({ format: value });
   };
 
   onInputChange = ev => {
@@ -189,10 +195,21 @@ class App extends React.Component {
           </div>
 
           <div>
+            <span>Interval: </span>
+
             <select value={this.state.interval} onChange={e => this.onIntervalChange(e.target.value)}>
               <option value="hours">Hour</option>
               <option value="days">Day</option>
-              <option value="weeks">week</option>
+              <option value="weeks">Week</option>
+            </select>
+          </div>
+
+          <div>
+            <span>Format: </span>
+
+            <select value={this.state.format} onChange={e => this.onFormatChange(e.target.value)}>
+              <option value="video">Video</option>
+              <option value="gif">GIF</option>
             </select>
           </div>
 

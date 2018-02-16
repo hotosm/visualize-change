@@ -2,6 +2,9 @@
 node_modules/
 yarn-error.log
 
+# for simple config testing
+renderer/test-config.json
+
 # data volumes
 docker/data/
 

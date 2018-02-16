@@ -32,8 +32,13 @@ if (!fs.existsSync(captureDir)) {
   fs.mkdirSync(captureDir);
 }
 
+const FORMATS = {
+  video: "mp4",
+  gif: "gif"
+};
+
 const convertToVideo = callback => {
-  const outputFile = path.join(captureDir, "render.mp4");
+  const outputFile = path.join(captureDir, `render.${FORMATS[renderingConfig.format]}`);
   const imageFiles = path.join(captureDir, "%04d.png");
 
   // in the future just return if we already have that rendered?
@@ -41,14 +46,20 @@ const convertToVideo = callback => {
     fs.unlinkSync(outputFile);
   } catch (e) {}
 
-  ffmpeg(imageFiles)
-    .inputFPS(10) // TODO: ?
-    .fps(10)
-    .format("mp4")
-    .noAudio()
-    .videoCodec("libx264")
-    .outputOptions(["-pix_fmt yuv420p", "-preset veryslow", "-tune stillimage", "-crf 24"])
-    .size(`${width}x${height}`)
+  const command = ffmpeg(imageFiles)
+    .inputFPS(10) // TODO: fps?
+    .fps(10) // TODO: fps?
+    .format(FORMATS[renderingConfig.format])
+    .size(`${width}x${height}`);
+
+  if (renderingConfig.format === FORMATS.video) {
+    command
+      .noAudio()
+      .videoCodec("libx264")
+      .outputOptions(["-pix_fmt yuv420p", "-preset veryslow", "-tune stillimage", "-crf 24"]);
+  }
+
+  command
     .on("error", err => {
       logger.error("ffmpeg error", err);
     })
@@ -99,7 +110,5 @@ ipcMain.on(RENDERING_DONE, () => {
 });
 
 app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
+  app.quit();
 });

@@ -32,6 +32,7 @@ const MAP_CONFIG_SCHEMA = j.object().keys({
 const RENDER_CONFIG_SCHEMA = j.object().keys({
   map: MAP_CONFIG_SCHEMA,
   dir: j.string(),
+  format: j.string().valid("video", "gif"),
   email: j.string().email()
 });
 

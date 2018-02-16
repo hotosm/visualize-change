@@ -73,7 +73,7 @@ Export flow is as follows:
 Renderer can be tested on host machine, so the Electron window is visible, to run: `yarn run test:local-render` providing proper rendering config as JSON, for example:
 
 ```sh
-$ yarn run test:local-render '$STRINGIFIED_RENDER_CONFIG'
+$ MAPBOX_ACCESS_TOKEN=... yarn run test:local-render '$STRINGIFIED_RENDER_CONFIG'
 ```
 
 Where `$STRINGIFIED_RENDER_CONFIG` should conform to api render config validation.
