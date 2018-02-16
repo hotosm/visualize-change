@@ -11,10 +11,6 @@ A toolkit to visualize changes in OSM, part of the OSM Analytics ecosystem. Work
 - `scripts` - common scripts
 - `renderer` - electron renderer
 - `tile-processor` - crontab and script that download and processes earth QA tiles daily, run only in production environment
-- `build.dev.sh` - build docker dev version
-- `run.dev.sh` - start docker dev version
-- `build.prod.sh` - build docker production version
-- `run.prod.sh` - start docker production version
 
 ## env
 
@@ -31,24 +27,25 @@ For dev, this could be set in `PROJECT_ROOT/.env`, for production use it's preff
 
 ## dev setup
 
+0. `yarn install`
 1. `./scripts/get-indonesia-tiles.sh` (test tiles for `dev`, final application will use tiles for the whole earth)
 2. optionally generated underzoom for tiles (this takes a while) `./scripts/tiles-add-underzoom.sh`
-3. `./build.dev.sh`
+3. `yarn run build:dev`
 
 ## dev run
 
-1. `./run.dev.sh`
+1. `yarn run start:dev`
 2. `open http://localhost:8080`
 
 ## prod setup
 
 1. `./scripts/get-indonesia-tiles.sh` (test tiles for now) OR `./scripts/get-earth-tiles.sh` (whole earth if you have the hard drive space)
 2. optionally generated underzoom for tiles (this takes a while) `./scripts/tiles-add-underzoom.sh`
-3. `./build.prod.sh`
+3. `yarn run build:prod` or `./scripts/build.prod.sh`
 
 ## prod run
 
-1. `./run.prod.sh`
+3. `yarn run start:prod` or `./scripts/start.prod.sh`
 2. `open http://localhost:8080`
 
 ## dev workflow
