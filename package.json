@@ -9,7 +9,7 @@
     "build:dev": "./scripts/build.dev.sh"
   },
   "lint-staged": {
-    "*.{js,jsx}": ["eslint --config ./.eslintrc", "prettier --config ./.prettierrc --write", "git add"],
+    "*.{js,jsx}": ["prettier --config ./.prettierrc --write", "eslint --config ./.eslintrc", "git add"],
     "*.{json,css}": ["prettier --config ./.prettierrc --write", "git add"]
   },
   "husky": {

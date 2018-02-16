@@ -10,6 +10,8 @@ const setupMap = require("./map");
 
 mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
 
+const IS_DEBUG = window.location.href.indexOf("debug") > 0;
+
 const DatePicker = ({ onInput, value }) => (
   <input type="date" defaultValue={value} onInput={e => onInput(e.target.value)} />
 );
@@ -36,7 +38,7 @@ class App extends React.Component {
           "line-color": "#02D0CA",
           "line-opacity": 0.7,
           highlight: {
-            enabled: true,
+            enabled: false,
             "line-color": "#CCF5E1",
             "line-opacity": 0.5
           }
@@ -46,7 +48,7 @@ class App extends React.Component {
           "line-color": "#D00244",
           "line-opacity": 0.7,
           highlight: {
-            enabled: true,
+            enabled: false,
             "line-color": "#EB96D7",
             "line-opacity": 0.8
           }
@@ -81,9 +83,15 @@ class App extends React.Component {
     });
 
     // https://www.mapbox.com/mapbox-gl-js/example/queryrenderedfeatures/
-    this.map.on("mousemove", e => {
-      const features = this.map.queryRenderedFeatures(e.point);
-      this.setState({ features });
+    if (IS_DEBUG) {
+      this.map.on("mousemove", e => {
+        const features = this.map.queryRenderedFeatures(e.point);
+        this.setState({ features });
+      });
+    }
+
+    this.map.on("load", () => {
+      this.updateMap(this.state.style);
     });
   }
 
@@ -332,20 +340,22 @@ class App extends React.Component {
           </button>
         </div>
 
-        <div
-          style={{
-            position: "absolute",
-            top: 500,
-            right: 50,
-            width: 300,
-            height: 600,
-            padding: 20,
-            overflow: "scroll",
-            background: "rgba(255, 255, 255, 0.9)"
-          }}
-        >
-          {JSON.stringify(this.state.features, null, 2)}
-        </div>
+        {IS_DEBUG && (
+          <div
+            style={{
+              position: "absolute",
+              top: 500,
+              right: 50,
+              width: 300,
+              height: 600,
+              padding: 20,
+              overflow: "scroll",
+              background: "rgba(255, 255, 255, 0.9)"
+            }}
+          >
+            {JSON.stringify(this.state.features, null, 2)}
+          </div>
+        )}
       </div>
     );
   }

@@ -10,16 +10,23 @@ const logger = require("./logger");
 const RENDER_QUEUE = process.env.RENDER_QUEUE || "render_queue";
 const SERVER_DOMAIN = process.env.SERVER_DOMAIN || "http://localhost:8080";
 
-// prettier-ignore
 const MAP_CONFIG_SCHEMA = j.object().keys({
-  lng: j.number().min(-180).max(180),
-  lat: j.number().min(-90).max(90),
-  zoom: j.number().min(0).max(18),
+  lng: j
+    .number()
+    .min(-180)
+    .max(180),
+  lat: j
+    .number()
+    .min(-90)
+    .max(90),
+  zoom: j
+    .number()
+    .min(0)
+    .max(18),
   startDate: j.date().iso(), // YYYY-MM-DDThh:mm:ss.sssZ
   endDate: j.date().iso(),
-  interval: j.string().valid('hours', 'days', 'weeks'),
-	// TODO: Need to add better validation for this
-	style: j.object()
+  interval: j.string().valid("hours", "days", "weeks"),
+  style: j.object() // TODO: Need to add better validation for this
 });
 
 const RENDER_CONFIG_SCHEMA = j.object().keys({
