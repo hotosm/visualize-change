@@ -9,7 +9,8 @@
     "build:dev": "./scripts/build.dev.sh"
   },
   "lint-staged": {
-    "*.{js,jsx,json,css}": ["prettier --config ./.prettierrc --write", "git add"]
+    "*.{js,jsx}": ["eslint --config ./.eslintrc", "prettier --config ./.prettierrc --write", "git add"],
+    "*.{json,css}": ["prettier --config ./.prettierrc --write", "git add"]
   },
   "husky": {
     "hooks": {
@@ -27,10 +28,14 @@
   },
   "homepage": "https://github.com/hotosm/visualize-change#readme",
   "devDependencies": {
-    "prettier": "^1.10.2"
-  },
-  "dependencies": {
+    "babel-eslint": "^8.2.1",
+    "eslint": "^4.17.0",
+    "eslint-config-node-style-guide": "^3.0.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-prettier": "^2.6.0",
+    "eslint-plugin-react": "^7.6.1",
     "husky": "^0.15.0-rc.8",
-    "lint-staged": "^6.1.0"
+    "lint-staged": "^6.1.0",
+    "prettier": "^1.10.2"
   }
 }

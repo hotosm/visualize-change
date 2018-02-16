@@ -190,7 +190,8 @@ map.on("load", () => {
 
     Object.keys(highlighted).forEach(layerGroupKey => {
       highlighted[layerGroupKey].forEach(layer => {
-        // TODO: (it cuts '-highlight') nicer way of passing this things arround when the final data format will be ready
+        // TODO: (it cuts '-highlight') nicer way of passing this things
+        // arround when the final data format will be ready
         map.setFilter(
           layer,
           highlightedFilter.concat(
