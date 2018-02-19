@@ -19,13 +19,9 @@ const runElectron = (renderingConfig, callback) => {
     { cwd: __dirname, shell: true, env: process.env }
   );
 
-  electron.stdout.on("data", data =>
-    logger.info(`electron process: ${data.toString()}`)
-  );
+  electron.stdout.on("data", data => logger.info(`electron process: ${data.toString()}`));
 
-  electron.stderr.on("data", data =>
-    logger.error(`electron process: ${data.toString()}`)
-  );
+  electron.stderr.on("data", data => logger.error(`electron process: ${data.toString()}`));
 
   electron.on("error", error => callback(error));
   electron.on("close", () => callback(null));

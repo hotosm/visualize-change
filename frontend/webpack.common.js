@@ -14,20 +14,12 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
-      "process.env.MAPBOX_ACCESS_TOKEN": JSON.stringify(
-        process.env.MAPBOX_ACCESS_TOKEN
-      )
+      "process.env.MAPBOX_ACCESS_TOKEN": JSON.stringify(process.env.MAPBOX_ACCESS_TOKEN)
     })
   ],
 
   module: {
     rules: [
-      {
-        enforce: "pre",
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: "eslint-loader"
-      },
       {
         test: /\.css$/,
         use: ["style-loader", "css-loader"]

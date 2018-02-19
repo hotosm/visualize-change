@@ -1,5 +1,12 @@
+.DS_Store
 node_modules/
 yarn-error.log
+
+# for simple config testing
+renderer/test-config.json
+
+# frontend dist bundle
+frontend/dist/bundle.js
 
 # data volumes
 docker/data/

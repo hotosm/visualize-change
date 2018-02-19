@@ -99,6 +99,9 @@ services:
       interval: 10s
       timeout: 10s
       retries: 10
+    hostname: "rabbitmq"
+    volumes:
+      - ./data/rabbitmq:/var/lib/rabbitmq
     ports:
       - "15672:15672"
       - "5672:5672"

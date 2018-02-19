@@ -10,18 +10,29 @@ const logger = require("./logger");
 const RENDER_QUEUE = process.env.RENDER_QUEUE || "render_queue";
 const SERVER_DOMAIN = process.env.SERVER_DOMAIN || "http://localhost:8080";
 
-// prettier-ignore
 const MAP_CONFIG_SCHEMA = j.object().keys({
-  lng: j.number().min(-180).max(180),
-  lat: j.number().min(-90).max(90),
-  zoom: j.number().min(0).max(18),
+  lng: j
+    .number()
+    .min(-180)
+    .max(180),
+  lat: j
+    .number()
+    .min(-90)
+    .max(90),
+  zoom: j
+    .number()
+    .min(0)
+    .max(18),
   startDate: j.date().iso(), // YYYY-MM-DDThh:mm:ss.sssZ
-  endDate: j.date().iso()
+  endDate: j.date().iso(),
+  interval: j.string().valid("hours", "days", "weeks"),
+  style: j.object() // TODO: Need to add better validation for this
 });
 
 const RENDER_CONFIG_SCHEMA = j.object().keys({
   map: MAP_CONFIG_SCHEMA,
   dir: j.string(),
+  format: j.string().valid("video", "gif"),
   email: j.string().email()
 });
 
@@ -49,7 +60,9 @@ const initRoutes = ({ queueRender }, callback) => {
       lng: req.body.lng,
       zoom: req.body.zoom,
       startDate: req.body.startDate,
-      endDate: req.body.endDate
+      endDate: req.body.endDate,
+      interval: req.body.interval,
+      style: req.body.style
     };
 
     const renderConfig = {
