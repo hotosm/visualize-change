@@ -32,75 +32,89 @@ module.exports = (map, styles) => {
       tiles: [document.location.origin + "/api/tile/{z}/{x}/{y}"]
     });
 
-    map.addLayer({
-      id: `${layerId}-buildings-outline`,
-      type: "line",
-      source: `${sourceId}`,
-      "source-layer": `${layerId}`,
-      filter: ["all"].concat(filters[`${layerId}-buildings-outline`]),
-      layout: {
-        "line-join": "round",
-        "line-cap": "round"
+    const firstSymbolId = map.getStyle().layers.filter(d => d.type === "symbol")[0].id;
+
+    map.addLayer(
+      {
+        id: `${layerId}-buildings-outline`,
+        type: "line",
+        source: `${sourceId}`,
+        "source-layer": `${layerId}`,
+        filter: ["all"].concat(filters[`${layerId}-buildings-outline`]),
+        layout: {
+          "line-join": "round",
+          "line-cap": "round"
+        },
+        paint: {
+          "line-color": "#D00244",
+          "line-opacity": 0.4
+        }
       },
-      paint: {
-        "line-color": "#D00244",
-        "line-opacity": 0.4
-      }
-    });
+      firstSymbolId
+    );
     layers.polygons.push(`${layerId}-buildings-outline`);
 
-    map.addLayer({
-      id: `${layerId}-buildings-outline-highlighted`,
-      type: "line",
-      source: `${sourceId}`,
-      "source-layer": `${layerId}`,
-      filter: ["all"].concat(filters[`${layerId}-buildings-outline`]),
-      layout: {
-        "line-join": "round",
-        "line-cap": "round"
+    map.addLayer(
+      {
+        id: `${layerId}-buildings-outline-highlighted`,
+        type: "line",
+        source: `${sourceId}`,
+        "source-layer": `${layerId}`,
+        filter: ["all"].concat(filters[`${layerId}-buildings-outline`]),
+        layout: {
+          "line-join": "round",
+          "line-cap": "round"
+        },
+        paint: {
+          "line-color": "#EB96D7",
+          "line-opacity": 0.8,
+          "line-width": 2
+        }
       },
-      paint: {
-        "line-color": "#EB96D7",
-        "line-opacity": 0.8,
-        "line-width": 2
-      }
-    });
+      firstSymbolId
+    );
     highlighted.polygons.push(`${layerId}-buildings-outline-highlighted`);
 
-    map.addLayer({
-      id: `${layerId}-roads`,
-      type: "line",
-      source: `${sourceId}`,
-      "source-layer": `${layerId}`,
-      filter: ["all"].concat(filters[`${layerId}-roads`]),
-      layout: {
-        "line-join": "round",
-        "line-cap": "round"
+    map.addLayer(
+      {
+        id: `${layerId}-roads`,
+        type: "line",
+        source: `${sourceId}`,
+        "source-layer": `${layerId}`,
+        filter: ["all"].concat(filters[`${layerId}-roads`]),
+        layout: {
+          "line-join": "round",
+          "line-cap": "round"
+        },
+        paint: {
+          "line-color": "#02D0CA",
+          "line-opacity": 0.7,
+          "line-width": 2
+        }
       },
-      paint: {
-        "line-color": "#02D0CA",
-        "line-opacity": 0.7,
-        "line-width": 2
-      }
-    });
+      firstSymbolId
+    );
     layers.lines.push(`${layerId}-roads`);
 
-    map.addLayer({
-      id: `${layerId}-roads-highlighted`,
-      type: "line",
-      source: `${sourceId}`,
-      "source-layer": `${layerId}`,
-      filter: ["all"].concat(filters[`${layerId}-roads`]),
-      layout: {
-        "line-join": "round",
-        "line-cap": "round"
+    map.addLayer(
+      {
+        id: `${layerId}-roads-highlighted`,
+        type: "line",
+        source: `${sourceId}`,
+        "source-layer": `${layerId}`,
+        filter: ["all"].concat(filters[`${layerId}-roads`]),
+        layout: {
+          "line-join": "round",
+          "line-cap": "round"
+        },
+        paint: {
+          "line-color": "#CCF5E1",
+          "line-opacity": 0.5,
+          "line-width": 5
+        }
       },
-      paint: {
-        "line-color": "#CCF5E1",
-        "line-opacity": 0.5,
-        "line-width": 5
-      }
-    });
+      firstSymbolId
+    );
     highlighted.lines.push(`${layerId}-roads-highlighted`);
   });
 

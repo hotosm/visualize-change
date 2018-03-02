@@ -56,7 +56,7 @@ const convertToVideo = callback => {
     command
       .noAudio()
       .videoCodec("libx264")
-      .outputOptions(["-pix_fmt yuv420p", "-preset veryslow", "-tune stillimage", "-crf 24"]);
+      .outputOptions(["-pix_fmt yuv420p", "-preset veryslow", "-tune stillimage", "-crf 20"]);
   }
 
   command
