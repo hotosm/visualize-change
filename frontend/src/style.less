@@ -1,0 +1,39 @@
+@import "~@blueprintjs/core/lib/less/variables.less";
+
+.container {
+  height: 100vh;
+}
+
+.main {
+  display: flex;
+  height: calc(100% - 50px);
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+
+  width: 350px;
+
+  box-shadow: @pt-elevation-shadow-2;
+}
+
+.sidebar-content {
+  flex-grow: 1;
+}
+
+.sidebar-footer {
+  background: @light-gray4;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+}
+
+.sidebar-footer__content {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.map {
+}

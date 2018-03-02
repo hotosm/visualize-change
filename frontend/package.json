@@ -19,13 +19,17 @@
     "babel-preset-stage-1": "^6.24.1",
     "concurrently": "^3.5.1",
     "css-loader": "^0.28.9",
+    "less": "^3.0.1",
+    "less-loader": "^4.0.6",
     "nodemon": "^1.14.12",
     "style-loader": "^0.19.1",
+    "url-loader": "^0.6.2",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.11.1"
   },
   "dependencies": {
     "@blueprintjs/core": "^2.0.0-rc.2",
+    "@blueprintjs/datetime": "^2.0.0-rc.2",
     "lodash.set": "^4.3.2",
     "mapbox-gl": "^0.43.0",
     "moment": "^2.20.1",
