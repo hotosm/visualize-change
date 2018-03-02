@@ -25,10 +25,12 @@
     "webpack-dev-server": "^2.11.1"
   },
   "dependencies": {
+    "@blueprintjs/core": "^2.0.0-rc.2",
     "lodash.set": "^4.3.2",
     "mapbox-gl": "^0.43.0",
     "moment": "^2.20.1",
     "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "react-dom": "^16.2.0",
+    "react-transition-group": "^2.2.1"
   }
 }
