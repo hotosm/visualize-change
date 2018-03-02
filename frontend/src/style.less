@@ -36,4 +36,50 @@
 }
 
 .map {
+  display: flex;
+  flex-direction: column;
+
+  flex-grow: 1;
+}
+
+.map-content {
+  flex-grow: 1;
+}
+
+@map-footer-height: 40px;
+
+.map-footer {
+  height: @map-footer-height;
+
+  box-shadow: @pt-elevation-shadow-2;
+
+  display: flex;
+}
+
+.map-footer__content {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+}
+
+.map-footer__items {
+  flex-grow: 1;
+  padding: 0 10px;
+  display: flex;
+}
+
+.map-footer__progressbar {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.map-footer__date {
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  height: @map-footer-height;
+
+  background: @light-gray4;
 }

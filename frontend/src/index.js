@@ -4,15 +4,17 @@ const {
   AnchorButton,
   Button,
   ButtonGroup,
+  Icon,
+  Label,
   Menu,
   MenuItem,
   Navbar,
   NavbarGroup,
   NavbarHeading,
   Popover,
+  ProgressBar,
   Tab,
-  Tabs,
-  Label
+  Tabs
 } = require("@blueprintjs/core");
 const { DateRangePicker } = require("@blueprintjs/datetime");
 
@@ -65,12 +67,35 @@ const Sidebar = () => (
     </div>
 
     <div className="sidebar-footer">
-      <div className="sidebar-footer__content">Made with love by HOT and friends</div>
+      <div className="sidebar-footer__content">
+        <span>Made with </span>
+        <Icon icon="heart" iconSize={12} style={{ marginTop: 3 }} />
+        <span> by HOT and friends</span>
+      </div>
     </div>
   </div>
 );
 
-const Map = () => <div className="map">MAP</div>;
+const Map = () => (
+  <div className="map">
+    <div className="map-content">MAP</div>
+    <div className="map-footer">
+      <div className="map-footer__content">
+        <div className="map-footer__items">
+          <Button className="pt-minimal" icon="play" />
+          <div className="map-footer__progressbar">
+            <ProgressBar value={0.5} className="pt-no-animation pt-no-stripes" />
+          </div>
+          <ButtonGroup minimal={true}>
+            <Button icon="fullscreen" />
+            <Button icon="share" />
+          </ButtonGroup>
+        </div>
+        <div className="map-footer__date">May 15, 2019 09:00AM</div>
+      </div>
+    </div>
+  </div>
+);
 
 class App extends React.Component {
   render() {
