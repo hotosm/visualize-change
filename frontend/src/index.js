@@ -118,8 +118,6 @@ class App extends React.Component {
       style: this.state.style
     };
 
-    console.log('mapConfig', mapConfig);
-
     fetch("/api/queue-render", {
       headers: {
         "Content-Type": "application/json"
