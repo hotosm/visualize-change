@@ -68,6 +68,7 @@ const initRoutes = ({ queueRender }, callback) => {
     const renderConfig = {
       email: req.body.email,
       map: mapConfig,
+      format: req.body.format,
       dir: md5(
         JSON.stringify({
           mapConfig,
