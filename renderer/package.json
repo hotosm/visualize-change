@@ -8,7 +8,8 @@
     "dev": "concurrently 'yarn dev:watch-deps' 'yarn dev:run'",
     "dev:run": "nodemon -L index.js",
     "dev:watch-deps": "nodemon -w package.json -x 'yarn install'",
-    "test:local-render": "LOCAL_DEBUG=1 CAPTURE_DIR='./data/capture' electron electron.js"
+    "test:local-render":
+      "mkdir -p ./data/capture > /dev/null; LOCAL_DEBUG=1 CAPTURE_DIR='./data/capture' electron electron.js"
   },
   "author": "Szymon Kaliski <hi@szymonkaliski.com> (http://szymonkaliski.com)",
   "license": "MIT",
