@@ -61,7 +61,7 @@ const convertToVideo = callback => {
 
   command
     .on("error", err => {
-      logger.error("ffmpeg error", err);
+      console.log('ffmpeg error', err);
     })
     .on("end", () => callback())
     .save(outputFile);
