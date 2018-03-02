@@ -1,5 +1,6 @@
 {
   "extends": ["node-style-guide", "prettier"],
+  "parser": "babel-eslint",
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
