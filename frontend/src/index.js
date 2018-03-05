@@ -32,6 +32,7 @@ class App extends React.Component {
       endDate: "2018-02-01",
       interval: "days",
       format: "video",
+      fps: 10,
       email: "test@test.test",
       style: {
         roads: {
@@ -115,6 +116,7 @@ class App extends React.Component {
       endDate: moment(this.state.endDate).toISOString(),
       interval: this.state.interval,
       format: this.state.format,
+      fps: this.state.fps,
       style: this.state.style
     };
 
@@ -157,6 +159,10 @@ class App extends React.Component {
 
   onFormatChange = value => {
     this.setState({ format: value });
+  };
+
+  onFPSChange = value => {
+    this.setState({ fps: value });
   };
 
   onInputChange = ev => {
@@ -215,6 +221,19 @@ class App extends React.Component {
               <option value="video">Video</option>
               <option value="gif">GIF</option>
             </select>
+          </div>
+
+          <div>
+            <span>FPS: </span>
+
+            <input
+              type="number"
+              step="1"
+              max="120"
+              min="0"
+              value={this.state.fps}
+              onChange={e => this.onFPSChange(e.target.value)}
+            />
           </div>
 
           <div style={{ border: "1px solid white" }}>

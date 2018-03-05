@@ -33,6 +33,10 @@ const RENDER_CONFIG_SCHEMA = j.object().keys({
   map: MAP_CONFIG_SCHEMA,
   dir: j.string(),
   format: j.string().valid("video", "gif"),
+  fps: j
+    .number()
+    .min(1)
+    .max(120),
   email: j.string().email()
 });
 
@@ -69,6 +73,7 @@ const initRoutes = ({ queueRender }, callback) => {
       email: req.body.email,
       map: mapConfig,
       format: req.body.format,
+      fps: req.body.fps,
       dir: md5(
         JSON.stringify({
           mapConfig,
