@@ -42,7 +42,7 @@ map.on("load", () => {
 
   const roadsColor = rgbaObjectToString(mapConfig.style.roads.base["line-color"]);
   const roadsOpacity = mapConfig.style.roads.enabled ? 1 : 0;
-  const roadsLineWidth = parseFloat(mapConfig.style.base.roads["line-width"]);
+  const roadsLineWidth = parseFloat(mapConfig.style.roads.base["line-width"]);
   const roadsHighlightColor = rgbaObjectToString(mapConfig.style.roads.highlight["line-color"]);
   const roadsHighlightOpacity = mapConfig.style.roads.highlight.enabled ? 1 : 0;
   const roadsHighlightLineWidth = parseFloat(mapConfig.style.roads.highlight["line-width"]);
