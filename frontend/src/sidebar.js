@@ -4,7 +4,7 @@ const { DateRangePicker } = require("@blueprintjs/datetime");
 const { SketchPicker } = require("react-color");
 const set = require("lodash.set");
 
-const { capitalizeFirstLetter } = require("./utils");
+const { capitalizeFirstLetter, rgbaObjectToString } = require("./utils");
 
 const DescribePanel = () => (
   <div>
@@ -43,14 +43,27 @@ const DatePanel = ({ date, interval, onChangeDate, onChangeInterval }) => (
 class StyleColorPicker extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { displayColorPicker: false, color: "#ffffff", opacity: 1 };
+    this.state = { displayColorPicker: false, color: { r: 0, g: 0, b: 0, a: 0 }, width: 1 };
+  }
+
+  componentDidMount() {
+    if (this.props.style) {
+      this.setState({ color: this.props.style["line-color"], width: this.props.style["line-width"] });
+    }
   }
 
   onColorChange = color => {
-    this.setState({ color: color.hex, opacity: color.rgb.a });
+    this.setState({ color: color.rgb });
+  };
+
+  onWidthChange = ev => {
+    this.setState({ width: ev.target.value }, () =>
+      this.props.onStyleChange(Object.assign({}, this.props.style, { "line-width": this.state.width }))
+    );
   };
 
   onCloseClick = () => {
+    this.props.onStyleChange(Object.assign({}, this.props.style, { "line-color": this.state.color }));
     this.setState({ displayColorPicker: false });
   };
 
@@ -59,10 +72,14 @@ class StyleColorPicker extends React.Component {
   };
 
   render() {
+    if (!this.props.style) return null;
     return (
       <div className="color-picker">
         <div className="color-picker__swatch" onClick={this.onOpenClick}>
-          <div className="color-picker__color" style={{ background: this.state.color, opacity: this.state.opacity }} />
+          <div
+            className="color-picker__color"
+            style={{ background: rgbaObjectToString(this.props.style["line-color"]) }}
+          />
         </div>
         {this.state.displayColorPicker ? (
           <div className="popover">
@@ -70,6 +87,7 @@ class StyleColorPicker extends React.Component {
             <SketchPicker color={this.state.color} onChange={this.onColorChange} />
           </div>
         ) : null}
+        <input type="number" onChange={this.onWidthChange} value={this.state.width} />
       </div>
     );
   }
@@ -77,7 +95,6 @@ class StyleColorPicker extends React.Component {
 
 class StyleSection extends React.Component {
   render() {
-    console.log("styleSection", this.props);
     return (
       <Card>
         <div className="section__header">
@@ -90,11 +107,17 @@ class StyleSection extends React.Component {
         </div>
         <label className="inline-label">
           Color
-          <StyleColorPicker />
+          <StyleColorPicker
+            style={this.props.style.base}
+            onStyleChange={value => this.props.onStyleChange(set(this.props.style, "base", value))}
+          />
         </label>
         <label className="inline-label">
           Highlight Color
-          <StyleColorPicker />
+          <StyleColorPicker
+            style={this.props.style.highlight}
+            onStyleChange={value => this.props.onStyleChange(set(this.props.style, "highlight", value))}
+          />
         </label>
       </Card>
     );
@@ -103,6 +126,7 @@ class StyleSection extends React.Component {
 
 const StylePanel = ({ style, onStyleChange }) => (
   <div>
+    {/*
     <Card>
       <div className="section__header">
         <h4>Map</h4>
@@ -117,12 +141,13 @@ const StylePanel = ({ style, onStyleChange }) => (
         </div>
       </label>
     </Card>
+    */}
     <StyleSection
       sectionName="buildings"
       style={style["buildings-outline"]}
       onStyleChange={style => onStyleChange("buildings-outline", style)}
     />
-    <StyleSection sectionName="roads" style={style.roads} />
+    <StyleSection sectionName="roads" style={style["roads"]} onStyleChange={style => onStyleChange("roads", style)} />
   </div>
 );
 

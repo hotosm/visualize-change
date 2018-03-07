@@ -47,8 +47,8 @@ const convertToVideo = callback => {
   } catch (e) {}
 
   const command = ffmpeg(imageFiles)
-    .inputFPS(10) // TODO: fps?
-    .fps(10) // TODO: fps?
+    .inputFPS(renderConfig.fps)
+    .fps(renderConfig.fps)
     .format(FORMATS[renderingConfig.format])
     .size(`${width}x${height}`);
 

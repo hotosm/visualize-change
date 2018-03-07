@@ -26,6 +26,7 @@ const MAP_CONFIG_SCHEMA = j.object().keys({
   startDate: j.date().iso(), // YYYY-MM-DDThh:mm:ss.sssZ
   endDate: j.date().iso(),
   interval: j.string().valid("hours", "days", "weeks"),
+  fps: j.number(),
   style: j.object() // TODO: Need to add better validation for this
 });
 
@@ -62,6 +63,7 @@ const initRoutes = ({ queueRender }, callback) => {
       startDate: req.body.startDate,
       endDate: req.body.endDate,
       interval: req.body.interval,
+      fps: req.body.fps,
       style: req.body.style
     };
 

@@ -1,7 +1,8 @@
 const React = require("react");
-const { Button, ButtonGroup, ProgressBar, Slider } = require("@blueprintjs/core");
+const { Button, ButtonGroup, Slider, Overlay, Card, Elevation } = require("@blueprintjs/core");
 const moment = require("moment");
 const mapboxgl = require("mapbox-gl");
+const { rgbaObjectToString } = require("./utils");
 
 mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
 
@@ -151,16 +152,16 @@ const setupMap = (map, styles) => {
         const layerName = `${layerId}-${styleKey}`;
         const highlightedLayerName = `${layerName}-highlighted`;
 
-        const opacity = style.enabled ? parseFloat(style.line["line-opacity"]) : 0;
-        const highlightOpacity = style.highlight.enabled ? parseFloat(style.highlight["line-opacity"]) : 0;
-        const lineWidth = parseFloat(style.line["line-width"]);
+        const opacity = style.enabled ? 1 : 0;
+        const highlightOpacity = style.highlight.enabled ? 1 : 0;
+        const lineWidth = parseFloat(style.base["line-width"]);
         const highlightLineWidth = parseFloat(style.highlight["line-width"]);
 
-        map.setPaintProperty(layerName, "line-color", style.line["line-color"]);
+        map.setPaintProperty(layerName, "line-color", rgbaObjectToString(style.base["line-color"]));
         map.setPaintProperty(layerName, "line-opacity", opacity);
         map.setPaintProperty(layerName, "line-width", lineWidth);
 
-        map.setPaintProperty(highlightedLayerName, "line-color", style.highlight["line-color"]);
+        map.setPaintProperty(highlightedLayerName, "line-color", rgbaObjectToString(style.highlight["line-color"]));
         map.setPaintProperty(highlightedLayerName, "line-opacity", highlightOpacity);
         map.setPaintProperty(highlightedLayerName, "line-width", highlightLineWidth);
       });
@@ -168,7 +169,7 @@ const setupMap = (map, styles) => {
   };
 };
 
-const MapFooter = ({ onSliderUpdate, sliderPos, sliderDate }) => (
+const MapFooter = ({ onSliderUpdate, sliderPos, sliderDate, onShareClick }) => (
   <div className="map-footer">
     <div className="map-footer__content">
       <div className="map-footer__items">
@@ -185,7 +186,7 @@ const MapFooter = ({ onSliderUpdate, sliderPos, sliderDate }) => (
         </div>
         <ButtonGroup minimal={true}>
           <Button icon="fullscreen" />
-          <Button icon="share" />
+          <Button icon="share" onClick={onShareClick} />
         </ButtonGroup>
       </div>
       <div className="map-footer__date">{moment(sliderDate).format("YYYY-MM-DD")}</div>
@@ -232,7 +233,6 @@ module.exports = class extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // console.log('nextProps', nextProps, this.props);
     this.updateMap(nextProps.style);
   }
 
@@ -257,6 +257,7 @@ module.exports = class extends React.Component {
           onSliderUpdate={this.onSliderUpdate}
           sliderPos={this.state.sliderPos}
           sliderDate={this.state.sliderDate}
+          onShareClick={this.props.onShareClick}
         />
       </div>
     );

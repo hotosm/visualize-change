@@ -75,7 +75,8 @@
   padding: 0 10px;
 }
 
-.map-footer__progressbar .pt-slider-track, .pt-slider-progress {
+.map-footer__progressbar .pt-slider-track,
+.pt-slider-progress {
   height: 10px;
   border-radius: 5px;
 }
@@ -103,6 +104,11 @@
   }
 }
 
+.color-picker {
+  display: flex;
+  align-items: center;
+}
+
 .color-picker__swatch {
   padding: 3px;
   background: #ffffff;
@@ -110,6 +116,7 @@
   cursor: pointer;
   border-radius: 3px;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+  margin-right: 5px;
 }
 
 .color-picker__color {
@@ -148,4 +155,21 @@
 .section__header h4 {
   margin: 0;
   padding: 0;
+}
+
+.export-menu {
+  position: absolute;
+  z-index: 999;
+  top: 0;
+  left: calc(50% - 200px);
+  margin: 10vh 0;
+  width: 400px;
+}
+
+.color-picker input {
+  width: 40px;
+}
+
+.form-body label {
+  padding: 10px 0;
 }

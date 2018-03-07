@@ -9,9 +9,13 @@ const {
   Navbar,
   NavbarGroup,
   NavbarHeading,
-  Popover
+  Popover,
+  Card,
+  Elevation,
+  Overlay
 } = require("@blueprintjs/core");
 const set = require("lodash.set");
+const moment = require("moment");
 
 const Map = require("./map");
 const Sidebar = require("./sidebar");
@@ -33,6 +37,59 @@ const LanguageMenu = () => (
 
 const Main = ({ children }) => <div className="main">{children}</div>;
 
+class ExportMenu extends React.Component {
+  constructor() {
+    super();
+    this.state = { email: "your-email-address@domain.com", fps: 10, format: "video" };
+  }
+
+  onEmailChange = ev => {
+    this.setState({ email: ev.target.value });
+  };
+
+  onFormatChange = ev => {
+    this.setState({ format: ev.target.value });
+  };
+
+  onFPSChange = ev => {
+    this.setState({ fps: ev.target.value });
+  };
+
+  onExportClick = () => {
+    this.props.onRenderClick({ email: this.state.email, fps: this.state.fps, format: this.state.format });
+  };
+
+  render() {
+    return (
+      <Card elevation={Elevation.FOUR} className="export-menu">
+        <h4>Export</h4>
+        <div className="form-body">
+          <label className="inline-label">
+            E-mail:
+            <input value={this.state.email} onChange={this.onEmailChange} className="pt-input" />
+          </label>
+          <label className="inline-label">
+            Format
+            <div className="pt-select">
+              <select onChange={this.onFormatChange}>
+                <option value="video">Video</option>
+                <option value="gif">GIF</option>
+              </select>
+            </div>
+          </label>
+          <label className="inline-label">
+            FPS
+            <input value={this.state.fps} onChange={this.onFPSChange} className="pt-input" />
+          </label>
+          <Button icon="share" onClick={this.onExportClick}>
+            Export
+          </Button>
+        </div>
+      </Card>
+    );
+  }
+}
+
 class App extends React.Component {
   constructor() {
     super();
@@ -46,34 +103,50 @@ class App extends React.Component {
       style: {
         roads: {
           enabled: true,
-          line: {
-            "line-color": "#02D0CA",
-            "line-opacity": 0.7,
+          base: {
+            "line-color": {
+              r: 2,
+              g: 208,
+              b: 202,
+              a: 0.7
+            },
             "line-width": 1
           },
           highlight: {
-            enabled: false,
-            "line-color": "#CCF5E1",
-            "line-opacity": 0.5,
+            enabled: true,
+            "line-color": {
+              r: 204,
+              g: 245,
+              b: 225,
+              a: 0.5
+            },
             "line-width": 1
           }
         },
         "buildings-outline": {
           enabled: true,
-          line: {
-            "line-color": "#D00244",
-            "line-opacity": 0.7,
+          base: {
+            "line-color": {
+              r: 208,
+              g: 2,
+              b: 68,
+              a: 0.7
+            },
             "line-width": 1
           },
           highlight: {
-            enabled: false,
-            "line-color": "#EB96D7",
-            "line-opacity": 0.8,
+            enabled: true,
+            "line-color": {
+              r: 235,
+              g: 150,
+              b: 215,
+              a: 1
+            },
             "line-width": 1
           }
         }
       },
-      features: {}
+      displayExportMenu: false
     };
   }
 
@@ -93,10 +166,43 @@ class App extends React.Component {
     this.setState(set(this.state.style, name, value));
   };
 
+  onShareClick = () => {
+    this.setState({ displayExportMenu: true });
+  };
+
+  onOverlayClose = () => {
+    this.setState({ displayExportMenu: false });
+  };
+
+  onRenderClick = ({ email, format, fps }) => {
+    const mapConfig = {
+      lat: this.state.lat,
+      lng: this.state.lng,
+      zoom: this.state.zoom,
+      email,
+      startDate: moment(this.state.date.start).toISOString(),
+      endDate: moment(this.state.date.end).toISOString(),
+      interval: this.state.interval,
+      format,
+      fps,
+      style: this.state.style
+    };
+
+    fetch("/api/queue-render", {
+      headers: {
+        "Content-Type": "application/json"
+      },
+      method: "post",
+      body: JSON.stringify(mapConfig)
+    }).then(res => console.log(res));
+  };
+
   render() {
-    console.log(this.state);
     return (
       <div className="container">
+        <Overlay isOpen={this.state.displayExportMenu} canOutsideClickClose={true} onClose={this.onOverlayClose}>
+          <ExportMenu onRenderClick={this.onRenderClick} />
+        </Overlay>
         <Navbar>
           <NavbarGroup>
             <NavbarHeading>HOT Visualize Change</NavbarHeading>
@@ -133,6 +239,7 @@ class App extends React.Component {
             setCoordinates={this.setCoordinates}
             onSliderUpdate={this.onSliderUpdate}
             sliderPos={this.state.sliderPos}
+            onShareClick={this.onShareClick}
           />
         </Main>
       </div>
