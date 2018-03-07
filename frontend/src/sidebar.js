@@ -7,17 +7,19 @@ const set = require("lodash.set");
 const { capitalizeFirstLetter, rgbaObjectToString } = require("./utils");
 
 const DescribePanel = () => (
-  <div>
-    <Label text="Name" required={true}>
-      <input className="pt-input" />
-    </Label>
-    <Label text="Description" required={true}>
-      <textarea className="pt-input" />
-    </Label>
-    <Label text="Project" required={true}>
-      <input className="pt-input" />
-    </Label>
-  </div>
+  <Card>
+    <div>
+      <Label text="Name" required={true}>
+        <input className="pt-input" />
+      </Label>
+      <Label text="Description" required={true}>
+        <textarea className="pt-input" />
+      </Label>
+      <Label text="Project" required={true}>
+        <input className="pt-input" />
+      </Label>
+    </div>
+  </Card>
 );
 
 const DatePanel = ({ date, interval, onChangeDate, onChangeInterval }) => (
@@ -29,14 +31,18 @@ const DatePanel = ({ date, interval, onChangeDate, onChangeInterval }) => (
       value={[date.start, date.end]}
       onChange={onChangeDate}
     />
-    <ButtonGroup>
-      Interval:
-      {["hours", "days", "weeks"].map(v => (
-        <Button key={v} active={interval === v} onClick={() => onChangeInterval(v)}>
-          {capitalizeFirstLetter(v)}
-        </Button>
-      ))}
-    </ButtonGroup>
+    <Card>
+      <label className="inline-label">
+        Interval:
+        <ButtonGroup>
+          {["hours", "days", "weeks"].map(v => (
+            <Button key={v} active={interval === v} onClick={() => onChangeInterval(v)}>
+              {capitalizeFirstLetter(v)}
+            </Button>
+          ))}
+        </ButtonGroup>
+      </label>
+    </Card>
   </div>
 );
 

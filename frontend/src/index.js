@@ -22,6 +22,7 @@ const Sidebar = require("./sidebar");
 
 require("normalize.css/normalize.css");
 require("mapbox-gl/dist/mapbox-gl.css");
+require("mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css");
 require("@blueprintjs/core/lib/css/blueprint.css");
 require("@blueprintjs/icons/lib/css/blueprint-icons.css");
 require("@blueprintjs/datetime/lib/css/blueprint-datetime.css");

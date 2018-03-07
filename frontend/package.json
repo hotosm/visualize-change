@@ -32,6 +32,7 @@
     "@blueprintjs/datetime": "^2.0.0-rc.2",
     "lodash.set": "^4.3.2",
     "mapbox-gl": "^0.43.0",
+    "mapbox-gl-geocoder": "^2.0.1",
     "moment": "^2.20.1",
     "react": "^16.2.0",
     "react-color": "^2.14.0",

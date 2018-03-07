@@ -2,6 +2,7 @@ const React = require("react");
 const { Button, ButtonGroup, Slider, Overlay, Card, Elevation } = require("@blueprintjs/core");
 const moment = require("moment");
 const mapboxgl = require("mapbox-gl");
+const mapboxglGeoconder = require("mapbox-gl-geocoder");
 const { rgbaObjectToString } = require("./utils");
 
 mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
@@ -223,6 +224,11 @@ module.exports = class extends React.Component {
     });
 
     this.map.addControl(new mapboxgl.NavigationControl());
+    this.map.addControl(
+      new mapboxglGeoconder({
+        accessToken: mapboxgl.accessToken
+      })
+    );
 
     const { filter: filterMap, update: updateMap } = setupMap(this.map, this.props.style);
     this.filterMap = filterMap;
