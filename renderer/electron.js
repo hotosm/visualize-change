@@ -47,8 +47,8 @@ const convertToVideo = callback => {
   } catch (e) {}
 
   const command = ffmpeg(imageFiles)
-    .inputFPS(renderConfig.fps)
-    .fps(renderConfig.fps)
+    .inputFPS(renderingConfig.fps)
+    .fps(renderingConfig.fps)
     .format(FORMATS[renderingConfig.format])
     .size(`${width}x${height}`);
 
@@ -56,12 +56,12 @@ const convertToVideo = callback => {
     command
       .noAudio()
       .videoCodec("libx264")
-      .outputOptions(["-pix_fmt yuv420p", "-preset veryslow", "-tune stillimage", "-crf 24"]);
+      .outputOptions(["-pix_fmt yuv420p", "-preset veryslow", "-tune stillimage", "-crf 20"]);
   }
 
   command
     .on("error", err => {
-      logger.error("ffmpeg error", err);
+      console.log("ffmpeg error", err);
     })
     .on("end", () => callback())
     .save(outputFile);

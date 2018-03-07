@@ -79,6 +79,8 @@ map.on("load", () => {
     [`${layerId}-buildings-outline`]: [["==", "$type", "Polygon"], ["has", "building"]]
   };
 
+  const firstSymbolId = map.getStyle().layers.filter(d => d.type === "symbol")[0].id;
+
   map.addSource(sourceId, {
     type: "vector",
     tiles: [
@@ -88,76 +90,88 @@ map.on("load", () => {
     ]
   });
 
-  map.addLayer({
-    id: `${layerId}-buildings-outline`,
-    type: "line",
-    source: `${sourceId}`,
-    "source-layer": `${layerId}`,
-    filter: ["all"].concat(filters[`${layerId}-buildings-outline`]),
-    layout: {
-      "line-join": "round",
-      "line-cap": "round"
+  map.addLayer(
+    {
+      id: `${layerId}-buildings-outline`,
+      type: "line",
+      source: `${sourceId}`,
+      "source-layer": `${layerId}`,
+      filter: ["all"].concat(filters[`${layerId}-buildings-outline`]),
+      layout: {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      paint: {
+        "line-color": buildingsColor,
+        "line-width": buildingsLineWidth,
+        "line-opacity": buildingsOpacity
+      }
     },
-    paint: {
-      "line-color": buildingsColor,
-      "line-width": buildingsLineWidth,
-      "line-opacity": buildingsOpacity
-    }
-  });
+    firstSymbolId
+  );
   layers.polygons.push(`${layerId}-buildings-outline`);
 
-  map.addLayer({
-    id: `${layerId}-buildings-outline-highlighted`,
-    type: "line",
-    source: `${sourceId}`,
-    "source-layer": `${layerId}`,
-    filter: ["all"].concat(filters[`${layerId}-buildings-outline`]),
-    layout: {
-      "line-join": "round",
-      "line-cap": "round"
+  map.addLayer(
+    {
+      id: `${layerId}-buildings-outline-highlighted`,
+      type: "line",
+      source: `${sourceId}`,
+      "source-layer": `${layerId}`,
+      filter: ["all"].concat(filters[`${layerId}-buildings-outline`]),
+      layout: {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      paint: {
+        "line-color": buildingsHighlightColor,
+        "line-width": buildingsHighlightLineWidth,
+        "line-opacity": buildingsHighlightOpacity
+      }
     },
-    paint: {
-      "line-color": buildingsHighlightColor,
-      "line-width": buildingsHighlightLineWidth,
-      "line-opacity": buildingsHighlightOpacity
-    }
-  });
+    firstSymbolId
+  );
   highlighted.polygons.push(`${layerId}-buildings-outline-highlighted`);
 
-  map.addLayer({
-    id: `${layerId}-roads`,
-    type: "line",
-    source: `${sourceId}`,
-    "source-layer": `${layerId}`,
-    filter: ["all"].concat(filters[`${layerId}-roads`]),
-    layout: {
-      "line-join": "round",
-      "line-cap": "round"
+  map.addLayer(
+    {
+      id: `${layerId}-roads`,
+      type: "line",
+      source: `${sourceId}`,
+      "source-layer": `${layerId}`,
+      filter: ["all"].concat(filters[`${layerId}-roads`]),
+      layout: {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      paint: {
+        "line-color": roadsColor,
+        "line-width": roadsLineWidth,
+        "line-opacity": roadsOpacity
+      }
     },
-    paint: {
-      "line-color": roadsColor,
-      "line-width": roadsLineWidth,
-      "line-opacity": roadsOpacity
-    }
-  });
+    firstSymbolId
+  );
   layers.lines.push(`${layerId}-roads`);
 
-  map.addLayer({
-    id: `${layerId}-roads-highlighted`,
-    type: "line",
-    source: `${sourceId}`,
-    "source-layer": `${layerId}`,
-    filter: ["all"].concat(filters[`${layerId}-roads`]),
-    layout: {
-      "line-join": "round",
-      "line-cap": "round"
+  map.addLayer(
+    {
+      id: `${layerId}-roads-highlighted`,
+      type: "line",
+      source: `${sourceId}`,
+      "source-layer": `${layerId}`,
+      filter: ["all"].concat(filters[`${layerId}-roads`]),
+      layout: {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      paint: {
+        "line-color": roadsHighlightColor,
+        "line-width": roadsHighlightLineWidth,
+        "line-opacity": roadsHighlightOpacity
+      }
     },
-    paint: {
-      "line-color": roadsHighlightColor,
-      "line-width": roadsHighlightLineWidth,
-      "line-opacity": roadsHighlightOpacity
-    }
-  });
+    firstSymbolId
+  );
   highlighted.lines.push(`${layerId}-roads-highlighted`);
 
   // actual rendering

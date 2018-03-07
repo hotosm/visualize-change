@@ -99,7 +99,9 @@ class App extends React.Component {
       zoom: 12,
       date: { start: new Date("2018-01-01"), end: new Date("2018-02-01") },
       interval: "days",
-      sliderPos: 0,
+      format: "video",
+      fps: 10,
+      email: "test@test.test",
       style: {
         roads: {
           enabled: true,
