@@ -75,6 +75,18 @@
   padding: 0 10px;
 }
 
+.map-footer__progressbar .pt-slider-track, .pt-slider-progress {
+  height: 10px;
+  border-radius: 5px;
+}
+
+.map-footer__progressbar .pt-slider-handle {
+  top: 5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+}
+
 .map-footer__date {
   display: flex;
   align-items: center;
@@ -82,4 +94,58 @@
   height: @map-footer-height;
 
   background: @light-gray4;
+}
+
+.pt-daterangepicker {
+  padding: 10px;
+  .DayPicker {
+    min-width: 0;
+  }
+}
+
+.color-picker__swatch {
+  padding: 3px;
+  background: #ffffff;
+  display: inline-block;
+  cursor: pointer;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+.color-picker__color {
+  width: 24px;
+  height: 12px;
+  border-radius: 2px;
+  background: transparent;
+}
+
+.popover {
+  position: absolute;
+  z-index: 2;
+}
+
+.cover {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.inline-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section__header {
+  .inline-label();
+  padding: 5px 0;
+  margin: 0 0 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.section__header h4 {
+  margin: 0;
+  padding: 0;
 }

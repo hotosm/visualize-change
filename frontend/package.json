@@ -34,6 +34,7 @@
     "mapbox-gl": "^0.43.0",
     "moment": "^2.20.1",
     "react": "^16.2.0",
+    "react-color": "^2.14.0",
     "react-dom": "^16.2.0",
     "react-transition-group": "^2.2.1"
   }

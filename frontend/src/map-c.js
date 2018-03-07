@@ -1,11 +1,4 @@
-const React = require("react");
-const { Button, ButtonGroup, ProgressBar, Slider } = require("@blueprintjs/core");
-const moment = require("moment");
-const mapboxgl = require("mapbox-gl");
-
-mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
-
-const setupMap = (map, styles) => {
+module.exports = (map, styles) => {
   const sourceId = "osm";
   const layerId = "osm";
 
@@ -151,12 +144,12 @@ const setupMap = (map, styles) => {
         const layerName = `${layerId}-${styleKey}`;
         const highlightedLayerName = `${layerName}-highlighted`;
 
-        const opacity = style.enabled ? parseFloat(style.line["line-opacity"]) : 0;
+        const opacity = style.enabled ? parseFloat(style["line-opacity"]) : 0;
         const highlightOpacity = style.highlight.enabled ? parseFloat(style.highlight["line-opacity"]) : 0;
-        const lineWidth = parseFloat(style.line["line-width"]);
+        const lineWidth = parseFloat(style["line-width"]);
         const highlightLineWidth = parseFloat(style.highlight["line-width"]);
 
-        map.setPaintProperty(layerName, "line-color", style.line["line-color"]);
+        map.setPaintProperty(layerName, "line-color", style["line-color"]);
         map.setPaintProperty(layerName, "line-opacity", opacity);
         map.setPaintProperty(layerName, "line-width", lineWidth);
 
@@ -166,99 +159,4 @@ const setupMap = (map, styles) => {
       });
     }
   };
-};
-
-const MapFooter = ({ onSliderUpdate, sliderPos, sliderDate }) => (
-  <div className="map-footer">
-    <div className="map-footer__content">
-      <div className="map-footer__items">
-        <Button className="pt-minimal" icon="play" />
-        <div className="map-footer__progressbar">
-          <Slider
-            min={0}
-            max={100}
-            stepSize={1}
-            labelRenderer={false}
-            onChange={value => onSliderUpdate(value)}
-            value={sliderPos}
-          />
-        </div>
-        <ButtonGroup minimal={true}>
-          <Button icon="fullscreen" />
-          <Button icon="share" />
-        </ButtonGroup>
-      </div>
-      <div className="map-footer__date">{moment(sliderDate).format("YYYY-MM-DD")}</div>
-    </div>
-  </div>
-);
-
-module.exports = class extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { sliderPos: 0, sliderDate: this.props.date.start };
-  }
-
-  componentDidMount() {
-    this.map = new mapboxgl.Map({
-      container: this.elMap,
-      style: "mapbox://styles/mapbox/dark-v9",
-      center: [this.props.lng, this.props.lat],
-      zoom: this.props.zoom
-    });
-
-    this.map.addControl(new mapboxgl.NavigationControl());
-
-    const { filter: filterMap, update: updateMap } = setupMap(this.map, this.props.style);
-    this.filterMap = filterMap;
-    this.updateMap = updateMap;
-
-    this.map.on("move", () => {
-      // FIXME: setting position from updatePosition triggers this as well, not a problem for now though..?
-      this.props.setCoordinates({
-        lat: this.map.getCenter().lat,
-        lng: this.map.getCenter().lng,
-        zoom: this.map.getZoom()
-      });
-    });
-
-    this.map.on("load", () => {
-      this.updateMap(this.props.style);
-    });
-  }
-
-  componententWillUmount() {
-    this.map.remove();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    // console.log('nextProps', nextProps, this.props);
-    this.updateMap(nextProps.style);
-  }
-
-  onSliderUpdate = value => {
-    const { start, end } = this.props.date;
-    const diff = moment.duration(moment(end).diff(moment(start)));
-    const sliderDate = moment(start)
-      .add(Math.round(diff.asSeconds() * (value / 100)), "s")
-      .toDate();
-    // Note: Temp - we will probably calc it in component to display dates
-    this.setState({ sliderPos: value, sliderDate });
-    this.filterMap(sliderDate);
-  };
-
-  render() {
-    return (
-      <div className="map">
-        <div className="map-content" style={{ position: "relative" }}>
-          <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }} ref={el => (this.elMap = el)} />
-        </div>
-        <MapFooter
-          onSliderUpdate={this.onSliderUpdate}
-          sliderPos={this.state.sliderPos}
-          sliderDate={this.state.sliderDate}
-        />
-      </div>
-    );
-  }
 };

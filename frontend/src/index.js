@@ -4,19 +4,17 @@ const {
   AnchorButton,
   Button,
   ButtonGroup,
-  Icon,
-  Label,
   Menu,
   MenuItem,
   Navbar,
   NavbarGroup,
   NavbarHeading,
-  Popover,
-  ProgressBar,
-  Tab,
-  Tabs
+  Popover
 } = require("@blueprintjs/core");
-const { DateRangePicker } = require("@blueprintjs/datetime");
+const set = require("lodash.set");
+
+const Map = require("./map");
+const Sidebar = require("./sidebar");
 
 require("normalize.css/normalize.css");
 require("mapbox-gl/dist/mapbox-gl.css");
@@ -25,9 +23,6 @@ require("@blueprintjs/icons/lib/css/blueprint-icons.css");
 require("@blueprintjs/datetime/lib/css/blueprint-datetime.css");
 
 require("./style.less");
-
-// mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
-// const IS_DEBUG = window.location.href.indexOf("debug") > 0;
 
 const LanguageMenu = () => (
   <Menu>
@@ -38,67 +33,68 @@ const LanguageMenu = () => (
 
 const Main = ({ children }) => <div className="main">{children}</div>;
 
-const DescribePanel = () => (
-  <div>
-    <Label text="Name" required={true}>
-      <input className="pt-input" />
-    </Label>
-    <Label text="Description" required={true}>
-      <textarea className="pt-input" />
-    </Label>
-    <Label text="Project" required={true}>
-      <input className="pt-input" />
-    </Label>
-  </div>
-);
-
-const DatePanel = () => <DateRangePicker shortcuts={false} contiguousCalendarMonths={false} maxDate={new Date()} />;
-
-const StylePanel = () => <div>TODO</div>;
-
-const Sidebar = () => (
-  <div className="sidebar">
-    <div className="sidebar-content">
-      <Tabs animate={true} id="SidebarTabs" renderActiveTabPanelOnly={true}>
-        <Tab id="Describe" title="Describe" panel={<DescribePanel />} />
-        <Tab id="Date" title="Date" panel={<DatePanel />} />
-        <Tab id="Style" title="Style" panel={<StylePanel />} />
-      </Tabs>
-    </div>
-
-    <div className="sidebar-footer">
-      <div className="sidebar-footer__content">
-        <span>Made with </span>
-        <Icon icon="heart" iconSize={12} style={{ marginTop: 3 }} />
-        <span> by HOT and friends</span>
-      </div>
-    </div>
-  </div>
-);
-
-const Map = () => (
-  <div className="map">
-    <div className="map-content">MAP</div>
-    <div className="map-footer">
-      <div className="map-footer__content">
-        <div className="map-footer__items">
-          <Button className="pt-minimal" icon="play" />
-          <div className="map-footer__progressbar">
-            <ProgressBar value={0.5} className="pt-no-animation pt-no-stripes" />
-          </div>
-          <ButtonGroup minimal={true}>
-            <Button icon="fullscreen" />
-            <Button icon="share" />
-          </ButtonGroup>
-        </div>
-        <div className="map-footer__date">May 15, 2019 09:00AM</div>
-      </div>
-    </div>
-  </div>
-);
-
 class App extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      lat: -8.343,
+      lng: 115.507,
+      zoom: 12,
+      date: { start: new Date("2018-01-01"), end: new Date("2018-02-01") },
+      interval: "days",
+      sliderPos: 0,
+      style: {
+        roads: {
+          enabled: true,
+          line: {
+            "line-color": "#02D0CA",
+            "line-opacity": 0.7,
+            "line-width": 1
+          },
+          highlight: {
+            enabled: false,
+            "line-color": "#CCF5E1",
+            "line-opacity": 0.5,
+            "line-width": 1
+          }
+        },
+        "buildings-outline": {
+          enabled: true,
+          line: {
+            "line-color": "#D00244",
+            "line-opacity": 0.7,
+            "line-width": 1
+          },
+          highlight: {
+            enabled: false,
+            "line-color": "#EB96D7",
+            "line-opacity": 0.8,
+            "line-width": 1
+          }
+        }
+      },
+      features: {}
+    };
+  }
+
+  setCoordinates = ({ lat, lng, zoom }) => {
+    this.setState({ lat, lng, zoom });
+  };
+
+  onChangeDate = ([start, end]) => {
+    this.setState({ date: { start, end } });
+  };
+
+  onChangeInterval = interval => {
+    this.setState({ interval });
+  };
+
+  onStyleChange = (name, value) => {
+    this.setState(set(this.state.style, name, value));
+  };
+
   render() {
+    console.log(this.state);
     return (
       <div className="container">
         <Navbar>
@@ -120,8 +116,24 @@ class App extends React.Component {
         </Navbar>
 
         <Main>
-          <Sidebar />
-          <Map />
+          <Sidebar
+            date={this.state.date}
+            interval={this.state.interval}
+            style={this.state.style}
+            onChangeDate={this.onChangeDate}
+            onChangeInterval={this.onChangeInterval}
+            onStyleChange={this.onStyleChange}
+          />
+          <Map
+            lat={this.state.lat}
+            lng={this.state.lng}
+            zoom={this.state.zoom}
+            date={this.state.date}
+            style={this.state.style}
+            setCoordinates={this.setCoordinates}
+            onSliderUpdate={this.onSliderUpdate}
+            sliderPos={this.state.sliderPos}
+          />
         </Main>
       </div>
     );
