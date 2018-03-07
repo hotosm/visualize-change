@@ -12,6 +12,8 @@ const moment = require("moment");
 const mapboxgl = require("mapbox-gl");
 const { ipcRenderer, remote } = require("electron");
 
+const rgbaObjectToString = obj => `rgba(${obj.r}, ${obj.g}, ${obj.b}, ${obj.a})`;
+
 const { mapConfig } = remote.getCurrentWindow();
 
 mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
@@ -38,17 +40,17 @@ map.on("load", () => {
 
   const sourceId = "osm";
 
-  const roadsColor = mapConfig.style.roads.base["line-color"];
+  const roadsColor = rgbaObjectToString(mapConfig.style.roads.base["line-color"]);
   const roadsOpacity = mapConfig.style.roads.enabled ? 1 : 0;
   const roadsLineWidth = parseFloat(mapConfig.style.base.roads["line-width"]);
-  const roadsHighlightColor = mapConfig.style.roads.highlight["line-color"];
+  const roadsHighlightColor = rgbaObjectToString(mapConfig.style.roads.highlight["line-color"]);
   const roadsHighlightOpacity = mapConfig.style.roads.highlight.enabled ? 1 : 0;
   const roadsHighlightLineWidth = parseFloat(mapConfig.style.roads.highlight["line-width"]);
 
-  const buildingsColor = mapConfig.style["buildings-outline"].base["line-color"];
+  const buildingsColor = rgbaObjectToString(mapConfig.style["buildings-outline"].base["line-color"]);
   const buildingsOpacity = mapConfig.style["buildings-outline"].enabled ? 1 : 0;
   const buildingsLineWidth = parseFloat(mapConfig.style["buildings-outline"].base["line-width"]);
-  const buildingsHighlightColor = mapConfig.style["buildings-outline"].highlight["line-color"];
+  const buildingsHighlightColor = rgbaObjectToString(mapConfig.style["buildings-outline"].highlight["line-color"]);
   const buildingsHighlightOpacity = mapConfig.style["buildings-outline"].highlight.enabled ? 1 : 0;
   const buildingsHighlightLineWidth = parseFloat(mapConfig.style["buildings-outline"].highlight["line-width"]);
 
