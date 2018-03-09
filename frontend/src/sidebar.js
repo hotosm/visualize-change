@@ -7,7 +7,7 @@ const set = require("lodash.set");
 const { capitalizeFirstLetter, rgbaObjectToString } = require("./utils");
 
 const DescribePanel = () => (
-  <Card>
+  <Card className="siderbar__card">
     <div>
       <Label text="Name" required={true}>
         <input className="pt-input" />
@@ -132,7 +132,6 @@ class StyleSection extends React.Component {
 
 const StylePanel = ({ style, onStyleChange }) => (
   <div>
-    {/*
     <Card>
       <div className="section__header">
         <h4>Map</h4>
@@ -147,7 +146,6 @@ const StylePanel = ({ style, onStyleChange }) => (
         </div>
       </label>
     </Card>
-    */}
     <StyleSection
       sectionName="buildings"
       style={style["buildings-outline"]}

@@ -162,6 +162,7 @@ class App extends React.Component {
   };
 
   onChangeInterval = interval => {
+    console.log("in", interval);
     this.setState({ interval });
   };
 
@@ -238,6 +239,7 @@ class App extends React.Component {
             lng={this.state.lng}
             zoom={this.state.zoom}
             date={this.state.date}
+            interval={this.state.interval}
             style={this.state.style}
             setCoordinates={this.setCoordinates}
             onSliderUpdate={this.onSliderUpdate}

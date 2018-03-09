@@ -212,7 +212,7 @@ const MapFooter = ({ onSliderUpdate, sliderPos, sliderDate, onShareClick }) => (
 module.exports = class extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { sliderPos: 0, sliderDate: this.props.date.start };
+    this.state = { sliderPos: 0, sliderDate: this.props.date.start, subscribed: false };
   }
 
   componentDidMount() {
@@ -245,7 +245,18 @@ module.exports = class extends React.Component {
 
     this.map.on("load", () => {
       this.updateMap(this.props.style);
+      this.filterMap(this.state.sliderDate);
     });
+
+    // const startDate = new Date().getTime();
+
+    // setInterval(() => {
+    //   this.setState({
+    //     sliderDate: moment(this.state.sliderDate)
+    //       .add(1, this.props.interval)
+    //       .toDate()
+    //   }, this.handleDateChange);
+    // }, 1000);
   }
 
   componententWillUmount() {
@@ -253,7 +264,24 @@ module.exports = class extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    console.log("componentWillReceive");
     this.updateMap(nextProps.style);
+  }
+
+  subscribeToSlider = () => {
+    if (this.map.areTilesLoaded()) {
+      this.filterMap(this.state.sliderDate);
+      this.setState({ subscribed: false }, () => this.map.off("sourcedata", this.subscribeToSlider));
+    }
+  };
+
+  handleDateChange() {
+    console.log("called!", this.state.sliderDate);
+    if (this.map.areTilesLoaded()) {
+      this.filterMap(this.state.sliderDate);
+    } else if (!this.state.subscribed) {
+      this.setState({ subscribed: true }, () => this.map.on("sourcedata", this.subscribeToSlider));
+    }
   }
 
   onSliderUpdate = value => {
@@ -263,8 +291,7 @@ module.exports = class extends React.Component {
       .add(Math.round(diff.asSeconds() * (value / 100)), "s")
       .toDate();
     // Note: Temp - we will probably calc it in component to display dates
-    this.setState({ sliderPos: value, sliderDate });
-    this.filterMap(sliderDate);
+    this.setState({ sliderPos: value, sliderDate }, this.handleDateChange);
   };
 
   render() {
