@@ -1,10 +1,12 @@
 const React = require("react");
+const { connect } = require("react-redux");
 const { Button, ButtonGroup, Icon, Label, Tab, Tabs, Card } = require("@blueprintjs/core");
 const { DateRangePicker } = require("@blueprintjs/datetime");
 const { SketchPicker } = require("react-color");
 const set = require("lodash.set");
 
-const { capitalizeFirstLetter, rgbaObjectToString } = require("./utils");
+const { setInterval, setDateSpan } = require("../actions");
+const { capitalizeFirstLetter, rgbaObjectToString } = require("../utils");
 
 const DescribePanel = () => (
   <Card className="siderbar__card">
@@ -22,7 +24,7 @@ const DescribePanel = () => (
   </Card>
 );
 
-const DatePanel = ({ date, interval, onChangeDate, onChangeInterval }) => (
+const DatePanel = ({ date, onChangeDate, onChangeInterval }) => (
   <div>
     <DateRangePicker
       shortcuts={false}
@@ -36,7 +38,7 @@ const DatePanel = ({ date, interval, onChangeDate, onChangeInterval }) => (
         Interval:
         <ButtonGroup>
           {["hours", "days", "weeks"].map(v => (
-            <Button key={v} active={interval === v} onClick={() => onChangeInterval(v)}>
+            <Button key={v} active={date.interval === v} onClick={() => onChangeInterval(v)}>
               {capitalizeFirstLetter(v)}
             </Button>
           ))}
@@ -155,33 +157,32 @@ const StylePanel = ({ style, onStyleChange }) => (
   </div>
 );
 
-module.exports = ({ date, interval, style, onChangeDate, onChangeInterval, onStyleChange }) => (
-  <div className="sidebar">
-    <div className="sidebar-content">
-      <Tabs animate={true} id="SidebarTabs" renderActiveTabPanelOnly={true}>
-        <Tab id="Describe" title="Describe" panel={<DescribePanel />} />
-        <Tab
-          id="Date"
-          title="Date"
-          panel={
-            <DatePanel
-              date={date}
-              onChangeDate={onChangeDate}
-              onChangeInterval={onChangeInterval}
-              interval={interval}
-            />
-          }
-        />
-        <Tab id="Style" title="Style" panel={<StylePanel style={style} onStyleChange={onStyleChange} />} />
-      </Tabs>
-    </div>
+const Sidebar = ({ date, style, onChangeDate, setDateSpan, setInterval, onStyleChange }) => {
+  return (
+    <div className="sidebar">
+      <div className="sidebar-content">
+        <Tabs animate={true} id="SidebarTabs" renderActiveTabPanelOnly={true}>
+          <Tab id="Describe" title="Describe" panel={<DescribePanel />} />
+          <Tab
+            id="Date"
+            title="Date"
+            panel={<DatePanel date={date} onChangeDate={setDateSpan} onChangeInterval={setInterval} />}
+          />
+          <Tab id="Style" title="Style" panel={<StylePanel style={style} onStyleChange={onStyleChange} />} />
+        </Tabs>
+      </div>
 
-    <div className="sidebar-footer">
-      <div className="sidebar-footer__content">
-        <span>Made with </span>
-        <Icon icon="heart" iconSize={12} style={{ marginTop: 3 }} />
-        <span> by HOT and friends</span>
+      <div className="sidebar-footer">
+        <div className="sidebar-footer__content">
+          <span>Made with </span>
+          <Icon icon="heart" iconSize={12} style={{ marginTop: 3 }} />
+          <span> by HOT and friends</span>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
+
+const SidebarConnected = connect(({ date }) => ({ date }), { setInterval, setDateSpan })(Sidebar);
+
+module.exports = SidebarConnected;

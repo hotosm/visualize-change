@@ -1,24 +1,16 @@
 const React = require("react");
 const ReactDOM = require("react-dom");
-const {
-  AnchorButton,
-  Button,
-  ButtonGroup,
-  Menu,
-  MenuItem,
-  Navbar,
-  NavbarGroup,
-  NavbarHeading,
-  Popover,
-  Card,
-  Elevation,
-  Overlay
-} = require("@blueprintjs/core");
+const { Overlay } = require("@blueprintjs/core");
 const set = require("lodash.set");
 const moment = require("moment");
+const { Provider, connect } = require("react-redux");
 
-const Map = require("./map");
-const Sidebar = require("./sidebar");
+const configureStore = require("./store");
+
+const Topbar = require("./components/topbar");
+const MapConnected = require("./components/map");
+const SidebarConnected = require("./components/sidebar");
+const ExportMenu = require("./components/export-window");
 
 require("normalize.css/normalize.css");
 require("mapbox-gl/dist/mapbox-gl.css");
@@ -29,80 +21,14 @@ require("@blueprintjs/datetime/lib/css/blueprint-datetime.css");
 
 require("./style.less");
 
-const LanguageMenu = () => (
-  <Menu>
-    <MenuItem text="English" />
-    <MenuItem text="Polish" />
-  </Menu>
-);
+const store = configureStore();
 
 const Main = ({ children }) => <div className="main">{children}</div>;
-
-class ExportMenu extends React.Component {
-  constructor() {
-    super();
-    this.state = { email: "your-email-address@domain.com", fps: 10, format: "video" };
-  }
-
-  onEmailChange = ev => {
-    this.setState({ email: ev.target.value });
-  };
-
-  onFormatChange = ev => {
-    this.setState({ format: ev.target.value });
-  };
-
-  onFPSChange = ev => {
-    this.setState({ fps: ev.target.value });
-  };
-
-  onExportClick = () => {
-    this.props.onRenderClick({ email: this.state.email, fps: this.state.fps, format: this.state.format });
-  };
-
-  render() {
-    return (
-      <Card elevation={Elevation.FOUR} className="export-menu">
-        <h4>Export</h4>
-        <div className="form-body">
-          <label className="inline-label">
-            E-mail:
-            <input value={this.state.email} onChange={this.onEmailChange} className="pt-input" />
-          </label>
-          <label className="inline-label">
-            Format
-            <div className="pt-select">
-              <select onChange={this.onFormatChange}>
-                <option value="video">Video</option>
-                <option value="gif">GIF</option>
-              </select>
-            </div>
-          </label>
-          <label className="inline-label">
-            FPS
-            <input value={this.state.fps} onChange={this.onFPSChange} className="pt-input" />
-          </label>
-          <Button icon="share" onClick={this.onExportClick}>
-            Export
-          </Button>
-        </div>
-      </Card>
-    );
-  }
-}
 
 class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      lat: -8.343,
-      lng: 115.507,
-      zoom: 12,
-      date: { start: new Date("2018-01-01"), end: new Date("2018-02-01") },
-      interval: "days",
-      format: "video",
-      fps: 10,
-      email: "test@test.test",
       style: {
         roads: {
           enabled: true,
@@ -153,19 +79,6 @@ class App extends React.Component {
     };
   }
 
-  setCoordinates = ({ lat, lng, zoom }) => {
-    this.setState({ lat, lng, zoom });
-  };
-
-  onChangeDate = ([start, end]) => {
-    this.setState({ date: { start, end } });
-  };
-
-  onChangeInterval = interval => {
-    console.log("in", interval);
-    this.setState({ interval });
-  };
-
   onStyleChange = (name, value) => {
     this.setState(set(this.state.style, name, value));
   };
@@ -207,49 +120,22 @@ class App extends React.Component {
         <Overlay isOpen={this.state.displayExportMenu} canOutsideClickClose={true} onClose={this.onOverlayClose}>
           <ExportMenu onRenderClick={this.onRenderClick} />
         </Overlay>
-        <Navbar>
-          <NavbarGroup>
-            <NavbarHeading>HOT Visualize Change</NavbarHeading>
-          </NavbarGroup>
 
-          <NavbarGroup align="right">
-            <ButtonGroup minimal={true}>
-              <Button>About</Button>
-              <Button>Learn</Button>
-              <Button>Create</Button>
-
-              <Popover content={<LanguageMenu />}>
-                <AnchorButton rightIcon="caret-down">English</AnchorButton>
-              </Popover>
-            </ButtonGroup>
-          </NavbarGroup>
-        </Navbar>
+        <Topbar />
 
         <Main>
-          <Sidebar
-            date={this.state.date}
-            interval={this.state.interval}
-            style={this.state.style}
-            onChangeDate={this.onChangeDate}
-            onChangeInterval={this.onChangeInterval}
-            onStyleChange={this.onStyleChange}
-          />
-          <Map
-            lat={this.state.lat}
-            lng={this.state.lng}
-            zoom={this.state.zoom}
-            date={this.state.date}
-            interval={this.state.interval}
-            style={this.state.style}
-            setCoordinates={this.setCoordinates}
-            onSliderUpdate={this.onSliderUpdate}
-            sliderPos={this.state.sliderPos}
-            onShareClick={this.onShareClick}
-          />
+          <SidebarConnected style={this.state.style} onStyleChange={this.onStyleChange} />
+          <MapConnected style={this.state.style} onShareClick={this.onShareClick} />
         </Main>
       </div>
     );
   }
 }
 
-ReactDOM.render(<App />, document.getElementById("app"));
+const AppContainer = () => (
+  <Provider store={store}>
+    <App />
+  </Provider>
+);
+
+ReactDOM.render(<AppContainer />, document.getElementById("app"));
