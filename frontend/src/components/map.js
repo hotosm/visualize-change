@@ -1,17 +1,23 @@
 const React = require("react");
 const { connect } = require("react-redux");
-// const moment = require("moment");
 const mapboxgl = require("mapbox-gl");
 const mapboxglGeoconder = require("mapbox-gl-geocoder");
 const { rgbaObjectToString } = require("../utils");
 
-const PlayerPanel = require("./player-panel");
-const { setCoordinates } = require("../actions");
+const PlayerPanelConnected = require("./player-panel");
+const { setCoordinates, showExportMenu } = require("../actions");
 
 // TODO: Maybe types in object instead of this? Or some regex for '-color' ?
 const parseValue = value => (typeof value === "object" ? rgbaObjectToString(value) : parseFloat(value));
 
 mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
+
+const { Position, Toaster, Intent } = require("@blueprintjs/core");
+
+const AppToaster = Toaster.create({
+  className: "recipe-toaster",
+  position: Position.TOP
+});
 
 const setupMap = map => {
   const sourceId = "osm";
@@ -229,7 +235,7 @@ class Map extends React.Component {
       this.filterMap(this.state.selectedDate);
     });
 
-    window.map = this.map;
+    // window.map = this.map;
   }
 
   componentDidMount() {
@@ -244,9 +250,26 @@ class Map extends React.Component {
     if (this.props.date.selected !== nextProps.date.selected) {
       this.setState({ selectedDate: nextProps.date.selected }, this.handleDateChange);
     }
+
     this.updateMap(nextProps.style);
+
     if (this.props.style.background !== nextProps.style.background) {
       this.initMap(nextProps);
+    }
+
+    if (nextProps.mapCoordinates.zoom < 11 && AppToaster.getToasts().length < 1) {
+      AppToaster.show({
+        message: "Not supported zoom",
+        intent: Intent.DANGER,
+        action: {
+          onClick: () => this.map.setZoom(11),
+          text: "Get me back to supported zoom levels"
+        }
+      });
+    }
+
+    if (nextProps.mapCoordinates.zoom >= 12) {
+      AppToaster.clear();
     }
   }
 
@@ -271,18 +294,15 @@ class Map extends React.Component {
         <div className="map-content" style={{ position: "relative" }}>
           <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }} ref={el => (this.elMap = el)} />
         </div>
-        <PlayerPanel
-          onShareClick={this.props.onShareClick}
-          sidebarOpen={this.props.sidebarOpen}
-          toggleSidebar={this.props.toggleSidebar}
-        />
+        <PlayerPanelConnected />
       </div>
     );
   }
 }
 
-const MapConnected = connect(({ date, map, ui }) => ({ date, mapCoordinates: map }), {
-  setCoordinates
+const MapConnected = connect(({ date, map, style }) => ({ date, mapCoordinates: map, style }), {
+  setCoordinates,
+  showExportMenu
 })(Map);
 
 module.exports = MapConnected;

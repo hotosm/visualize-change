@@ -3,7 +3,7 @@ const moment = require("moment");
 const { connect } = require("react-redux");
 const { Button, ButtonGroup, Slider, Overlay, Card, Elevation } = require("@blueprintjs/core");
 
-const { togglePlay, setSelectedDate, toggleSidebar } = require("../actions");
+const { togglePlay, setSelectedDate, toggleSidebar, showExportMenu } = require("../actions");
 const { capitalizeFirstLetter } = require("../utils");
 
 class PlayerPanel extends React.Component {
@@ -35,7 +35,7 @@ class PlayerPanel extends React.Component {
   }
 
   render() {
-    const { date, togglePlay, toggleSidebar, onShareClick } = this.props;
+    const { date, togglePlay, toggleSidebar, showExportMenu } = this.props;
     return (
       <div className="map-footer">
         <div className="map-footer__content">
@@ -54,7 +54,7 @@ class PlayerPanel extends React.Component {
             </div>
             <ButtonGroup minimal={true}>
               <Button icon="fullscreen" onClick={toggleSidebar} />
-              <Button icon="share" onClick={onShareClick} />
+              <Button icon="share" onClick={showExportMenu} />
             </ButtonGroup>
           </div>
           <div className="map-footer__date">{moment(date.selected).format("YYYY-MM-DD")}</div>
@@ -64,8 +64,11 @@ class PlayerPanel extends React.Component {
   }
 }
 
-const PlayerPanelConnected = connect(({ date }) => ({ date }), { togglePlay, setSelectedDate, toggleSidebar })(
-  PlayerPanel
-);
+const PlayerPanelConnected = connect(({ date }) => ({ date }), {
+  togglePlay,
+  setSelectedDate,
+  toggleSidebar,
+  showExportMenu
+})(PlayerPanel);
 
 module.exports = PlayerPanelConnected;

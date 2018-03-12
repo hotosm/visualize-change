@@ -5,6 +5,8 @@ const {
   SET_SELECTED_DATE,
   SET_COORDINATES,
   TOGGLE_PLAY,
+  SET_MAP_BACKGROUND,
+  SET_FEATURE_STYLE,
   SHOW_EXPORT_MENU,
   HIDE_EXPORT_MENU,
   TOGGLE_SIDEBAR
@@ -24,6 +26,9 @@ module.exports = {
   setSelectedDate: date => action(SET_SELECTED_DATE, date),
   setCoordinates: coordinates => action(SET_COORDINATES, coordinates),
   togglePlay: () => action(TOGGLE_PLAY),
+
+  setMapBackground: background => action(SET_MAP_BACKGROUND, background),
+  setFeatureStyle: (selectedIndex, newStyle) => action(SET_FEATURE_STYLE, { selectedIndex, newStyle }),
 
   showExportMenu: () => action(SHOW_EXPORT_MENU),
   hideExportMenu: () => action(HIDE_EXPORT_MENU),

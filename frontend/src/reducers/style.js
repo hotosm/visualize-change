@@ -1,8 +1,13 @@
+const { SET_MAP_BACKGROUND, SET_FEATURE_STYLE } = require("../constans");
+
 const initialState = {
   background: "dark",
-  style: {
-    roads: {
+  features: [
+    {
+      name: "roads",
       enabled: true,
+      baseEnabled: true,
+      highlightEnabled: true,
       base: {
         "line-color": {
           r: 2,
@@ -13,7 +18,6 @@ const initialState = {
         "line-width": 1
       },
       highlight: {
-        enabled: true,
         "line-color": {
           r: 204,
           g: 245,
@@ -23,8 +27,11 @@ const initialState = {
         "line-width": 1
       }
     },
-    "buildings-outline": {
+    {
+      name: "buildings",
       enabled: true,
+      baseEnabled: true,
+      highlightEnabled: true,
       base: {
         "line-color": {
           r: 208,
@@ -35,7 +42,6 @@ const initialState = {
         "line-width": 1
       },
       highlight: {
-        enabled: true,
         "line-color": {
           r: 235,
           g: 150,
@@ -45,5 +51,20 @@ const initialState = {
         "line-width": 1
       }
     }
+  ]
+};
+
+module.exports = (state = initialState, { type, payload }) => {
+  switch (type) {
+    case SET_MAP_BACKGROUND:
+      return Object.assign({}, state, { background: payload });
+      break;
+    case SET_FEATURE_STYLE:
+      return Object.assign({}, state, {
+        features: state.features.map((style, idx) => (idx === payload.selectedIndex ? payload.newStyle : style))
+      });
+      break;
+    default:
+      return state;
   }
 };

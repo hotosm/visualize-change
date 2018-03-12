@@ -6,7 +6,7 @@ const { SketchPicker } = require("react-color");
 const classNames = require("classnames");
 const debounce = require("lodash.debounce");
 
-const { setInterval, setDateSpan } = require("../actions");
+const { setInterval, setDateSpan, setMapBackground, setFeatureStyle } = require("../actions");
 const { capitalizeFirstLetter, rgbaObjectToString } = require("../utils");
 
 const DescribePanel = () => (
@@ -205,7 +205,7 @@ const StylesPanel = ({ styles, onStyleChange, onBackgroundStyleChange }) => {
   );
 };
 
-const Sidebar = ({ date, styles, isOpen, setDateSpan, setInterval, onStyleChange, onBackgroundStyleChange }) => {
+const Sidebar = ({ date, style, isOpen, setDateSpan, setInterval, setMapBackground, setFeatureStyle }) => {
   return (
     <div className={classNames("sidebar", { "sidebar--hiden": !isOpen })}>
       <div className="sidebar-content">
@@ -220,11 +220,7 @@ const Sidebar = ({ date, styles, isOpen, setDateSpan, setInterval, onStyleChange
             id="Style"
             title="Style"
             panel={
-              <StylesPanel
-                styles={styles}
-                onStyleChange={onStyleChange}
-                onBackgroundStyleChange={onBackgroundStyleChange}
-              />
+              <StylesPanel styles={style} onStyleChange={setFeatureStyle} onBackgroundStyleChange={setMapBackground} />
             }
           />
         </Tabs>
@@ -241,8 +237,11 @@ const Sidebar = ({ date, styles, isOpen, setDateSpan, setInterval, onStyleChange
   );
 };
 
-const SidebarConnected = connect(({ date, ui }) => ({ date, isOpen: ui.sidebarOpen }), { setInterval, setDateSpan })(
-  Sidebar
-);
+const SidebarConnected = connect(({ date, style, ui }) => ({ date, style, isOpen: ui.sidebarOpen }), {
+  setInterval,
+  setDateSpan,
+  setFeatureStyle,
+  setMapBackground
+})(Sidebar);
 
 module.exports = SidebarConnected;
