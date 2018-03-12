@@ -2,6 +2,7 @@ const React = require("react");
 const { connect } = require("react-redux");
 const mapboxgl = require("mapbox-gl");
 const mapboxglGeoconder = require("mapbox-gl-geocoder");
+const ReactResizeDetector = require("react-resize-detector").default;
 const { rgbaObjectToString } = require("../utils");
 
 const PlayerPanelConnected = require("./player-panel");
@@ -65,10 +66,6 @@ const setupMap = map => {
         layout: {
           "line-join": "round",
           "line-cap": "round"
-        },
-        paint: {
-          "line-color": "#D00244",
-          "line-opacity": 0.4
         }
       },
       firstSymbolId
@@ -85,11 +82,6 @@ const setupMap = map => {
         layout: {
           "line-join": "round",
           "line-cap": "round"
-        },
-        paint: {
-          "line-color": "#EB96D7",
-          "line-opacity": 0.8,
-          "line-width": 2
         }
       },
       firstSymbolId
@@ -106,11 +98,6 @@ const setupMap = map => {
         layout: {
           "line-join": "round",
           "line-cap": "round"
-        },
-        paint: {
-          "line-color": "#02D0CA",
-          "line-opacity": 0.7,
-          "line-width": 2
         }
       },
       firstSymbolId
@@ -127,11 +114,6 @@ const setupMap = map => {
         layout: {
           "line-join": "round",
           "line-cap": "round"
-        },
-        paint: {
-          "line-color": "#CCF5E1",
-          "line-opacity": 0.5,
-          "line-width": 5
         }
       },
       firstSymbolId
@@ -200,6 +182,7 @@ class Map extends React.Component {
   constructor(props) {
     super(props);
     this.state = { selectedDate: this.props.date.selected, subscribed: false };
+    this.onResize = this.onResize.bind(this);
   }
 
   initMap(props) {
@@ -235,7 +218,7 @@ class Map extends React.Component {
       this.filterMap(this.state.selectedDate);
     });
 
-    // window.map = this.map;
+    window.map = this.map;
   }
 
   componentDidMount() {
@@ -261,6 +244,7 @@ class Map extends React.Component {
       AppToaster.show({
         message: "Not supported zoom",
         intent: Intent.DANGER,
+        timeout: 0,
         action: {
           onClick: () => this.map.setZoom(11),
           text: "Get me back to supported zoom levels"
@@ -288,9 +272,16 @@ class Map extends React.Component {
     }
   }
 
+  onResize() {
+    if (this.map.loaded()) {
+      this.map.resize();
+    }
+  }
+
   render() {
     return (
       <div className="map">
+        <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} />
         <div className="map-content" style={{ position: "relative" }}>
           <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }} ref={el => (this.elMap = el)} />
         </div>

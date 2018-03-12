@@ -2,7 +2,7 @@ const React = require("react");
 const { connect } = require("react-redux");
 const { Button, Card, Elevation, Overlay } = require("@blueprintjs/core");
 
-const { showExportMenu, hideExportMenu, sendToRenderer } = require("../actions");
+const { hideExportMenu, sendToRenderer } = require("../actions");
 
 class ExportMenu extends React.Component {
   constructor() {
@@ -23,7 +23,8 @@ class ExportMenu extends React.Component {
   };
 
   onExportClick = () => {
-    this.props.onRenderClick({ email: this.state.email, fps: this.state.fps, format: this.state.format });
+    // this.props.onRenderClick({ email: this.state.email, fps: this.state.fps, format: this.state.format });
+    this.props.sendToRenderer(this.state);
   };
 
   onRenderClick = ({ email, format, fps }) => {
@@ -83,6 +84,8 @@ class ExportMenu extends React.Component {
   }
 }
 
-const ExportMenuConnected = connect(({ ui }) => ({ isOpen: ui.exportMenuOpen }), { hideExportMenu })(ExportMenu);
+const ExportMenuConnected = connect(({ ui }) => ({ isOpen: ui.exportMenuOpen }), { hideExportMenu, sendToRenderer })(
+  ExportMenu
+);
 
 module.exports = ExportMenuConnected;

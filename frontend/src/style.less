@@ -15,21 +15,42 @@ body {
 
 .sidebar {
   display: flex;
-  flex-direction: column;
 
   width: 350px;
   transition: margin 0.5s ease-in;
   margin-left: 0;
-  padding: 5px;
   box-shadow: @pt-elevation-shadow-2;
 
   &--hiden {
-    margin-left: -350px;
+    margin-left: -335px;
   }
 }
 
 .sidebar-content {
+  display: flex;
+  flex-flow: column;
   flex-grow: 1;
+  padding: 5px;
+}
+
+.sidebar-tabs {
+  flex-grow: 1;
+}
+
+.sidebar-toggle {
+  width: 15px;
+  height: 100%;
+  background: @light-gray3;
+
+  display: flex;
+  align-items: center;
+
+  cursor: pointer;
+
+  &::after {
+    content: "\2807";
+    font-size: 30px;
+  }
 }
 
 .sidebar-footer {
@@ -228,6 +249,7 @@ body {
   padding: 10px 10px 0 10px;
 }
 
-.pt-datepicker-year-select, .pt-datepicker-month-select {
-  font-size:12px;
+.pt-datepicker-year-select,
+.pt-datepicker-month-select {
+  font-size: 12px;
 }

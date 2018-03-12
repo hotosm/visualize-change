@@ -6,7 +6,7 @@ const { SketchPicker } = require("react-color");
 const classNames = require("classnames");
 const debounce = require("lodash.debounce");
 
-const { setInterval, setDateSpan, setMapBackground, setFeatureStyle } = require("../actions");
+const { setInterval, setDateSpan, setMapBackground, setFeatureStyle, toggleSidebar } = require("../actions");
 const { capitalizeFirstLetter, rgbaObjectToString } = require("../utils");
 
 const DescribePanel = () => (
@@ -205,11 +205,20 @@ const StylesPanel = ({ styles, onStyleChange, onBackgroundStyleChange }) => {
   );
 };
 
-const Sidebar = ({ date, style, isOpen, setDateSpan, setInterval, setMapBackground, setFeatureStyle }) => {
+const Sidebar = ({
+  date,
+  style,
+  isOpen,
+  setDateSpan,
+  setInterval,
+  setMapBackground,
+  setFeatureStyle,
+  toggleSidebar
+}) => {
   return (
     <div className={classNames("sidebar", { "sidebar--hiden": !isOpen })}>
       <div className="sidebar-content">
-        <Tabs animate={true} id="SidebarTabs" renderActiveTabPanelOnly={true}>
+        <Tabs animate={true} id="SidebarTabs" className="sidebar-tabs" renderActiveTabPanelOnly={true}>
           <Tab id="Describe" title="Describe" panel={<DescribePanel />} />
           <Tab
             id="Date"
@@ -224,15 +233,15 @@ const Sidebar = ({ date, style, isOpen, setDateSpan, setInterval, setMapBackgrou
             }
           />
         </Tabs>
-      </div>
-
-      <div className="sidebar-footer">
-        <div className="sidebar-footer__content">
-          <span>Made with </span>
-          <Icon icon="heart" iconSize={12} style={{ marginTop: 3 }} />
-          <span> by HOT and friends</span>
+        <div className="sidebar-footer">
+          <div className="sidebar-footer__content">
+            <span>Made with </span>
+            <Icon icon="heart" iconSize={12} style={{ marginTop: 3 }} />
+            <span> by HOT and friends</span>
+          </div>
         </div>
       </div>
+      <div className="sidebar-toggle" onClick={toggleSidebar} />
     </div>
   );
 };
@@ -241,7 +250,8 @@ const SidebarConnected = connect(({ date, style, ui }) => ({ date, style, isOpen
   setInterval,
   setDateSpan,
   setFeatureStyle,
-  setMapBackground
+  setMapBackground,
+  toggleSidebar
 })(Sidebar);
 
 module.exports = SidebarConnected;

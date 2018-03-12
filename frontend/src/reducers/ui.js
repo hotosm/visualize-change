@@ -1,6 +1,6 @@
 const { SHOW_EXPORT_MENU, HIDE_EXPORT_MENU, TOGGLE_SIDEBAR } = require("../constans");
 const initialState = {
-  sidebarOpen: false,
+  sidebarOpen: true,
   exportMenuOpen: false
 };
 

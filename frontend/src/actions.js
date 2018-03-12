@@ -1,4 +1,5 @@
 const moment = require("moment");
+
 const {
   CHANGE_INTERVAL,
   SET_DATES,
@@ -20,6 +21,28 @@ const action = (type, payload) => {
   return { type, payload };
 };
 
+const sendToRenderer = ({ email, format, fps }) => (dispatch, getState) => {
+  const { map, date, style } = getState();
+
+  const mapConfig = Object.assign({}, map, {
+    startDate: date.start,
+    endDate: date.end,
+    interval: date.interval,
+    email,
+    fps,
+    format,
+    style: style
+  });
+
+  fetch("/api/queue-render", {
+    headers: {
+      "Content-Type": "application/json"
+    },
+    method: "post",
+    body: JSON.stringify(mapConfig)
+  }).then(res => console.log(res));
+};
+
 module.exports = {
   setInterval: interval => action(CHANGE_INTERVAL, interval),
   setDateSpan: ([start, end]) => action(SET_DATES, { start: moment(start).valueOf(), end: moment(end).valueOf() }),
@@ -32,5 +55,7 @@ module.exports = {
 
   showExportMenu: () => action(SHOW_EXPORT_MENU),
   hideExportMenu: () => action(HIDE_EXPORT_MENU),
-  toggleSidebar: () => action(TOGGLE_SIDEBAR)
+  toggleSidebar: () => action(TOGGLE_SIDEBAR),
+
+  sendToRenderer
 };

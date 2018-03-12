@@ -13,6 +13,7 @@ const mapboxgl = require("mapbox-gl");
 const { ipcRenderer, remote } = require("electron");
 
 const rgbaObjectToString = obj => `rgba(${obj.r}, ${obj.g}, ${obj.b}, ${obj.a})`;
+const parseValue = value => (typeof value === "object" ? rgbaObjectToString(value) : parseFloat(value));
 
 const { mapConfig } = remote.getCurrentWindow();
 
@@ -20,7 +21,7 @@ mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
 
 const map = new mapboxgl.Map({
   container: "map",
-  style: "mapbox://styles/mapbox/dark-v9",
+  style: `mapbox://styles/mapbox/${mapConfig.style.background}-v9`,
   hash: true,
   zoom: mapConfig.zoom,
   center: [mapConfig.lng, mapConfig.lat]
@@ -39,20 +40,6 @@ map.on("load", () => {
   // sources and layers
 
   const sourceId = "osm";
-
-  const roadsColor = rgbaObjectToString(mapConfig.style.roads.base["line-color"]);
-  const roadsOpacity = mapConfig.style.roads.enabled ? 1 : 0;
-  const roadsLineWidth = parseFloat(mapConfig.style.roads.base["line-width"]);
-  const roadsHighlightColor = rgbaObjectToString(mapConfig.style.roads.highlight["line-color"]);
-  const roadsHighlightOpacity = mapConfig.style.roads.highlight.enabled ? 1 : 0;
-  const roadsHighlightLineWidth = parseFloat(mapConfig.style.roads.highlight["line-width"]);
-
-  const buildingsColor = rgbaObjectToString(mapConfig.style["buildings-outline"].base["line-color"]);
-  const buildingsOpacity = mapConfig.style["buildings-outline"].enabled ? 1 : 0;
-  const buildingsLineWidth = parseFloat(mapConfig.style["buildings-outline"].base["line-width"]);
-  const buildingsHighlightColor = rgbaObjectToString(mapConfig.style["buildings-outline"].highlight["line-color"]);
-  const buildingsHighlightOpacity = mapConfig.style["buildings-outline"].highlight.enabled ? 1 : 0;
-  const buildingsHighlightLineWidth = parseFloat(mapConfig.style["buildings-outline"].highlight["line-width"]);
 
   const layerId = "osm";
 
@@ -76,7 +63,7 @@ map.on("load", () => {
       ["!has", "building"],
       ["!has", "landuse"]
     ],
-    [`${layerId}-buildings-outline`]: [["==", "$type", "Polygon"], ["has", "building"]]
+    [`${layerId}-buildings`]: [["==", "$type", "Polygon"], ["has", "building"]]
   };
 
   const firstSymbolId = map.getStyle().layers.filter(d => d.type === "symbol")[0].id;
@@ -92,45 +79,35 @@ map.on("load", () => {
 
   map.addLayer(
     {
-      id: `${layerId}-buildings-outline`,
+      id: `${layerId}-buildings`,
       type: "line",
       source: `${sourceId}`,
       "source-layer": `${layerId}`,
-      filter: ["all"].concat(filters[`${layerId}-buildings-outline`]),
+      filter: ["all"].concat(filters[`${layerId}-buildings`]),
       layout: {
         "line-join": "round",
         "line-cap": "round"
-      },
-      paint: {
-        "line-color": buildingsColor,
-        "line-width": buildingsLineWidth,
-        "line-opacity": buildingsOpacity
       }
     },
     firstSymbolId
   );
-  layers.polygons.push(`${layerId}-buildings-outline`);
+  layers.polygons.push(`${layerId}-buildings`);
 
   map.addLayer(
     {
-      id: `${layerId}-buildings-outline-highlighted`,
+      id: `${layerId}-buildings-highlighted`,
       type: "line",
       source: `${sourceId}`,
       "source-layer": `${layerId}`,
-      filter: ["all"].concat(filters[`${layerId}-buildings-outline`]),
+      filter: ["all"].concat(filters[`${layerId}-buildings`]),
       layout: {
         "line-join": "round",
         "line-cap": "round"
-      },
-      paint: {
-        "line-color": buildingsHighlightColor,
-        "line-width": buildingsHighlightLineWidth,
-        "line-opacity": buildingsHighlightOpacity
       }
     },
     firstSymbolId
   );
-  highlighted.polygons.push(`${layerId}-buildings-outline-highlighted`);
+  highlighted.polygons.push(`${layerId}-buildings-highlighted`);
 
   map.addLayer(
     {
@@ -142,11 +119,6 @@ map.on("load", () => {
       layout: {
         "line-join": "round",
         "line-cap": "round"
-      },
-      paint: {
-        "line-color": roadsColor,
-        "line-width": roadsLineWidth,
-        "line-opacity": roadsOpacity
       }
     },
     firstSymbolId
@@ -163,11 +135,6 @@ map.on("load", () => {
       layout: {
         "line-join": "round",
         "line-cap": "round"
-      },
-      paint: {
-        "line-color": roadsHighlightColor,
-        "line-width": roadsHighlightLineWidth,
-        "line-opacity": roadsHighlightOpacity
       }
     },
     firstSymbolId
@@ -221,6 +188,26 @@ map.on("load", () => {
     });
   };
 
+  const setStyles = styles => {
+    styles.features.forEach(feature => {
+      const layerName = `${layerId}-${feature.name}`;
+      const highlightedLayerName = `${layerName}-highlighted`;
+
+      Object.keys(feature.base).forEach(styleName => {
+        map.setPaintProperty(layerName, styleName, parseValue(feature.base[styleName]));
+      });
+
+      Object.keys(feature.highlight).forEach(styleName => {
+        map.setPaintProperty(highlightedLayerName, styleName, parseValue(feature.highlight[styleName]));
+      });
+
+      // TODO: This should go out in future and we should manager to disable / enabled layers
+      map.setPaintProperty(layerName, "line-opacity", !feature.enabled || !feature.baseEnabled ? 0 : 1);
+
+      map.setPaintProperty(highlightedLayerName, "line-opacity", !feature.enabled || !feature.highlightEnabled ? 0 : 1);
+    });
+  };
+
   isLoaded(() => {
     const renderImg = n => {
       isLoaded(() => {
@@ -237,5 +224,6 @@ map.on("load", () => {
 
     filterLayers(0);
     renderImg(0);
+    setStyles(mapConfig.style);
   });
 });

@@ -23,8 +23,8 @@ const MAP_CONFIG_SCHEMA = j.object().keys({
     .number()
     .min(0)
     .max(18),
-  startDate: j.date().iso(), // YYYY-MM-DDThh:mm:ss.sssZ
-  endDate: j.date().iso(),
+  startDate: j.number(), // YYYY-MM-DDThh:mm:ss.sssZ
+  endDate: j.number(),
   interval: j.string().valid("hours", "days", "weeks"),
   fps: j.number(),
   style: j.object() // TODO: Need to add better validation for this
