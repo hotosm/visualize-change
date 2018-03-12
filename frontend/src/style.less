@@ -1,5 +1,9 @@
 @import "~@blueprintjs/core/lib/less/variables.less";
 
+body {
+  overflow: hidden;
+}
+
 .container {
   height: 100vh;
 }
@@ -14,8 +18,14 @@
   flex-direction: column;
 
   width: 350px;
-
+  transition: margin 0.5s ease-in;
+  margin-left: 0;
+  padding: 5px;
   box-shadow: @pt-elevation-shadow-2;
+
+  &--hiden {
+    margin-left: -350px;
+  }
 }
 
 .sidebar-content {
@@ -92,6 +102,7 @@
   display: flex;
   align-items: center;
   padding: 0 10px;
+  width: 100px;
   height: @map-footer-height;
 
   background: @light-gray4;
@@ -116,7 +127,7 @@
   cursor: pointer;
   border-radius: 3px;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
-  margin-right: 5px;
+  // margin-right: 5px;
 }
 
 .color-picker__color {
@@ -143,13 +154,27 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 30px;
+}
+
+.inline-label h5 {
+  margin: 0;
+}
+
+.inline-label input[type="number"] {
+  width: 30px;
+  height: 20px;
+  font-size: 11px;
+  border-radius: 3px;
+  border: none;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 .section__header {
   .inline-label();
   padding: 5px 0;
-  margin: 0 0 10px 0;
-  border-bottom: 1px solid #f0f0f0;
+  margin: 0 0 20px 0;
+  // border-bottom: 1px solid #f0f0f0;
 }
 
 .section__header h4 {
@@ -184,4 +209,25 @@
 
 .sidebar__card {
   margin-bottom: 10px;
+}
+
+// Temp!
+.styles-panel {
+  height: calc(~"100vh - 100px - 50px");
+  overflow: scroll;
+}
+
+.pt-card {
+  margin: 10px;
+  .pt-card {
+    margin: 0 0 20px 0;
+  }
+}
+
+.pt-tab-list {
+  padding: 10px 10px 0 10px;
+}
+
+.pt-datepicker-year-select, .pt-datepicker-month-select {
+  font-size:12px;
 }

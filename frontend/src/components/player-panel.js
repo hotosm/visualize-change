@@ -3,7 +3,7 @@ const moment = require("moment");
 const { connect } = require("react-redux");
 const { Button, ButtonGroup, Slider, Overlay, Card, Elevation } = require("@blueprintjs/core");
 
-const { togglePlay, setSelectedDate } = require("../actions");
+const { togglePlay, setSelectedDate, toggleSidebar } = require("../actions");
 const { capitalizeFirstLetter } = require("../utils");
 
 class PlayerPanel extends React.Component {
@@ -11,7 +11,7 @@ class PlayerPanel extends React.Component {
     const { start, interval } = this.props.date;
     const newSelectedDate = moment(start)
       .add(value, interval)
-      .toDate();
+      .valueOf();
     this.props.setSelectedDate(newSelectedDate);
   };
 
@@ -26,7 +26,7 @@ class PlayerPanel extends React.Component {
       this.timer = setTimeout(() => {
         const next = moment(this.props.date.selected)
           .add(1, this.props.date.interval)
-          .toDate();
+          .valueOf();
         this.props.setSelectedDate(next);
       }, 1000);
     } else {
@@ -35,7 +35,7 @@ class PlayerPanel extends React.Component {
   }
 
   render() {
-    const { date, togglePlay, onShareClick } = this.props;
+    const { date, togglePlay, toggleSidebar, onShareClick } = this.props;
     return (
       <div className="map-footer">
         <div className="map-footer__content">
@@ -53,7 +53,7 @@ class PlayerPanel extends React.Component {
               />
             </div>
             <ButtonGroup minimal={true}>
-              <Button icon="fullscreen" />
+              <Button icon="fullscreen" onClick={toggleSidebar} />
               <Button icon="share" onClick={onShareClick} />
             </ButtonGroup>
           </div>
@@ -64,6 +64,8 @@ class PlayerPanel extends React.Component {
   }
 }
 
-const PlayerPanelConnected = connect(({ date }) => ({ date }), { togglePlay, setSelectedDate })(PlayerPanel);
+const PlayerPanelConnected = connect(({ date }) => ({ date }), { togglePlay, setSelectedDate, toggleSidebar })(
+  PlayerPanel
+);
 
 module.exports = PlayerPanelConnected;

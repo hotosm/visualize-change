@@ -29,58 +29,75 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      style: {
-        roads: {
-          enabled: true,
-          base: {
-            "line-color": {
-              r: 2,
-              g: 208,
-              b: 202,
-              a: 0.7
-            },
-            "line-width": 1
-          },
-          highlight: {
+      styles: {
+        background: "dark",
+        features: [
+          {
+            name: "roads",
             enabled: true,
-            "line-color": {
-              r: 204,
-              g: 245,
-              b: 225,
-              a: 0.5
+            baseEnabled: true,
+            highlightEnabled: true,
+            base: {
+              "line-color": {
+                r: 2,
+                g: 208,
+                b: 202,
+                a: 0.7
+              },
+              "line-width": 1
             },
-            "line-width": 1
-          }
-        },
-        "buildings-outline": {
-          enabled: true,
-          base: {
-            "line-color": {
-              r: 208,
-              g: 2,
-              b: 68,
-              a: 0.7
-            },
-            "line-width": 1
+            highlight: {
+              "line-color": {
+                r: 204,
+                g: 245,
+                b: 225,
+                a: 0.5
+              },
+              "line-width": 1
+            }
           },
-          highlight: {
+          {
+            name: "buildings",
             enabled: true,
-            "line-color": {
-              r: 235,
-              g: 150,
-              b: 215,
-              a: 1
+            baseEnabled: true,
+            highlightEnabled: true,
+            base: {
+              "line-color": {
+                r: 208,
+                g: 2,
+                b: 68,
+                a: 0.7
+              },
+              "line-width": 1
             },
-            "line-width": 1
+            highlight: {
+              "line-color": {
+                r: 235,
+                g: 150,
+                b: 215,
+                a: 1
+              },
+              "line-width": 1
+            }
           }
-        }
+        ]
       },
       displayExportMenu: false
     };
   }
 
-  onStyleChange = (name, value) => {
-    this.setState(set(this.state.style, name, value));
+  onBackgroundChange = newStyle => {
+    this.setState({
+      styles: Object.assign({}, this.state.styles, { background: newStyle })
+    });
+  };
+
+  onStyleChange = (selectedIndex, newStyle) => {
+    this.setState({
+      styles: Object.assign({}, this.state.styles, {
+        features: this.state.styles.features.map((style, idx) => (idx === selectedIndex ? newStyle : style))
+      })
+    });
   };
 
   onShareClick = () => {
@@ -124,8 +141,12 @@ class App extends React.Component {
         <Topbar />
 
         <Main>
-          <SidebarConnected style={this.state.style} onStyleChange={this.onStyleChange} />
-          <MapConnected style={this.state.style} onShareClick={this.onShareClick} />
+          <SidebarConnected
+            styles={this.state.styles}
+            onStyleChange={this.onStyleChange}
+            onBackgroundStyleChange={this.onBackgroundChange}
+          />
+          <MapConnected style={this.state.styles} onShareClick={this.onShareClick} />
         </Main>
       </div>
     );

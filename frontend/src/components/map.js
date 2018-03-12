@@ -1,12 +1,15 @@
 const React = require("react");
 const { connect } = require("react-redux");
-const moment = require("moment");
+// const moment = require("moment");
 const mapboxgl = require("mapbox-gl");
 const mapboxglGeoconder = require("mapbox-gl-geocoder");
 const { rgbaObjectToString } = require("../utils");
 
 const PlayerPanel = require("./player-panel");
 const { setCoordinates } = require("../actions");
+
+// TODO: Maybe types in object instead of this? Or some regex for '-color' ?
+const parseValue = value => (typeof value === "object" ? rgbaObjectToString(value) : parseFloat(value));
 
 mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
 
@@ -34,7 +37,7 @@ const setupMap = map => {
       ["!has", "building"],
       ["!has", "landuse"]
     ],
-    [`${layerId}-buildings-outline`]: [["==", "$type", "Polygon"], ["has", "building"]]
+    [`${layerId}-buildings`]: [["==", "$type", "Polygon"], ["has", "building"]]
   };
 
   map.on("load", () => {
@@ -48,11 +51,11 @@ const setupMap = map => {
 
     map.addLayer(
       {
-        id: `${layerId}-buildings-outline`,
+        id: `${layerId}-buildings`,
         type: "line",
         source: `${sourceId}`,
         "source-layer": `${layerId}`,
-        filter: ["all"].concat(filters[`${layerId}-buildings-outline`]),
+        filter: ["all"].concat(filters[`${layerId}-buildings`]),
         layout: {
           "line-join": "round",
           "line-cap": "round"
@@ -64,15 +67,15 @@ const setupMap = map => {
       },
       firstSymbolId
     );
-    layers.polygons.push(`${layerId}-buildings-outline`);
+    layers.polygons.push(`${layerId}-buildings`);
 
     map.addLayer(
       {
-        id: `${layerId}-buildings-outline-highlighted`,
+        id: `${layerId}-buildings-highlighted`,
         type: "line",
         source: `${sourceId}`,
         "source-layer": `${layerId}`,
-        filter: ["all"].concat(filters[`${layerId}-buildings-outline`]),
+        filter: ["all"].concat(filters[`${layerId}-buildings`]),
         layout: {
           "line-join": "round",
           "line-cap": "round"
@@ -85,7 +88,7 @@ const setupMap = map => {
       },
       firstSymbolId
     );
-    highlighted.polygons.push(`${layerId}-buildings-outline-highlighted`);
+    highlighted.polygons.push(`${layerId}-buildings-highlighted`);
 
     map.addLayer(
       {
@@ -132,14 +135,11 @@ const setupMap = map => {
 
   return {
     filter: date => {
-      const timestamp = date.getTime();
+      const timestamp = date / 1000;
 
-      const filter = [
-        "all",
-        ["<=", "@timestamp", Math.round(timestamp / 1000)] // VERY IMPORTANT - timestamp is of by 1000!
-      ];
+      const filter = ["all", ["<=", "@timestamp", timestamp]];
 
-      const highlightedFilter = filter.concat([[">=", "@timestamp", Math.round(timestamp / 1000) - 86400]]);
+      const highlightedFilter = filter.concat([[">=", "@timestamp", timestamp - 86400]]);
 
       Object.keys(layers).forEach(layerGroupKey => {
         layers[layerGroupKey].forEach(layer => {
@@ -165,23 +165,26 @@ const setupMap = map => {
     },
 
     update: styles => {
-      Object.keys(styles).forEach(styleKey => {
-        const style = styles[styleKey];
-        const layerName = `${layerId}-${styleKey}`;
+      styles.features.forEach(feature => {
+        const layerName = `${layerId}-${feature.name}`;
         const highlightedLayerName = `${layerName}-highlighted`;
 
-        const opacity = style.enabled ? 1 : 0;
-        const highlightOpacity = style.highlight.enabled ? 1 : 0;
-        const lineWidth = parseFloat(style.base["line-width"]);
-        const highlightLineWidth = parseFloat(style.highlight["line-width"]);
+        Object.keys(feature.base).forEach(styleName => {
+          map.setPaintProperty(layerName, styleName, parseValue(feature.base[styleName]));
+        });
 
-        map.setPaintProperty(layerName, "line-color", rgbaObjectToString(style.base["line-color"]));
-        map.setPaintProperty(layerName, "line-opacity", opacity);
-        map.setPaintProperty(layerName, "line-width", lineWidth);
+        Object.keys(feature.highlight).forEach(styleName => {
+          map.setPaintProperty(highlightedLayerName, styleName, parseValue(feature.highlight[styleName]));
+        });
 
-        map.setPaintProperty(highlightedLayerName, "line-color", rgbaObjectToString(style.highlight["line-color"]));
-        map.setPaintProperty(highlightedLayerName, "line-opacity", highlightOpacity);
-        map.setPaintProperty(highlightedLayerName, "line-width", highlightLineWidth);
+        // TODO: This should go out in future and we should manager to disable / enabled layers
+        map.setPaintProperty(layerName, "line-opacity", !feature.enabled || !feature.baseEnabled ? 0 : 1);
+
+        map.setPaintProperty(
+          highlightedLayerName,
+          "line-opacity",
+          !feature.enabled || !feature.highlightEnabled ? 0 : 1
+        );
       });
     }
   };
@@ -193,12 +196,13 @@ class Map extends React.Component {
     this.state = { selectedDate: this.props.date.selected, subscribed: false };
   }
 
-  componentDidMount() {
+  initMap(props) {
+    if (this.map) this.map.remove();
     this.map = new mapboxgl.Map({
       container: this.elMap,
-      style: "mapbox://styles/mapbox/dark-v9",
-      center: [this.props.mapCoordinates.lng, this.props.mapCoordinates.lat],
-      zoom: this.props.mapCoordinates.zoom
+      style: `mapbox://styles/mapbox/${props.style.background}-v9`,
+      center: [props.mapCoordinates.lng, props.mapCoordinates.lat],
+      zoom: props.mapCoordinates.zoom
     });
 
     this.map.addControl(new mapboxgl.NavigationControl());
@@ -208,12 +212,12 @@ class Map extends React.Component {
       })
     );
 
-    const { filter: filterMap, update: updateMap } = setupMap(this.map, this.props.style);
+    const { filter: filterMap, update: updateMap } = setupMap(this.map, props.style);
     this.filterMap = filterMap;
     this.updateMap = updateMap;
 
     this.map.on("move", () => {
-      this.props.setCoordinates({
+      props.setCoordinates({
         lat: this.map.getCenter().lat,
         lng: this.map.getCenter().lng,
         zoom: this.map.getZoom()
@@ -221,9 +225,15 @@ class Map extends React.Component {
     });
 
     this.map.on("load", () => {
-      this.updateMap(this.props.style);
+      this.updateMap(props.style);
       this.filterMap(this.state.selectedDate);
     });
+
+    window.map = this.map;
+  }
+
+  componentDidMount() {
+    this.initMap(this.props);
   }
 
   componententWillUmount() {
@@ -233,6 +243,10 @@ class Map extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.date.selected !== nextProps.date.selected) {
       this.setState({ selectedDate: nextProps.date.selected }, this.handleDateChange);
+    }
+    this.updateMap(nextProps.style);
+    if (this.props.style.background !== nextProps.style.background) {
+      this.initMap(nextProps);
     }
   }
 
@@ -257,12 +271,18 @@ class Map extends React.Component {
         <div className="map-content" style={{ position: "relative" }}>
           <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }} ref={el => (this.elMap = el)} />
         </div>
-        <PlayerPanel onShareClick={this.props.onShareClick} />
+        <PlayerPanel
+          onShareClick={this.props.onShareClick}
+          sidebarOpen={this.props.sidebarOpen}
+          toggleSidebar={this.props.toggleSidebar}
+        />
       </div>
     );
   }
 }
 
-const MapConnected = connect(({ date, map }) => ({ date, mapCoordinates: map }), { setCoordinates })(Map);
+const MapConnected = connect(({ date, map, ui }) => ({ date, mapCoordinates: map }), {
+  setCoordinates
+})(Map);
 
 module.exports = MapConnected;
