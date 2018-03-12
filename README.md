@@ -21,6 +21,8 @@ MAILGUN_API_KEY=...     # api key for mailgun
 MAILGUN_DOMAIN=...      # domain from mailgun
 MAPBOX_ACCESS_TOKEN=... # access token for mapbox
 SERVER_DOMAIN=...       # main domain of the server (http://SERVER_DOMAIN/), used for making URL in email
+POSTGRES_PASSWORD=...   # password to be used for postgres DB
+POSTGRES_USER=...       # user to be used for postgres DB
 ```
 
 For dev, this could be set in `PROJECT_ROOT/.env`, for production use it's preffered to `export` them in the shell.

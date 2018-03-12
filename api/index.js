@@ -1,6 +1,6 @@
 const amqp = require("amqplib/callback_api");
 const express = require("express");
-const mongojs = require("mongojs");
+const knex = require("knex");
 const morgan = require("morgan");
 const { parallel } = require("async");
 
@@ -24,30 +24,18 @@ const createRabbitMQ = callback => {
 };
 
 const createDB = callback => {
-  const db = mongojs("mongodb://db:27017", ["data", "healthCheck"]);
+  const connection = `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@db:5432/postgres`;
 
-  db.on("error", err => {
-    callback(err);
+  const db = knex({
+    client: "pg",
+    connection
   });
 
-  // FIXME: connect doesn't trigger when DB is opened?
-  // db.on("connect", () => {
-  //   console.log("connected");
-  // });
-
-  db.healthCheck.remove({ works: true }, err => {
-    if (err) {
-      logger.error(err);
-    } else {
-      db.healthCheck.insert({ works: true, ts: new Date().getTime() }, err => {
-        if (err) {
-          logger.error(err);
-        } else {
-          callback(null, db);
-        }
-      });
-    }
-  });
+  // test connection and callback if ok
+  db
+    .raw("select 1 + 1 as result")
+    .then(() => callback(null, db))
+    .catch(e => callback(e));
 };
 
 parallel(

@@ -72,6 +72,8 @@ services:
       - MAILGUN_API_KEY # env passed from shell
       - MAILGUN_DOMAIN # env passed from shell
       - SERVER_DOMAIN # env passed from shell
+      - POSTGRES_PASSWORD # env passed from shell
+      - POSTGRES_USER # env passed from shell
     volumes:
       - ./data/tiles:/data/tiles # volume shared with api
     depends_on:
@@ -81,24 +83,17 @@ services:
       - "4000:4000"
 
   db:
-    image: mongo
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD # env passed from shell
+      - POSTGRES_USER # env passed from shell
     volumes:
-      - ./data/db:/data/db
-    healthcheck:
-      test: [ "CMD", "nc", "-zv", "localhost", "27017" ]
-      interval: 10s
-      timeout: 10s
-      retries: 10
+      - ./data/db:/var/lib/postgresql/data
     ports:
-      - "27017:27017"
+      - "5432:5432"
 
   rabbitmq:
     image: rabbitmq:3
-    healthcheck:
-      test: [ "CMD", "nc", "-zv", "localhost", "15672" ]
-      interval: 10s
-      timeout: 10s
-      retries: 10
     hostname: "rabbitmq"
     volumes:
       - ./data/rabbitmq:/var/lib/rabbitmq

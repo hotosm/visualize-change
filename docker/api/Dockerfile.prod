@@ -12,4 +12,4 @@ RUN yarn install
 
 EXPOSE 4000
 
-CMD wait-on -l tcp:db:27017 tcp:rabbitmq:5672 && yarn start
+CMD wait-on -l tcp:db:5432 tcp:rabbitmq:5672 && yarn start
