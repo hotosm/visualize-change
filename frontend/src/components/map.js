@@ -2,7 +2,6 @@ const React = require("react");
 const { connect } = require("react-redux");
 const mapboxgl = require("mapbox-gl");
 const mapboxglGeoconder = require("mapbox-gl-geocoder");
-const ReactResizeDetector = require("react-resize-detector").default;
 const { rgbaObjectToString } = require("../utils");
 
 const PlayerPanelConnected = require("./player-panel");
@@ -182,7 +181,6 @@ class Map extends React.Component {
   constructor(props) {
     super(props);
     this.state = { selectedDate: this.props.date.selected, subscribed: false };
-    this.onResize = this.onResize.bind(this);
   }
 
   initMap(props) {
@@ -272,16 +270,9 @@ class Map extends React.Component {
     }
   }
 
-  onResize() {
-    if (this.map.loaded()) {
-      this.map.resize();
-    }
-  }
-
   render() {
     return (
       <div className="map">
-        <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} />
         <div className="map-content" style={{ position: "relative" }}>
           <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }} ref={el => (this.elMap = el)} />
         </div>

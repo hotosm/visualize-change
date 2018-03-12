@@ -35,9 +35,9 @@ class PlayerPanel extends React.Component {
   }
 
   render() {
-    const { date, togglePlay, toggleSidebar, showExportMenu } = this.props;
+    const { date, togglePlay, toggleSidebar, showExportMenu, isSidebarOpen } = this.props;
     return (
-      <div className="map-footer">
+      <div className="map-footer" style={{ left: isSidebarOpen ? 350 : 15 }}>
         <div className="map-footer__content">
           <div className="map-footer__items">
             <Button className="pt-minimal" icon={date.isPlaying ? "pause" : "play"} onClick={togglePlay} />
@@ -53,7 +53,7 @@ class PlayerPanel extends React.Component {
               />
             </div>
             <ButtonGroup minimal={true}>
-              <Button icon="fullscreen" onClick={toggleSidebar} />
+              <Button icon="fullscreen" disabled onClick={toggleSidebar} />
               <Button icon="share" onClick={showExportMenu} />
             </ButtonGroup>
           </div>
@@ -64,7 +64,7 @@ class PlayerPanel extends React.Component {
   }
 }
 
-const PlayerPanelConnected = connect(({ date }) => ({ date }), {
+const PlayerPanelConnected = connect(({ date, ui }) => ({ date, isSidebarOpen: ui.sidebarOpen }), {
   togglePlay,
   setSelectedDate,
   toggleSidebar,

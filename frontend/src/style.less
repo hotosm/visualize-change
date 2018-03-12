@@ -9,14 +9,19 @@ body {
 }
 
 .main {
-  display: flex;
+  // display: flex;
   height: calc(100% - 50px);
 }
 
 .sidebar {
+  position: fixed;
+  top: 50px;
+  bottom: 0;
   display: flex;
+  z-index: 1;
 
   width: 350px;
+  background: white;
   transition: margin 0.5s ease-in;
   margin-left: 0;
   box-shadow: @pt-elevation-shadow-2;
@@ -67,6 +72,12 @@ body {
 }
 
 .map {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  bottom: 40px;
+
   display: flex;
   flex-direction: column;
 
@@ -85,6 +96,13 @@ body {
   box-shadow: @pt-elevation-shadow-2;
 
   display: flex;
+
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 350px;
+
+  transition: left 0.5s ease-in;
 }
 
 .map-footer__content {
