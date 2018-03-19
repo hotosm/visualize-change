@@ -18,7 +18,8 @@ services:
     image: hot-mapping-vis-server
     restart: on-failure
     ports:
-      - "8080:80" # TODO: change to "80:80" for "real" production use
+      - "80:80"
+      - "8080:80"
     volumes:
       - ./data/capture:/data/capture # volume shared with nginx
     depends_on:
