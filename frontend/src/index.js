@@ -89,7 +89,7 @@ class MainContainer extends React.Component {
 
   onToggleViewState() {
     const id = this.props.match.params.id;
-    this.props.routerPush(`/${this.isEditing() ? "view" : "edit"}/${id}`);
+    this.props.routerPush(`/${this.isEditing() ? "view" : "edit"}/${id ? id : ""}`);
   }
 
   render() {
@@ -140,6 +140,7 @@ const AppContainer = () => (
           <Route exact path="/" render={() => <Redirect to="/edit" />} />
           <Layout exact path="/edit" main={MainContainerConnected} />
           <Layout exact path="/edit/:id" main={MainContainerConnected} />
+          <Layout exact path="/view" main={MainContainerConnected} />
           <Layout exact path="/view/:id" main={MainContainerConnected} />
           <Layout exact path="/about" />
         </Switch>
