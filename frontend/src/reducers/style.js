@@ -1,4 +1,4 @@
-const { SET_MAP_BACKGROUND, SET_FEATURE_STYLE } = require("../constans");
+const { SET_MAP_BACKGROUND, SET_FEATURE_STYLE, EXPORT_DATA_FETCHED } = require("../constans");
 
 const initialState = {
   background: "dark",
@@ -10,9 +10,9 @@ const initialState = {
       highlightEnabled: true,
       base: {
         "line-color": {
-          r: 2,
-          g: 208,
-          b: 202,
+          r: 245,
+          g: 166,
+          b: 35,
           a: 0.7
         },
         "line-width": 1
@@ -56,6 +56,8 @@ const initialState = {
 
 module.exports = (state = initialState, { type, payload }) => {
   switch (type) {
+    case EXPORT_DATA_FETCHED:
+      return Object.assign({}, initialState, payload.data.config.style);
     case SET_MAP_BACKGROUND:
       return Object.assign({}, state, { background: payload });
       break;

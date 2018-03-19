@@ -1,4 +1,4 @@
-const { SET_COORDINATES } = require("../constans");
+const { SET_COORDINATES, EXPORT_DATA_FETCHED } = require("../constans");
 
 const initialState = {
   lat: -8.343,
@@ -8,6 +8,8 @@ const initialState = {
 
 module.exports = (state = initialState, { type, payload }) => {
   switch (type) {
+    case EXPORT_DATA_FETCHED:
+      return Object.assign({}, initialState, payload.data.config.map);
     case SET_COORDINATES:
       return Object.assign({}, state, {
         lat: payload.lat || state.lat,

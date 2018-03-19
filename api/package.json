@@ -15,6 +15,7 @@
     "@mapbox/mbtiles": "^0.9.0",
     "amqplib": "^0.5.2",
     "async": "^2.6.0",
+    "cookie-session": "^2.0.0-beta.3",
     "express": "^4.16.2",
     "joi": "^13.1.2",
     "knex": "^0.14.4",

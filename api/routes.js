@@ -26,7 +26,6 @@ const MAP_CONFIG_SCHEMA = j.object().keys({
   startDate: j.number(), // YYYY-MM-DDThh:mm:ss.sssZ
   endDate: j.number(),
   interval: j.string().valid("hours", "days", "weeks"),
-  fps: j.number(),
   style: j.object() // TODO: Need to add better validation for this
 });
 
@@ -47,7 +46,17 @@ const md5 = str =>
     .update(str)
     .digest("hex");
 
-const initRoutes = ({ queueRender }, callback) => {
+const mapConfigFromReq = req => ({
+  lat: req.body.lat,
+  lng: req.body.lng,
+  zoom: req.body.zoom,
+  startDate: req.body.startDate,
+  endDate: req.body.endDate,
+  interval: req.body.interval,
+  style: req.body.style
+});
+
+const initRoutes = ({ queueRender, exportsAdd, exportsGetById, exportsUpdate }, callback) => {
   // main api
   const router = express.Router();
   router.use(express.json());
@@ -57,23 +66,28 @@ const initRoutes = ({ queueRender }, callback) => {
     res.send("OK");
   });
 
+  router.get("/exports/:id", (req, res) => {
+    req.session.views = (req.session.views || 0) + 1;
+    console.log(">>>>> req.session from get", req.session);
+    exportsGetById(req.params.id, item => res.send(item));
+  });
+
+  router.post("/exports", (req, res) => {
+    exportsAdd(req.body, id => {
+      res.json(id);
+    });
+  });
+
+  router.patch("/exports/:id", (req, res) => {
+    exportsUpdate(req.params.id, req.body, item => res.send(item));
+  });
+
   router.post("/queue-render", (req, res) => {
     // this is more wordy than just passing `req.body` to `queueRender` but
     // allows us to validate, and see the keys clearly
-    const mapConfig = {
-      lat: req.body.lat,
-      lng: req.body.lng,
-      zoom: req.body.zoom,
-      startDate: req.body.startDate,
-      endDate: req.body.endDate,
-      interval: req.body.interval,
-      fps: req.body.fps,
-      style: req.body.style
-    };
-
     const renderConfig = {
       email: req.body.email,
-      map: mapConfig,
+      map: mapConfigFromReq(req),
       format: req.body.format,
       fps: req.body.fps,
       dir: md5(
@@ -123,7 +137,7 @@ const initRoutes = ({ queueRender }, callback) => {
   callback(router);
 };
 
-module.exports = ({ channel }, callback) => {
+module.exports = ({ channel, db }, callback) => {
   const nodemailerMailgun = nodemailer.createTransport(
     mailgunTransport({
       auth: {
@@ -183,6 +197,31 @@ module.exports = ({ channel }, callback) => {
       });
     };
 
-    initRoutes({ queueRender }, callback);
+    const EXPORTS_TABLE_NAME = "exports";
+
+    const exportsGetById = (id, respond) => {
+      db(EXPORTS_TABLE_NAME)
+        .where({ id })
+        .select()
+        .then(respond);
+    };
+
+    const exportsAdd = (body, respond) => {
+      db(EXPORTS_TABLE_NAME)
+        .returning("id")
+        .insert({ config: JSON.stringify(body) })
+        .then(respond);
+    };
+
+    const exportsUpdate = (id, body, respond) => {
+      console.log("update", id, body);
+      db(EXPORTS_TABLE_NAME)
+        .where({ id })
+        .update({ config: body })
+        .returning("*")
+        .then(respond);
+    };
+
+    initRoutes({ queueRender, exportsAdd, exportsGetById, exportsUpdate }, callback);
   });
 };

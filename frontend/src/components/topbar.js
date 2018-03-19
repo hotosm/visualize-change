@@ -18,7 +18,7 @@ const LanguageMenu = () => (
   </Menu>
 );
 
-module.exports = () => (
+module.exports = ({ isEditable, isEditing, onSaveClick, onToggleViewState }) => (
   <Navbar>
     <NavbarGroup>
       <NavbarHeading>HOT Visualize Change</NavbarHeading>
@@ -26,9 +26,11 @@ module.exports = () => (
 
     <NavbarGroup align="right">
       <ButtonGroup minimal={true}>
+        {isEditing && <Button onClick={onSaveClick}>Save</Button>}
+
         <Button disabled>About</Button>
         <Button disabled>Learn</Button>
-        <Button disabled>Create</Button>
+        <Button onClick={onToggleViewState}>{isEditing ? "View" : "Edit"}</Button>
 
         <Popover content={<LanguageMenu />}>
           <AnchorButton disabled rightIcon="caret-down">

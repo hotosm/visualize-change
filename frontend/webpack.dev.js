@@ -8,7 +8,8 @@ module.exports = Object.assign({}, config, {
     publicPath: "/",
     contentBase: DIST,
     port: 3000,
-    host: "0.0.0.0" // for docker
+    host: "0.0.0.0", // for docker
+    historyApiFallback: true
   },
   devtool: "source-map"
 });

@@ -2,6 +2,7 @@ const amqp = require("amqplib/callback_api");
 const express = require("express");
 const knex = require("knex");
 const morgan = require("morgan");
+const cookieSession = require("cookie-session");
 const { parallel } = require("async");
 
 const createRoutes = require("./routes");
@@ -53,7 +54,18 @@ parallel(
 
     const app = express();
 
-    app.use(morgan("combined"));
+    // app.use(morgan("combined"));
+
+    app.set("trust proxy", 1);
+    // app.set("trust proxy", 2);
+
+    app.use(
+      cookieSession({
+        name: "hot-session",
+        secret: "abcefdjahjkfahdiowkhvjgioyfhjvughcjyiughvgiyhjvoiupghjvguy9uihvgiuyu9icgy80ugch",
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+      })
+    );
 
     createRoutes(results, routes => app.use("/", routes));
 

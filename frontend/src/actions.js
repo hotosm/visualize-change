@@ -1,4 +1,5 @@
 const moment = require("moment");
+const { push } = require("react-router-redux");
 
 const {
   CHANGE_INTERVAL,
@@ -10,7 +11,9 @@ const {
   SET_FEATURE_STYLE,
   SHOW_EXPORT_MENU,
   HIDE_EXPORT_MENU,
-  TOGGLE_SIDEBAR
+  TOGGLE_SIDEBAR,
+  SET_METADATA,
+  EXPORT_DATA_FETCHED
 } = require("./constans");
 
 // inspired by Flux Standard Action
@@ -20,6 +23,15 @@ const action = (type, payload) => {
   }
   return { type, payload };
 };
+
+const createExportConfig = state => ({
+  meta: state.meta,
+  startDate: state.date.start,
+  endDate: state.date.end,
+  interval: state.date.interval,
+  style: state.style,
+  map: state.map
+});
 
 const sendToRenderer = ({ email, format, fps }) => (dispatch, getState) => {
   const { map, date, style } = getState();
@@ -43,6 +55,55 @@ const sendToRenderer = ({ email, format, fps }) => (dispatch, getState) => {
   }).then(res => console.log(res));
 };
 
+const createNewExport = () => (dispatch, getState) => {
+  const config = createExportConfig(getState());
+
+  fetch("/api/exports", {
+    headers: {
+      "Content-Type": "application/json",
+      credentials: "include"
+    },
+    method: "POST",
+    body: JSON.stringify(config)
+  })
+    .then(res => res.json())
+    .then(id => {
+      dispatch(push(`/edit/${id}`));
+    });
+};
+
+const exportDataFetched = data => action(EXPORT_DATA_FETCHED, data);
+
+const getExportById = id => dispatch => {
+  fetch(`/api/exports/${id}`, {
+    headers: {
+      "Content-Type": "application/json",
+      credentials: "include"
+    },
+    method: "GET"
+  })
+    .then(res => res.json())
+    .then(data => {
+      console.log("data", data);
+      if (data.length > 0) {
+        dispatch(exportDataFetched({ data: data[0] }));
+      }
+    });
+};
+
+const updateExport = id => (dispatch, getState) => {
+  const config = createExportConfig(getState());
+
+  fetch(`/api/exports/${id}`, {
+    headers: {
+      "Content-Type": "application/json",
+      credentials: "include"
+    },
+    method: "PATCH",
+    body: JSON.stringify(config)
+  }).then(res => console.log(res));
+};
+
 module.exports = {
   setInterval: interval => action(CHANGE_INTERVAL, interval),
   setDateSpan: ([start, end]) => action(SET_DATES, { start: moment(start).valueOf(), end: moment(end).valueOf() }),
@@ -57,5 +118,10 @@ module.exports = {
   hideExportMenu: () => action(HIDE_EXPORT_MENU),
   toggleSidebar: () => action(TOGGLE_SIDEBAR),
 
-  sendToRenderer
+  setMetadata: (name, value) => action(SET_METADATA, { name, value }),
+
+  sendToRenderer,
+  getExportById,
+  createNewExport,
+  updateExport
 };

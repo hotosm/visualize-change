@@ -221,9 +221,11 @@ class Map extends React.Component {
 
   componentDidMount() {
     this.initMap(this.props);
+    console.log("!");
   }
 
   componententWillUmount() {
+    console.log("unmounted!");
     this.map.remove();
   }
 
