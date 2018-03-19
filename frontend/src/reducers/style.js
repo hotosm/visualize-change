@@ -57,7 +57,7 @@ const initialState = {
 module.exports = (state = initialState, { type, payload }) => {
   switch (type) {
     case EXPORT_DATA_FETCHED:
-      return Object.assign({}, initialState, payload.data.config.style);
+      return Object.assign({}, initialState, payload.config.style);
     case SET_MAP_BACKGROUND:
       return Object.assign({}, state, { background: payload });
       break;

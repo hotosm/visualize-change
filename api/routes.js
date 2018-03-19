@@ -67,8 +67,6 @@ const initRoutes = ({ queueRender, exportsAdd, exportsGetById, exportsUpdate }, 
   });
 
   router.get("/exports/:id", (req, res) => {
-    req.session.views = (req.session.views || 0) + 1;
-    console.log(">>>>> req.session from get", req.session);
     exportsGetById(req.params.id, item => res.send(item));
   });
 
@@ -85,9 +83,10 @@ const initRoutes = ({ queueRender, exportsAdd, exportsGetById, exportsUpdate }, 
   router.post("/queue-render", (req, res) => {
     // this is more wordy than just passing `req.body` to `queueRender` but
     // allows us to validate, and see the keys clearly
+    const mapConfig = mapConfigFromReq(req);
     const renderConfig = {
       email: req.body.email,
-      map: mapConfigFromReq(req),
+      map: mapConfig,
       format: req.body.format,
       fps: req.body.fps,
       dir: md5(
@@ -206,15 +205,14 @@ module.exports = ({ channel, db }, callback) => {
         .then(respond);
     };
 
-    const exportsAdd = (body, respond) => {
+    const exportsAdd = ({ parentId, config }, respond) => {
       db(EXPORTS_TABLE_NAME)
         .returning("id")
-        .insert({ config: JSON.stringify(body) })
+        .insert({ parent_id: parentId, config: JSON.stringify(config) })
         .then(respond);
     };
 
     const exportsUpdate = (id, body, respond) => {
-      console.log("update", id, body);
       db(EXPORTS_TABLE_NAME)
         .where({ id })
         .update({ config: body })

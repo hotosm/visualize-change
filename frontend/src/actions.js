@@ -1,5 +1,6 @@
 const moment = require("moment");
 const { push } = require("react-router-redux");
+const { createExportConfig } = require("./utils");
 
 const {
   CHANGE_INTERVAL,
@@ -13,7 +14,11 @@ const {
   HIDE_EXPORT_MENU,
   TOGGLE_SIDEBAR,
   SET_METADATA,
-  EXPORT_DATA_FETCHED
+  EXPORT_DATA_FETCHING,
+  EXPORT_DATA_FETCHED,
+  EXPORT_DATA_SAVING,
+  EXPORT_DATA_SAVED,
+  SET_APP_READY
 } = require("./constans");
 
 // inspired by Flux Standard Action
@@ -23,15 +28,6 @@ const action = (type, payload) => {
   }
   return { type, payload };
 };
-
-const createExportConfig = state => ({
-  meta: state.meta,
-  startDate: state.date.start,
-  endDate: state.date.end,
-  interval: state.date.interval,
-  style: state.style,
-  map: state.map
-});
 
 const sendToRenderer = ({ email, format, fps }) => (dispatch, getState) => {
   const { map, date, style } = getState();
@@ -55,8 +51,15 @@ const sendToRenderer = ({ email, format, fps }) => (dispatch, getState) => {
   }).then(res => console.log(res));
 };
 
-const createNewExport = () => (dispatch, getState) => {
+const exportDataFetching = data => action(EXPORT_DATA_FETCHING, data);
+const exportDataFetched = data => action(EXPORT_DATA_FETCHED, data);
+const exportDataSaving = () => action(EXPORT_DATA_SAVING);
+const exportDataSaved = () => action(EXPORT_DATA_SAVED);
+
+const createNewExport = parentId => (dispatch, getState) => {
   const config = createExportConfig(getState());
+
+  dispatch(exportDataSaving());
 
   fetch("/api/exports", {
     headers: {
@@ -64,17 +67,17 @@ const createNewExport = () => (dispatch, getState) => {
       credentials: "include"
     },
     method: "POST",
-    body: JSON.stringify(config)
+    body: JSON.stringify({ parentId, config: config })
   })
     .then(res => res.json())
     .then(id => {
       dispatch(push(`/edit/${id}`));
+      dispatch(exportDataSaved());
     });
 };
 
-const exportDataFetched = data => action(EXPORT_DATA_FETCHED, data);
-
 const getExportById = id => dispatch => {
+  dispatch(exportDataFetching);
   fetch(`/api/exports/${id}`, {
     headers: {
       "Content-Type": "application/json",
@@ -84,24 +87,10 @@ const getExportById = id => dispatch => {
   })
     .then(res => res.json())
     .then(data => {
-      console.log("data", data);
       if (data.length > 0) {
-        dispatch(exportDataFetched({ data: data[0] }));
+        dispatch(exportDataFetched({ config: data[0].config }));
       }
     });
-};
-
-const updateExport = id => (dispatch, getState) => {
-  const config = createExportConfig(getState());
-
-  fetch(`/api/exports/${id}`, {
-    headers: {
-      "Content-Type": "application/json",
-      credentials: "include"
-    },
-    method: "PATCH",
-    body: JSON.stringify(config)
-  }).then(res => console.log(res));
 };
 
 module.exports = {
@@ -123,5 +112,5 @@ module.exports = {
   sendToRenderer,
   getExportById,
   createNewExport,
-  updateExport
+  setAppReady: () => action(SET_APP_READY)
 };

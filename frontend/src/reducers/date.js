@@ -13,10 +13,10 @@ module.exports = (state = initialState, { type, payload }) => {
   switch (type) {
     case EXPORT_DATA_FETCHED:
       return Object.assign({}, initialState, {
-        start: payload.data.config.startDate,
-        end: payload.data.config.endDate,
-        selected: payload.data.config.startDate,
-        interval: payload.data.config.interval
+        start: payload.config.date.start,
+        end: payload.config.date.end,
+        selected: payload.config.date.start,
+        interval: payload.config.date.interval
       });
     case CHANGE_INTERVAL:
       return Object.assign({}, state, { interval: payload });

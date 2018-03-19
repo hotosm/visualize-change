@@ -9,7 +9,7 @@ const initialState = {
 module.exports = (state = initialState, { type, payload }) => {
   switch (type) {
     case EXPORT_DATA_FETCHED:
-      return Object.assign({}, initialState, payload.data.config.map);
+      return Object.assign({}, initialState, payload.config.map);
     case SET_COORDINATES:
       return Object.assign({}, state, {
         lat: payload.lat || state.lat,

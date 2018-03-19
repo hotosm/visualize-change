@@ -32,8 +32,13 @@ const Main = ({ children }) => <div className="main">{children}</div>;
 
 const autoBind = require("react-autobind");
 const { connect } = require("react-redux");
-const { createNewExport, getExportById, updateExport } = require("./actions");
 const { push: routerPush } = require("react-router-redux");
+const clipboardCopy = require("clipboard-copy");
+const { Intent } = require("@blueprintjs/core");
+const { createNewExport, getExportById, setAppReady } = require("./actions");
+const { isChanged } = require("./selectors");
+const { getShareUrl } = require("./utils");
+const AppToaster = require("./components/toaster");
 
 class MainContainer extends React.Component {
   constructor(props) {
@@ -47,10 +52,10 @@ class MainContainer extends React.Component {
   }
 
   componentDidMount() {
-    const isEditing = this.isEditing();
     const id = this.props.match.params.id;
-    if (isEditing && !id) {
-      this.props.createNewExport();
+    if (!id) {
+      // this.props.createNewExport();
+      this.props.setAppReady();
     } else {
       this.props.getExportById(id);
     }
@@ -62,13 +67,24 @@ class MainContainer extends React.Component {
     if (prevId !== newId && !!newId) {
       this.props.getExportById(newId);
     }
+    if (this.props.saving === true && nextProps.saving === false) {
+      AppToaster.show({
+        message: "Saved successfully",
+        intent: Intent.SUCCESS,
+        timeout: 5000,
+        action: {
+          onClick: () => clipboardCopy(getShareUrl(newId)),
+          text: "Copy share URL to clipboard"
+        }
+      });
+    }
   }
 
   componentWillUnmount() {}
 
   onSaveClick() {
-    const id = this.props.match.params.id;
-    this.props.updateExport(id);
+    const parentId = this.props.match.params.id;
+    this.props.createNewExport(parentId);
   }
 
   onToggleViewState() {
@@ -77,11 +93,13 @@ class MainContainer extends React.Component {
   }
 
   render() {
+    const isEditing = this.isEditing();
     return (
       <Main>
         <Topbar
-          isEditable={true}
-          isEditing={this.isEditing()}
+          canSave={isEditing && this.props.isChanged}
+          saving={this.props.saving}
+          isEditing={isEditing}
           onSaveClick={this.onSaveClick}
           onToggleViewState={this.onToggleViewState}
         />
@@ -91,11 +109,11 @@ class MainContainer extends React.Component {
   }
 }
 
-const MainContainerConnected = connect(({ ui }) => ({ loaded: ui.loaded }), {
+const MainContainerConnected = connect(state => ({ isChanged: isChanged(state), saving: state.data.saving }), {
   createNewExport,
   getExportById,
-  updateExport,
-  routerPush
+  routerPush,
+  setAppReady
 })(MainContainer);
 
 const Layout = ({ path, exact, main: MainComponent }) => (

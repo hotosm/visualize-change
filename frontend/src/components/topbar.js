@@ -8,7 +8,8 @@ const {
   NavbarHeading,
   Popover,
   Menu,
-  MenuItem
+  MenuItem,
+  Intent
 } = require("@blueprintjs/core");
 
 const LanguageMenu = () => (
@@ -18,7 +19,10 @@ const LanguageMenu = () => (
   </Menu>
 );
 
-module.exports = ({ isEditable, isEditing, onSaveClick, onToggleViewState }) => (
+// <Button disabled={!canSave} onClick={onSaveClick}>
+//   {saving ? "Saving" : "Save"}
+// </Button>
+module.exports = ({ canSave, saving, isEditing, onSaveClick, onToggleViewState }) => (
   <Navbar>
     <NavbarGroup>
       <NavbarHeading>HOT Visualize Change</NavbarHeading>
@@ -26,7 +30,15 @@ module.exports = ({ isEditable, isEditing, onSaveClick, onToggleViewState }) => 
 
     <NavbarGroup align="right">
       <ButtonGroup minimal={true}>
-        {isEditing && <Button onClick={onSaveClick}>Save</Button>}
+        {isEditing && (
+          <Button
+            intent={canSave ? Intent.PRIMARY : Intent.SUCCESS}
+            loading={saving}
+            onClick={canSave ? onSaveClick : null}
+          >
+            {canSave ? "Save" : "Saved"}
+          </Button>
+        )}
 
         <Button disabled>About</Button>
         <Button disabled>Learn</Button>

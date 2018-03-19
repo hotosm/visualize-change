@@ -9,17 +9,17 @@ const SidebarView = ({ meta, date }) => {
   return (
     <Card className="sidebar-data">
       <p>
-        Name: <span class="value">{meta.name}</span>
+        Name: <span className="value">{meta.name}</span>
       </p>
       <p>
-        Description: <span class="value">{meta.description}</span>
+        Description: <span className="value">{meta.description}</span>
       </p>
       <p>
-        Project: <span class="value">{meta.project}</span>
+        Project: <span className="value">{meta.project}</span>
       </p>
       <p>
         Date Span:{" "}
-        <span class="value">
+        <span className="value">
           {formatDate(date.start)} - {formatDate(date.end)}
         </span>
       </p>

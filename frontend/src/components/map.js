@@ -12,12 +12,9 @@ const parseValue = value => (typeof value === "object" ? rgbaObjectToString(valu
 
 mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
 
-const { Position, Toaster, Intent } = require("@blueprintjs/core");
+const { Intent } = require("@blueprintjs/core");
 
-const AppToaster = Toaster.create({
-  className: "recipe-toaster",
-  position: Position.TOP
-});
+const AppToaster = require("./toaster");
 
 const setupMap = map => {
   const sourceId = "osm";
@@ -180,6 +177,7 @@ const setupMap = map => {
 class Map extends React.Component {
   constructor(props) {
     super(props);
+    this.toastKey = null;
     this.state = { selectedDate: this.props.date.selected, subscribed: false };
   }
 
@@ -216,16 +214,14 @@ class Map extends React.Component {
       this.filterMap(this.state.selectedDate);
     });
 
-    window.map = this.map;
+    // window.map = this.map;
   }
 
   componentDidMount() {
     this.initMap(this.props);
-    console.log("!");
   }
 
   componententWillUmount() {
-    console.log("unmounted!");
     this.map.remove();
   }
 
@@ -241,7 +237,8 @@ class Map extends React.Component {
     }
 
     if (nextProps.mapCoordinates.zoom < 11 && AppToaster.getToasts().length < 1) {
-      AppToaster.show({
+      this.toastKey = AppToaster.show({
+        key: "zoom",
         message: "Not supported zoom",
         intent: Intent.DANGER,
         timeout: 0,
@@ -252,8 +249,8 @@ class Map extends React.Component {
       });
     }
 
-    if (nextProps.mapCoordinates.zoom >= 12) {
-      AppToaster.clear();
+    if (nextProps.mapCoordinates.zoom >= 12 && this.toastKey) {
+      AppToaster.dismiss(this.toastKey);
     }
   }
 

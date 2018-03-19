@@ -10,9 +10,9 @@ module.exports = (state = initialState, { type, payload }) => {
   switch (type) {
     case EXPORT_DATA_FETCHED:
       return Object.assign({}, initialState, {
-        name: payload.data.config.meta.name,
-        description: payload.data.config.meta.description,
-        project: payload.data.config.meta.project
+        name: payload.config.meta.name,
+        description: payload.config.meta.description,
+        project: payload.config.meta.project
       });
     case SET_METADATA:
       return Object.assign({}, state, { [payload.name]: payload.value });
