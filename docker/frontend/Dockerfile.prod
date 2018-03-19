@@ -15,8 +15,7 @@ ENV MAPBOX_ACCESS_TOKEN "$MAPBOX_ACCESS_TOKEN"
 ENV NODE_ENV "$NODE_ENV"
 
 RUN yarn build
-RUN yarn global add http-server
 
 EXPOSE 3000
 
-CMD http-server ./dist/ -p 3000 -g
+CMD node server.js
