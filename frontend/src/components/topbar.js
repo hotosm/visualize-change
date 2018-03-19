@@ -40,9 +40,14 @@ module.exports = ({ canSave, saving, isEditing, onSaveClick, onToggleViewState }
           </Button>
         )}
 
+        <Button className={!isEditing ? "active" : ""} onClick={isEditing ? onToggleViewState : null}>
+          View
+        </Button>
+        <Button className={isEditing ? "active" : ""} onClick={!isEditing ? onToggleViewState : null}>
+          Edit
+        </Button>
         <Button disabled>About</Button>
         <Button disabled>Learn</Button>
-        <Button onClick={onToggleViewState}>{isEditing ? "View" : "Edit"}</Button>
 
         <Popover content={<LanguageMenu />}>
           <AnchorButton disabled rightIcon="caret-down">

@@ -47,7 +47,7 @@ class GenericMediaShare extends React.Component {
             <input value={this.state.fps} onChange={this.onFPSChange} className="pt-input" />
           </label>
           <Button icon="share" onClick={this.onExportClick}>
-            Export
+            Share
           </Button>
         </div>
       </Card>
