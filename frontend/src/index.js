@@ -104,6 +104,7 @@ class MainContainer extends React.Component {
           canSave={isEditing && this.props.isChanged}
           saving={this.props.saving}
           isEditing={isEditing}
+          path={isEditing ? "edit" : "view"}
           onSaveClick={this.onSaveClick}
           id={id}
           isFullScreenMode={this.props.isFullScreenMode}
@@ -152,6 +153,7 @@ const AboutPage = () => (
       canSave={false}
       saving={false}
       isEditing={false}
+      path="about"
       onSaveClick={() => {}}
       onToggleViewState={() => {}}
       isFullScreenMode={false}
@@ -171,6 +173,7 @@ const LearnPage = () => (
     <Topbar
       canSave={false}
       saving={false}
+      path="learn"
       isEditing={false}
       onSaveClick={() => {}}
       onToggleViewState={() => {}}

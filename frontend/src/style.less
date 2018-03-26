@@ -233,7 +233,7 @@ body {
 .export-menu {
   position: absolute;
   z-index: 999;
-  top: 0;
+  top: 100px;
   left: calc(50% - 200px);
   margin: 10vh 0;
   width: 400px;
@@ -308,9 +308,9 @@ body {
   }
 }
 
-.pt-button.active {
-  text-decoration: underline;
-}
+// .pt-button.active {
+//   text-decoration: underline;
+// }
 
 .topbar {
   position: fixed;
@@ -350,4 +350,29 @@ body {
     text-align: justify;
     margin: 0 auto;
   }
+}
+.pt-toast-container.pt-toast-container-top {
+  top: 50px;
+}
+
+.route {
+  border-radius: 0;
+}
+
+.pt-button.route.active,
+.pt-button.route.active:hover {
+  box-shadow: inset 0 -3px 0 #d73f3f;
+}
+
+.pt-tab[aria-selected="true"],
+.pt-tab[aria-selected="true"]:hover {
+  color: #d73f3f;
+  box-shadow: inset 0 -3px 0 #d73f3f !important;
+}
+.pt-tab[aria-selected="true"],
+.pt-tab:not([aria-disabled="true"]):hover {
+  color: #d73f3f;
+}
+.pt-button-group.pt-minimal .pt-button.pt-intent-primary {
+  color: #d73f3f;
 }

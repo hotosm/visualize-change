@@ -1,4 +1,5 @@
 const React = require("react");
+const classNames = require("classnames");
 const {
   AnchorButton,
   Button,
@@ -23,7 +24,16 @@ const LanguageMenu = () => (
 );
 
 // TODO: add defaults
-module.exports = ({ id = null, canSave, saving, isEditing, onSaveClick, onToggleViewState, isFullScreenMode }) => (
+module.exports = ({
+  id = null,
+  path,
+  canSave,
+  saving,
+  isEditing,
+  onSaveClick,
+  onToggleViewState,
+  isFullScreenMode
+}) => (
   <SlideTransition className="topbar" visible={!isFullScreenMode} direction="top">
     <Navbar>
       <NavbarGroup>
@@ -42,18 +52,24 @@ module.exports = ({ id = null, canSave, saving, isEditing, onSaveClick, onToggle
             </Button>
           )}
 
-          <Button className={!isEditing ? "active" : ""}>
-            <Link to={`/view${id ? "/" + id : ""}`}>View</Link>
-          </Button>
-          <Button className={isEditing ? "active" : ""}>
-            <Link to={`/edit${id ? "/" + id : ""}`}>Edit</Link>
-          </Button>
-          <Button>
-            <Link to="/">About</Link>
-          </Button>
-          <Button>
-            <Link to="/learn">Learn</Link>
-          </Button>
+          <Link
+            className={classNames("pt-button route", { active: path === "view" })}
+            to={`/view${id ? "/" + id : ""}`}
+          >
+            View
+          </Link>
+          <Link
+            className={classNames("pt-button route", { active: path === "edit" })}
+            to={`/edit${id ? "/" + id : ""}`}
+          >
+            Edit
+          </Link>
+          <Link className={classNames("pt-button route", { active: path === "about" })} to="/">
+            About
+          </Link>
+          <Link className={classNames("pt-button route", { active: path === "learn" })} to="/learn">
+            Learn
+          </Link>
         </ButtonGroup>
       </NavbarGroup>
     </Navbar>
