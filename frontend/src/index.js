@@ -4,6 +4,7 @@ const { Provider } = require("react-redux");
 const { ConnectedRouter } = require("react-router-redux");
 const createHistory = require("history/createBrowserHistory").default;
 const { Route, Switch, Redirect } = require("react-router-dom");
+const classNames = require("classnames");
 
 const configureStore = require("./store");
 
@@ -28,14 +29,16 @@ const history = createHistory();
 
 const store = configureStore({ history });
 
-const Main = ({ children }) => <div className="main">{children}</div>;
+const Main = ({ isFullScreenMode, children }) => (
+  <div className={classNames("main", { "full-screen-mode": isFullScreenMode })}>{children}</div>
+);
 
 const autoBind = require("react-autobind");
 const { connect } = require("react-redux");
 const { push: routerPush } = require("react-router-redux");
 const clipboardCopy = require("clipboard-copy");
 const { Intent } = require("@blueprintjs/core");
-const { createNewExport, getExportById, setAppReady } = require("./actions");
+const { createNewExport, getExportById, setAppReady, showPlayerPanel } = require("./actions");
 const { isChanged } = require("./selectors");
 const { getShareUrl } = require("./utils");
 const AppToaster = require("./components/toaster");
@@ -94,6 +97,7 @@ class MainContainer extends React.Component {
 
   render() {
     const isEditing = this.isEditing();
+    const id = this.props.match.params.id;
     return (
       <Main>
         <Topbar
@@ -101,7 +105,8 @@ class MainContainer extends React.Component {
           saving={this.props.saving}
           isEditing={isEditing}
           onSaveClick={this.onSaveClick}
-          onToggleViewState={this.onToggleViewState}
+          id={id}
+          isFullScreenMode={this.props.isFullScreenMode}
         />
         <Sidebar>{this.isEditing() ? <SidebarEditConnected /> : <SidebarViewConnected />}</Sidebar>
       </Main>
@@ -109,12 +114,15 @@ class MainContainer extends React.Component {
   }
 }
 
-const MainContainerConnected = connect(state => ({ isChanged: isChanged(state), saving: state.data.saving }), {
-  createNewExport,
-  getExportById,
-  routerPush,
-  setAppReady
-})(MainContainer);
+const MainContainerConnected = connect(
+  state => ({ isChanged: isChanged(state), saving: state.data.saving, isFullScreenMode: state.ui.fullScreenMode }),
+  {
+    createNewExport,
+    getExportById,
+    routerPush,
+    setAppReady
+  }
+)(MainContainer);
 
 const Layout = ({ path, exact, main: MainComponent }) => (
   <Route
@@ -128,16 +136,60 @@ const Layout = ({ path, exact, main: MainComponent }) => (
   />
 );
 
-const MapWrapper = connect(({ ui }) => ({ loaded: ui.loaded }))(({ loaded }) => {
-  return loaded ? <MapConnected /> : null;
+const MapWrapper = connect(({ ui }) => ({ isFullScreenMode: ui.fullScreenMode, loaded: ui.loaded }), {
+  showPlayerPanel
+})(({ loaded, isFullScreenMode, showPlayerPanel }) => {
+  return (
+    <div className="map-wrapper" onMouseMove={isFullScreenMode ? showPlayerPanel : null}>
+      {loaded ? <MapConnected /> : null}
+    </div>
+  );
 });
+
+const AboutPage = () => (
+  <div className="about-page">
+    <Topbar
+      canSave={false}
+      saving={false}
+      isEditing={false}
+      onSaveClick={() => {}}
+      onToggleViewState={() => {}}
+      isFullScreenMode={false}
+    />
+    <div className="about-page__content">
+      <h2>Visualize OpenStreetMap</h2>
+      <p>
+        The Visualize Change tool is an open service that creates customised animations of OpenStreetMap data mapped
+        over time for an area of interest. Share these mapping visualisations easily through various file formats.
+      </p>
+    </div>
+  </div>
+);
+
+const LearnPage = () => (
+  <div className="about-page">
+    <Topbar
+      canSave={false}
+      saving={false}
+      isEditing={false}
+      onSaveClick={() => {}}
+      onToggleViewState={() => {}}
+      isFullScreenMode={false}
+    />
+    <div className="about-page__content">
+      <h2>Learn Page</h2>
+      <p>Content how to use</p>
+    </div>
+  </div>
+);
 
 const AppContainer = () => (
   <Provider store={store}>
     <ConnectedRouter history={history}>
       <div>
         <Switch>
-          <Route exact path="/" render={() => <Redirect to="/edit" />} />
+          <Layout exact path="/" main={AboutPage} />
+          <Layout exact path="/learn" main={LearnPage} />
           <Layout exact path="/edit" main={MainContainerConnected} />
           <Layout exact path="/edit/:id" main={MainContainerConnected} />
           <Layout exact path="/view" main={MainContainerConnected} />
@@ -150,5 +202,6 @@ const AppContainer = () => (
     </ConnectedRouter>
   </Provider>
 );
+// <Route exact path="/" render={() => <Redirect to="/edit" />} />
 
 ReactDOM.render(<AppContainer />, document.getElementById("app"));

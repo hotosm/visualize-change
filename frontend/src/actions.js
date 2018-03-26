@@ -13,6 +13,9 @@ const {
   SHOW_EXPORT_MENU,
   HIDE_EXPORT_MENU,
   TOGGLE_SIDEBAR,
+  TOGGLE_FULLSCREEN,
+  SHOW_PLAYER_PANEL,
+  HIDE_PLAYER_PANEL,
   SET_METADATA,
   EXPORT_DATA_FETCHING,
   EXPORT_DATA_FETCHED,
@@ -106,6 +109,9 @@ module.exports = {
   showExportMenu: () => action(SHOW_EXPORT_MENU),
   hideExportMenu: () => action(HIDE_EXPORT_MENU),
   toggleSidebar: () => action(TOGGLE_SIDEBAR),
+  toggleFullscreen: () => action(TOGGLE_FULLSCREEN),
+  showPlayerPanel: () => action(SHOW_PLAYER_PANEL),
+  hidePlayerPanel: () => action(HIDE_PLAYER_PANEL),
 
   setMetadata: (name, value) => action(SET_METADATA, { name, value }),
 

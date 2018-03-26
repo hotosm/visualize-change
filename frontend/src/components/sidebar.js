@@ -3,10 +3,15 @@ const { connect } = require("react-redux");
 const classNames = require("classnames");
 const { Icon } = require("@blueprintjs/core");
 
+const { SlideTransition } = require("./transitions");
 const { toggleSidebar } = require("../actions");
 
-const Sidebar = ({ isOpen, toggleSidebar, children }) => (
-  <div className={classNames("sidebar", { "sidebar--hiden": !isOpen })}>
+const Sidebar = ({ isOpen, isFullScreen, toggleSidebar, children }) => (
+  <SlideTransition
+    className="sidebar"
+    visible={isOpen && !isFullScreen}
+    direction={!isFullScreen ? "right-visible" : "right"}
+  >
     <div className="sidebar-content">
       {children}
       <div className="sidebar-footer">
@@ -18,10 +23,10 @@ const Sidebar = ({ isOpen, toggleSidebar, children }) => (
       </div>
     </div>
     <div className="sidebar-toggle" onClick={toggleSidebar} />
-  </div>
+  </SlideTransition>
 );
 
-const SidebarConnected = connect(({ ui }) => ({ isOpen: ui.sidebarOpen }), {
+const SidebarConnected = connect(({ ui }) => ({ isFullScreen: ui.fullScreenMode, isOpen: ui.sidebarOpen }), {
   toggleSidebar
 })(Sidebar);
 
