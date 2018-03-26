@@ -2,6 +2,7 @@ const React = require("react");
 const { connect } = require("react-redux");
 const mapboxgl = require("mapbox-gl");
 const mapboxglGeoconder = require("mapbox-gl-geocoder");
+const classNames = require("classnames");
 const { rgbaObjectToString } = require("../utils");
 
 const PlayerPanelConnected = require("./player-panel");
@@ -271,7 +272,7 @@ class Map extends React.Component {
 
   render() {
     return (
-      <div className="map">
+      <div className={classNames("map", { "full-screen-mode": this.props.isFullScreenMode })}>
         <div className="map-content" style={{ position: "relative" }}>
           <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }} ref={el => (this.elMap = el)} />
         </div>
@@ -281,9 +282,12 @@ class Map extends React.Component {
   }
 }
 
-const MapConnected = connect(({ date, map, style }) => ({ date, mapCoordinates: map, style }), {
-  setCoordinates,
-  showExportMenu
-})(Map);
+const MapConnected = connect(
+  ({ date, map, style, ui }) => ({ date, mapCoordinates: map, style, isFullScreenMode: ui.fullScreenMode }),
+  {
+    setCoordinates,
+    showExportMenu
+  }
+)(Map);
 
 module.exports = MapConnected;

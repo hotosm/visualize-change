@@ -3,7 +3,8 @@ const moment = require("moment");
 const { connect } = require("react-redux");
 const { Button, ButtonGroup, Slider, Overlay, Card, Elevation } = require("@blueprintjs/core");
 
-const { togglePlay, setSelectedDate, toggleSidebar, showExportMenu } = require("../actions");
+const { FadeTransition } = require("./transitions");
+const { togglePlay, setSelectedDate, toggleFullscreen, showExportMenu, hidePlayerPanel } = require("../actions");
 const { capitalizeFirstLetter } = require("../utils");
 
 class PlayerPanel extends React.Component {
@@ -23,52 +24,119 @@ class PlayerPanel extends React.Component {
   componentWillReceiveProps(nextProps) {
     // Naive implementation
     if (nextProps.date.isPlaying) {
-      this.timer = setTimeout(() => {
+      this.playTimer = setTimeout(() => {
         const next = moment(this.props.date.selected)
           .add(1, this.props.date.interval)
           .valueOf();
         this.props.setSelectedDate(next);
       }, 1000);
     } else {
-      clearTimeout(this.timer);
+      clearTimeout(this.playTimer);
     }
   }
 
   render() {
-    const { date, togglePlay, toggleSidebar, showExportMenu, isSidebarOpen } = this.props;
+    const { date, togglePlay, toggleFullscreen, showExportMenu, isSidebarOpen, isFullScreenMode } = this.props;
     return (
-      <div className="map-footer" style={{ left: isSidebarOpen ? 350 : 15 }}>
-        <div className="map-footer__content">
-          <div className="map-footer__items">
-            <Button className="pt-minimal" icon={date.isPlaying ? "pause" : "play"} onClick={togglePlay} />
-            <div className="map-footer__progressbar">
-              <Slider
-                disabled={date.isPlaying}
-                min={0}
-                max={this.calcValueFromDates(this.props.date.end)}
-                stepSize={1}
-                labelRenderer={false}
-                onChange={this.onSliderUpdate}
-                value={this.calcValueFromDates(this.props.date.selected)}
-              />
-            </div>
-            <ButtonGroup minimal={true}>
-              <Button icon="fullscreen" disabled onClick={toggleSidebar} />
-              <Button icon="share" onClick={showExportMenu} />
-            </ButtonGroup>
+      <div className="map-footer__content" onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut}>
+        <div className="map-footer__items">
+          <Button className="pt-minimal" icon={date.isPlaying ? "pause" : "play"} onClick={togglePlay} />
+          <div className="map-footer__progressbar">
+            <Slider
+              isFullScreenMode={isFullScreenMode}
+              disabled={date.isPlaying}
+              min={0}
+              max={this.calcValueFromDates(this.props.date.end)}
+              stepSize={1}
+              labelRenderer={false}
+              onChange={this.onSliderUpdate}
+              value={this.calcValueFromDates(this.props.date.selected)}
+            />
           </div>
-          <div className="map-footer__date">{moment(date.selected).format("YYYY-MM-DD")}</div>
+          <ButtonGroup minimal={true}>
+            <Button icon="fullscreen" onClick={toggleFullscreen} />
+            <Button icon="share" onClick={showExportMenu} />
+          </ButtonGroup>
         </div>
+        <div className="map-footer__date">{moment(date.selected).format("YYYY-MM-DD")}</div>
       </div>
     );
   }
 }
 
-const PlayerPanelConnected = connect(({ date, ui }) => ({ date, isSidebarOpen: ui.sidebarOpen }), {
-  togglePlay,
-  setSelectedDate,
-  toggleSidebar,
-  showExportMenu
-})(PlayerPanel);
+const PlayerPanelConnected = connect(
+  ({ date, ui }) => ({
+    date,
+    isSidebarOpen: ui.sidebarOpen,
+    isFullScreenMode: ui.fullScreenMode
+  }),
+  {
+    togglePlay,
+    toggleFullscreen,
+    setSelectedDate,
+    showExportMenu
+  }
+)(PlayerPanel);
 
-module.exports = PlayerPanelConnected;
+class PlayerPanelWrapper extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = { locked: false };
+  }
+
+  onMouseOver = () => {
+    clearInterval(this.uiTimer);
+    this.setState({ locked: true });
+  };
+
+  onMouseOut = () => {
+    this.setState({ locked: false });
+    clearInterval(this.uiTimer);
+    if (!!this.props.isFullScreenMode) {
+      this.uiTimer = setInterval(() => {
+        this.props.hidePlayerPanel();
+      }, 3000);
+    }
+  };
+
+  componentWillReceiveProps(nextProps) {
+    if (!!nextProps.visible || !!this.props.visible) {
+      clearInterval(this.uiTimer);
+      this.uiTimer = setInterval(() => {
+        this.props.hidePlayerPanel();
+      }, 3000);
+    } else {
+      clearInterval(this.uiTimer);
+    }
+  }
+
+  render() {
+    const { visible, date, togglePlay, toggleFullscreen, showExportMenu, isSidebarOpen, isFullScreenMode } = this.props;
+    return (
+      <FadeTransition
+        visible={visible}
+        className="map-footer"
+        style={{ left: !isFullScreenMode ? (isSidebarOpen ? 350 : 15) : 0 }}
+      >
+        <div className="map-footer__content" onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut}>
+          <PlayerPanelConnected />
+        </div>
+      </FadeTransition>
+    );
+  }
+}
+
+const PlayerPanelWrapperConnected = connect(
+  ({ ui }) => ({
+    isSidebarOpen: ui.sidebarOpen,
+    isFullScreenMode: ui.fullScreenMode,
+    visible: ui.playerPanelVisible
+  }),
+  {
+    toggleFullscreen,
+    hidePlayerPanel
+  }
+)(PlayerPanelWrapper);
+
+module.exports = PlayerPanelWrapperConnected;

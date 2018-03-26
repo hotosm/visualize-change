@@ -2,6 +2,9 @@ const {
   SHOW_EXPORT_MENU,
   HIDE_EXPORT_MENU,
   TOGGLE_SIDEBAR,
+  TOGGLE_FULLSCREEN,
+  SHOW_PLAYER_PANEL,
+  HIDE_PLAYER_PANEL,
   EXPORT_DATA_FETCHING,
   EXPORT_DATA_FETCHED,
   SET_APP_READY
@@ -10,7 +13,9 @@ const {
 const initialState = {
   sidebarOpen: true,
   exportMenuOpen: false,
-  loaded: false
+  loaded: false,
+  fullScreenMode: false,
+  playerPanelVisible: true
 };
 
 module.exports = (state = initialState, { type, payload }) => {
@@ -23,6 +28,15 @@ module.exports = (state = initialState, { type, payload }) => {
       return Object.assign({}, state, { loaded: true });
     case TOGGLE_SIDEBAR:
       return Object.assign({}, state, { sidebarOpen: !state.sidebarOpen });
+      break;
+    case TOGGLE_FULLSCREEN:
+      return Object.assign({}, state, { fullScreenMode: !state.fullScreenMode, playerPanelVisible: true });
+      break;
+    case SHOW_PLAYER_PANEL:
+      return Object.assign({}, state, { playerPanelVisible: true });
+      break;
+    case HIDE_PLAYER_PANEL:
+      return Object.assign({}, state, { playerPanelVisible: !!state.fullScreenMode ? false : true });
       break;
     case SHOW_EXPORT_MENU:
       return Object.assign({}, state, { exportMenuOpen: true });
