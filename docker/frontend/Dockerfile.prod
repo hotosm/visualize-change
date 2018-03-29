@@ -15,7 +15,8 @@ ENV MAPBOX_ACCESS_TOKEN "$MAPBOX_ACCESS_TOKEN"
 ENV NODE_ENV "$NODE_ENV"
 
 RUN yarn build
+RUN npm install -g forever
 
 EXPOSE 3000
 
-CMD node server.js
+CMD forever server.js
