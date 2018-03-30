@@ -3,7 +3,7 @@ const ReactDOM = require("react-dom");
 const { Provider } = require("react-redux");
 const { ConnectedRouter } = require("react-router-redux");
 const createHistory = require("history/createBrowserHistory").default;
-const { Route, Switch, Redirect } = require("react-router-dom");
+const { Route, Switch } = require("react-router-dom");
 const classNames = require("classnames");
 
 const configureStore = require("./store");
@@ -64,6 +64,10 @@ class MainContainer extends React.Component {
     }
   }
 
+  onUnload(ev) {
+    ev.preventDefault();
+  }
+
   componentWillReceiveProps(nextProps) {
     const prevId = this.props.match.params.id;
     const newId = nextProps.match.params.id;
@@ -81,9 +85,13 @@ class MainContainer extends React.Component {
         }
       });
     }
-  }
 
-  componentWillUnmount() {}
+    if (nextProps.isChanged === true) {
+      window.addEventListener("beforeunload", this.onUnload);
+    } else {
+      window.removeEventListener("beforeunload", this.onUnload);
+    }
+  }
 
   onSaveClick() {
     const parentId = this.props.match.params.id;

@@ -1,9 +1,8 @@
 const React = require("react");
 const { connect } = require("react-redux");
-const { Button, ButtonGroup, Switch, Icon, Label, Tab, Tabs, Card } = require("@blueprintjs/core");
+const { Button, ButtonGroup, Switch, Label, Tab, Tabs, Card } = require("@blueprintjs/core");
 const { DateRangePicker } = require("@blueprintjs/datetime");
 const { SketchPicker } = require("react-color");
-const classNames = require("classnames");
 const debounce = require("lodash.debounce");
 
 const { setInterval, setDateSpan, setMapBackground, setFeatureStyle, setMetadata } = require("../actions");
@@ -34,8 +33,7 @@ const DatePanel = ({ date, onChangeDate, onChangeInterval }) => (
     <DateRangePicker
       shortcuts={false}
       contiguousCalendarMonths={false}
-      maxDate={new Date()}
-      value={[new Date(date.start), date.end ? new Date(date.end) : null]}
+      value={[new Date(date.start || date.end), date.end ? new Date(date.end) : null]}
       onChange={onChangeDate}
     />
     <Card>

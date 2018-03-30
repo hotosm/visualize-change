@@ -19,6 +19,27 @@ const { mapConfig } = remote.getCurrentWindow();
 
 mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
 
+// workaround for https://github.com/mapbox/mapbox-gl-js/issues/5874
+const makeTileReadyCheck = (map, sourceId) => {
+  const tileState = {};
+
+  return () => {
+    return Object.keys(map.style.sourceCaches[sourceId]._tiles).every(key => {
+      const { state } = map.style.sourceCaches[sourceId]._tiles[key];
+
+      const isReady = state === "loaded" || state === "errored";
+      const wasErrored = tileState[key] === "errored";
+
+      if (!isReady && wasErrored) {
+        return true;
+      }
+
+      tileState[key] = state;
+      return isReady;
+    });
+  };
+};
+
 const map = new mapboxgl.Map({
   container: "map",
   style: `mapbox://styles/mapbox/${mapConfig.style.background}-v9`,
@@ -27,9 +48,11 @@ const map = new mapboxgl.Map({
   center: [mapConfig.lng, mapConfig.lat]
 });
 
+const isMapReady = makeTileReadyCheck(map, "osm");
+
 const isLoaded = cb => {
   const loadedHandle = setInterval(() => {
-    if (map.isStyleLoaded() && map.areTilesLoaded() && map.loaded()) {
+    if (map.isStyleLoaded() && isMapReady() && map.loaded()) {
       clearInterval(loadedHandle);
       cb();
     }
