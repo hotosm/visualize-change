@@ -37,6 +37,7 @@ const RENDER_CONFIG_SCHEMA = j.object().keys({
     .number()
     .min(1)
     .max(120),
+  size: j.string(),
   email: j.string().email()
 });
 
@@ -89,6 +90,7 @@ const initRoutes = ({ queueRender, exportsAdd, exportsGetById, exportsUpdate }, 
       map: mapConfig,
       format: req.body.format,
       fps: req.body.fps,
+      size: req.body.size,
       dir: md5(
         JSON.stringify({
           mapConfig,
@@ -208,7 +210,9 @@ module.exports = ({ channel, db }, callback) => {
     const exportsAdd = ({ parentId, config }, respond) => {
       db(EXPORTS_TABLE_NAME)
         .returning("id")
+        /*eslint-disable camelcase*/
         .insert({ parent_id: parentId, config: JSON.stringify(config) })
+        /*eslint-enable camelcase*/
         .then(respond);
     };
 
