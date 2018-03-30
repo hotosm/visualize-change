@@ -32,7 +32,7 @@ const action = (type, payload) => {
   return { type, payload };
 };
 
-const sendToRenderer = ({ email, format, fps }) => (dispatch, getState) => {
+const sendToRenderer = ({ email, format, size, fps }) => (dispatch, getState) => {
   const { map, date, style } = getState();
 
   const mapConfig = Object.assign({}, map, {
@@ -42,6 +42,7 @@ const sendToRenderer = ({ email, format, fps }) => (dispatch, getState) => {
     email,
     fps,
     format,
+    size,
     style: style
   });
 
