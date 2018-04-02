@@ -1,0 +1,15 @@
+[Unit]
+Description=HOT Visualize Change Application Service
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=PATH_TO_APP_FOLDER
+ExecStart=/usr/local/bin/docker-compose -f docker/docker-compose.prod.yml up
+ExecStop=/usr/local/bin/docker-compose -f docker/docker-compose.prod.yml down
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target
