@@ -37,6 +37,8 @@ module.exports = ({ id = null, path, canSave, saving, isEditing, onSaveClick, is
             New
           </Link>
 
+          <div className="pt-button separator">|</div>
+
           <Link
             className={classNames("pt-button route", { active: path === "view" })}
             to={`/view${id ? "/" + id : ""}`}

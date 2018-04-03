@@ -307,7 +307,6 @@ body {
 
 .pt-tab-list {
   padding: 10px 10px 0 10px;
-  text-transform: uppercase;
   font-size: 22px;
 }
 
@@ -572,4 +571,35 @@ div.pt-tab-list {
 }
 .pt-button:not([class*="pt-intent-"]).pt-active {
   border-bottom: 2px solid @red;
+}
+
+.separator {
+  margin: -10px;
+  color: @red!important;
+  pointer-events: none;
+}
+
+.sidebar-data .inline-label {
+  padding-bottom: 10px;
+  margin-bottom: 30px;
+}
+
+// TODO: Fix this
+button.pt-button.action-button {
+  background: @red!important;
+  color: white !important;
+  padding: 15px !important;
+
+  border-radius: 2px;
+
+  .pt-icon {
+    color: white !important;
+  }
+
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 0.9;
+    box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.2);
+  }
 }

@@ -13,6 +13,9 @@ const URLShare = ({ url }) => (
       <input type="text" className="pt-input" value={url} onChange={() => {}} />
       <button className="pt-button pt-minimal pt-intent-warning pt-icon-clipboard" onClick={() => clipboardCopy(url)} />
     </div>
+    <label className="info-label" style={{ padding: "10px 0" }}>
+      Use this link to share the animation
+    </label>
   </div>
 );
 
@@ -63,7 +66,7 @@ class GenericMediaShare extends React.Component {
             </div>
           </label>
           <label className="info-label">Exported video will be send to you via email when it's finished</label>
-          <Button icon="share" onClick={this.onExportClick}>
+          <Button className="action-button" icon="share" onClick={this.onExportClick}>
             Share
           </Button>
         </div>
