@@ -38,7 +38,7 @@ services:
     environment:
       - NODE_ENV=production
       - MAPBOX_ACCESS_TOKEN # env passed from shell
-    ports:
+    expose:
       - "3000:3000"
 
   renderer:
@@ -80,7 +80,7 @@ services:
     depends_on:
       - db
       - rabbitmq
-    ports:
+    expose:
       - "4000:4000"
 
   db:
@@ -91,7 +91,7 @@ services:
     volumes:
       - ./data/db:/var/lib/postgresql/data
       - ./../db/init.sh:/docker-entrypoint-initdb.d/init.sh
-    ports:
+    expose:
       - "5432:5432"
 
   rabbitmq:
@@ -99,7 +99,7 @@ services:
     hostname: "rabbitmq"
     volumes:
       - ./data/rabbitmq:/var/lib/rabbitmq
-    ports:
+    expose:
       - "15672:15672"
       - "5672:5672"
 

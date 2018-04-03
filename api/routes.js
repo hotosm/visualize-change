@@ -9,6 +9,7 @@ const logger = require("./logger");
 
 const RENDER_QUEUE = process.env.RENDER_QUEUE || "render_queue";
 const SERVER_DOMAIN = process.env.SERVER_DOMAIN || "http://localhost:8080";
+const EXPORTS_TABLE_NAME = "exports";
 
 const MAP_CONFIG_SCHEMA = j.object().keys({
   lng: j
@@ -23,8 +24,8 @@ const MAP_CONFIG_SCHEMA = j.object().keys({
     .number()
     .min(0)
     .max(18),
-  startDate: j.number(), // YYYY-MM-DDThh:mm:ss.sssZ
-  endDate: j.number(),
+  startDate: j.number(), // timestamp
+  endDate: j.number(), // timestamp
   interval: j.string().valid("hours", "days", "weeks"),
   style: j.object() // TODO: Need to add better validation for this
 });
@@ -180,6 +181,8 @@ module.exports = ({ channel, db }, callback) => {
           }
         }
       );
+
+      // TODO: store replyContent.dir in DB, and cleanup after N days
     });
 
     const queueRender = renderConfig => {
@@ -198,28 +201,27 @@ module.exports = ({ channel, db }, callback) => {
       });
     };
 
-    const EXPORTS_TABLE_NAME = "exports";
-
+    // FIXME: .catch()
     const exportsGetById = (id, respond) => {
       db(EXPORTS_TABLE_NAME)
-        .where({ id })
         .select()
+        .where({ id })
         .then(respond);
     };
 
+    // FIXME: .catch()
     const exportsAdd = ({ parentId, config }, respond) => {
       db(EXPORTS_TABLE_NAME)
+        .insert({ ["parent_id"]: parentId, config: JSON.stringify(config) })
         .returning("id")
-        /*eslint-disable camelcase*/
-        .insert({ parent_id: parentId, config: JSON.stringify(config) })
-        /*eslint-enable camelcase*/
         .then(respond);
     };
 
+    // FIXME: .catch()
     const exportsUpdate = (id, body, respond) => {
       db(EXPORTS_TABLE_NAME)
-        .where({ id })
         .update({ config: body })
+        .where({ id })
         .returning("*")
         .then(respond);
     };
