@@ -5,6 +5,10 @@
 @blue4: #b73636;
 @blue5: #b73636;
 
+@red: #d73f3f;
+@pale-red: #f5ebeb;
+@light-gray3: #f0efef;
+
 body {
   overflow: hidden;
   font-family: "Archivo", sans-serif;
@@ -21,7 +25,7 @@ body {
 
 .sidebar {
   position: fixed;
-  top: 50px;
+  top: 0;
   bottom: 0;
   display: flex;
   z-index: 3;
@@ -42,6 +46,7 @@ body {
   flex-flow: column;
   flex-grow: 1;
   padding: 5px;
+  margin-top: 50px;
 }
 
 .sidebar-tabs,
@@ -60,13 +65,14 @@ body {
   cursor: pointer;
 
   &::after {
-    content: "\2807";
-    font-size: 30px;
+    content: "⁞";
+    font-size: 48px;
+    color: @red;
   }
 }
 
 .sidebar-footer {
-  background: @light-gray4;
+  background: @pale-red;
   height: 40px;
 
   display: flex;
@@ -149,11 +155,12 @@ body {
 .map-footer__date {
   display: flex;
   align-items: center;
+  justify-content: center;
   padding: 0 10px;
   width: 100px;
   height: @map-footer-height;
 
-  background: @light-gray4;
+  background: @light-gray3;
 }
 
 .pt-daterangepicker {
@@ -207,6 +214,7 @@ body {
 
 .inline-label h5 {
   margin: 0;
+  font-family: "Barlow Condensed", sans-serif;
 }
 
 .inline-label input[type="number"] {
@@ -228,6 +236,7 @@ body {
 .section__header h4 {
   margin: 0;
   padding: 0;
+  font-family: "Barlow Condensed", sans-serif;
 }
 
 .export-menu {
@@ -253,6 +262,7 @@ body {
   width: 50%;
   right: 50px;
   top: 20px;
+  border-radius: 0;
 }
 
 .mapboxgl-ctrl-top-right {
@@ -281,6 +291,9 @@ body {
 
 .pt-tab-list {
   padding: 10px 10px 0 10px;
+  font-family: "Barlow Condensed", sans-serif;
+  text-transform: uppercase;
+  font-size: 22px;
 }
 
 .pt-datepicker-year-select,
@@ -361,23 +374,120 @@ body {
 
 .pt-button.route.active,
 .pt-button.route.active:hover {
-  box-shadow: inset 0 -3px 0 #d73f3f;
+  box-shadow: inset 0 -2px 0 @red!important;
 }
 
 .pt-tab[aria-selected="true"],
 .pt-tab[aria-selected="true"]:hover {
-  color: #d73f3f;
-  box-shadow: inset 0 -3px 0 #d73f3f !important;
+  color: @red;
+  box-shadow: inset 0 -2px 0 @red !important;
 }
 .pt-tab[aria-selected="true"],
 .pt-tab:not([aria-disabled="true"]):hover {
-  color: #d73f3f;
+  color: @red;
 }
 .pt-button-group.pt-minimal .pt-button.pt-intent-primary {
-  color: #d73f3f;
+  color: @red;
 }
 
 .info-label {
   display: block;
   padding: 40px 0;
+}
+
+.pt-button-group.pt-minimal {
+  text-transform: uppercase;
+  font-family: "Barlow Condensed", sans-serif;
+  a {
+    color: @red;
+    letter-spacing: 0.035em;
+  }
+}
+
+.pt-tab-indicator-wrapper .pt-tab-indicator {
+  display: none;
+}
+
+.pt-card {
+  border-radius: 0;
+}
+
+.pt-input {
+  border-radius: 0;
+  box-shadow: none;
+  border: 1px solid #d2d2d2;
+  width: 100%;
+}
+
+.pt-daterangepicker .DayPicker-Day--selected-range {
+  background-color: @pale-red;
+}
+
+.pt-datepicker .DayPicker-Day.DayPicker-Day--selected {
+  background-color: @red;
+}
+
+.pt-button {
+  border-radius: 0;
+}
+
+.pt-button:not([class*="pt-intent-"]):active,
+.pt-button:not([class*="pt-intent-"]).pt-active {
+  background: @pale-red;
+}
+
+// Datepicker
+.pt-datepicker .DayPicker-NavButton {
+  padding: 0;
+  top: 3px;
+}
+.pt-datepicker .pt-datepicker-caption {
+  text-align: center;
+}
+
+.pt-datepicker .pt-datepicker-caption .pt-datepicker-month-select {
+  padding: 0 5px;
+}
+
+.pt-datepicker .DayPicker-Weekday {
+  font-size: 11px;
+}
+
+.pt-datepicker .DayPicker-Day {
+  font-size: 12px;
+}
+
+// .pt-slider-track, .pt-slider-progress {
+//   background: @pale-red;
+// }
+
+.pt-slider-progress,
+.pt-dark .pt-slider-progress {
+  background: @red;
+}
+
+.export-menu {
+  .pt-button {
+    margin-left: 75%;
+  }
+  .pt-input {
+    width: auto;
+  }
+}
+.export-menu #pt-tab-panel_ExportTabs_Url .pt-input {
+  width: 100%;
+}
+
+.pt-navbar-heading {
+  color: @red;
+  padding-left: 10px;
+}
+
+.logo {
+  width: 60px;
+  height: 36px;
+  display: block;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background: url("img/logo.svg");
 }

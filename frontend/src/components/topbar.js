@@ -17,6 +17,7 @@ module.exports = ({ id = null, path, canSave, saving, isEditing, onSaveClick, is
   <SlideTransition className="topbar" visible={!isFullScreenMode} direction="top">
     <Navbar>
       <NavbarGroup>
+        <div className="logo" />
         <NavbarHeading>HOT Visualize Change</NavbarHeading>
       </NavbarGroup>
 
