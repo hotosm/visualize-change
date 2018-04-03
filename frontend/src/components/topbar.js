@@ -33,7 +33,7 @@ module.exports = ({ id = null, path, canSave, saving, isEditing, onSaveClick, is
             </Button>
           )}
 
-          <Link className="pt-button route" to="/edit/">
+          <Link className="pt-button" to="/edit/">
             New
           </Link>
 

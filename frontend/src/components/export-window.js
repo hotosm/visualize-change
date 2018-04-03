@@ -8,12 +8,12 @@ const { hideExportMenu, sendToRenderer } = require("../actions");
 const { getShareUrl } = require("../utils");
 
 const URLShare = ({ url }) => (
-  <Card>
-    <div className="pt-input-group .modifier">
+  <div className="inside-content">
+    <div className="pt-input-group">
       <input type="text" className="pt-input" value={url} onChange={() => {}} />
       <button className="pt-button pt-minimal pt-intent-warning pt-icon-clipboard" onClick={() => clipboardCopy(url)} />
     </div>
-  </Card>
+  </div>
 );
 
 class GenericMediaShare extends React.Component {
@@ -31,7 +31,6 @@ class GenericMediaShare extends React.Component {
   };
 
   onSizeChange = ev => {
-    console.log(ev.target.value);
     this.setState({ size: ev.target.value });
   };
 
@@ -41,7 +40,7 @@ class GenericMediaShare extends React.Component {
 
   render() {
     return (
-      <Card>
+      <div className="inside-content">
         <div className="form-body">
           <label className="inline-label">
             E-mail:
@@ -68,7 +67,7 @@ class GenericMediaShare extends React.Component {
             Share
           </Button>
         </div>
-      </Card>
+      </div>
     );
   }
 }
