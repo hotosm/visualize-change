@@ -1,7 +1,7 @@
 const React = require("react");
 const moment = require("moment");
 const { connect } = require("react-redux");
-const { Button, ButtonGroup, Slider, Overlay, Card, Elevation } = require("@blueprintjs/core");
+const { Button, ButtonGroup, Slider } = require("@blueprintjs/core");
 
 const { FadeTransition } = require("./transitions");
 const { togglePlay, setSelectedDate, toggleFullscreen, showExportMenu, hidePlayerPanel } = require("../actions");
@@ -22,6 +22,13 @@ class PlayerPanel extends React.Component {
   };
 
   componentWillReceiveProps(nextProps) {
+    // TODO: make this configurable from UI
+    const intervalToStepSpeed = {
+      hours: 1,
+      days: 3,
+      weeks: 5
+    };
+
     // Naive implementation
     if (nextProps.date.isPlaying) {
       this.playTimer = setTimeout(() => {
@@ -29,14 +36,14 @@ class PlayerPanel extends React.Component {
           .add(1, this.props.date.interval)
           .valueOf();
         this.props.setSelectedDate(next);
-      }, 1000);
+      }, 1000 * intervalToStepSpeed[this.props.date.interval]);
     } else {
       clearTimeout(this.playTimer);
     }
   }
 
   render() {
-    const { date, togglePlay, toggleFullscreen, showExportMenu, isSidebarOpen, isFullScreenMode } = this.props;
+    const { date, togglePlay, toggleFullscreen, showExportMenu, isFullScreenMode } = this.props;
     return (
       <div className="map-footer__content" onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut}>
         <div className="map-footer__items">
@@ -112,7 +119,7 @@ class PlayerPanelWrapper extends React.Component {
   }
 
   render() {
-    const { visible, date, togglePlay, toggleFullscreen, showExportMenu, isSidebarOpen, isFullScreenMode } = this.props;
+    const { visible, isSidebarOpen, isFullScreenMode } = this.props;
     return (
       <FadeTransition
         visible={visible}
