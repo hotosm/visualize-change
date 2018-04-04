@@ -141,12 +141,19 @@ const setupMap = map => {
   });
 
   return {
-    filter: date => {
+    filter: (date, interval) => {
       const timestamp = date / 1000;
 
       const filter = ["all", ["<=", "@timestamp", timestamp]];
 
-      const highlightedFilter = filter.concat([[">=", "@timestamp", timestamp - 86400]]);
+      // TODO: This varies between renderer, cause we dont want to use moment there.
+      const intervalSteps = {
+        hours: 3600,
+        days: 86400,
+        weeks: 604800
+      };
+
+      const highlightedFilter = filter.concat([[">=", "@timestamp", timestamp - intervalSteps[interval]]]);
 
       Object.keys(layers).forEach(layerGroupKey => {
         layers[layerGroupKey].forEach(layer => {
@@ -235,7 +242,7 @@ class Map extends React.Component {
 
     this.map.on("load", () => {
       this.updateMap(props.style);
-      this.filterMap(this.state.selectedDate);
+      this.filterMap(this.state.selectedDate, props.date.interval);
 
       this.isMapReady = makeTileReadyCheck(this.map, "osm");
     });
@@ -280,14 +287,14 @@ class Map extends React.Component {
 
   subscribeToSlider = () => {
     if (this.isMapReady()) {
-      this.filterMap(this.state.selectedDate);
+      this.filterMap(this.state.selectedDate, this.props.date.interval);
       this.setState({ subscribed: false }, () => this.map.off("sourcedata", this.subscribeToSlider));
     }
   };
 
   handleDateChange() {
     if (this.isMapReady()) {
-      this.filterMap(this.state.selectedDate);
+      this.filterMap(this.state.selectedDate, this.props.date.interval);
     } else if (!this.state.subscribed) {
       this.setState({ subscribed: true }, () => this.map.on("sourcedata", this.subscribeToSlider));
     }
