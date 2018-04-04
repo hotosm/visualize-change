@@ -10,19 +10,19 @@ const initialState = {
       highlightEnabled: true,
       base: {
         "line-color": {
-          r: 245,
-          g: 166,
-          b: 35,
+          r: 42,
+          g: 147,
+          b: 187,
           a: 0.7
         },
         "line-width": 1
       },
       highlight: {
         "line-color": {
-          r: 204,
-          g: 245,
-          b: 225,
-          a: 0.5
+          r: 255,
+          g: 255,
+          b: 255,
+          a: 0.3
         },
         "line-width": 1
       }
@@ -34,19 +34,19 @@ const initialState = {
       highlightEnabled: true,
       base: {
         "line-color": {
-          r: 208,
-          g: 2,
-          b: 68,
-          a: 0.7
+          r: 214,
+          g: 85,
+          b: 109,
+          a: 0.3
         },
         "line-width": 1
       },
       highlight: {
         "line-color": {
-          r: 235,
-          g: 150,
-          b: 215,
-          a: 1
+          r: 255,
+          g: 255,
+          b: 255,
+          a: 0.3
         },
         "line-width": 1
       }

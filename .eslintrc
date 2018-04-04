@@ -16,7 +16,9 @@
     "semi": [2, "always"],
     "space-after-keywords": "off",
     "space-in-brackets": [0],
-    "react/jsx-uses-vars": [1]
+    "react/jsx-uses-vars": [2],
+    "react/jsx-uses-react": [2],
+    "react/react-in-jsx-scope": [2]
   },
   "env": {
     "browser": true,

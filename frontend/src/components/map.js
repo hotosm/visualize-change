@@ -17,6 +17,27 @@ const { Intent } = require("@blueprintjs/core");
 
 const AppToaster = require("./toaster");
 
+// workaround for https://github.com/mapbox/mapbox-gl-js/issues/5874
+const makeTileReadyCheck = (map, sourceId) => {
+  const tileState = {};
+
+  return () => {
+    return Object.keys(map.style.sourceCaches[sourceId]._tiles).every(key => {
+      const { state } = map.style.sourceCaches[sourceId]._tiles[key];
+
+      const isReady = state === "loaded" || state === "errored";
+      const wasErrored = tileState[key] === "errored";
+
+      if (!isReady && wasErrored) {
+        return true;
+      }
+
+      tileState[key] = state;
+      return isReady;
+    });
+  };
+};
+
 const setupMap = map => {
   const sourceId = "osm";
   const layerId = "osm";
@@ -194,7 +215,8 @@ class Map extends React.Component {
     this.map.addControl(new mapboxgl.NavigationControl());
     this.map.addControl(
       new mapboxglGeoconder({
-        accessToken: mapboxgl.accessToken
+        accessToken: mapboxgl.accessToken,
+        zoom: 12
       })
     );
 
@@ -213,9 +235,9 @@ class Map extends React.Component {
     this.map.on("load", () => {
       this.updateMap(props.style);
       this.filterMap(this.state.selectedDate);
-    });
 
-    // window.map = this.map;
+      this.isMapReady = makeTileReadyCheck(this.map, "osm");
+    });
   }
 
   componentDidMount() {
@@ -256,14 +278,14 @@ class Map extends React.Component {
   }
 
   subscribeToSlider = () => {
-    if (this.map.areTilesLoaded()) {
+    if (this.isMapReady()) {
       this.filterMap(this.state.selectedDate);
       this.setState({ subscribed: false }, () => this.map.off("sourcedata", this.subscribeToSlider));
     }
   };
 
   handleDateChange() {
-    if (this.map.areTilesLoaded()) {
+    if (this.isMapReady()) {
       this.filterMap(this.state.selectedDate);
     } else if (!this.state.subscribed) {
       this.setState({ subscribed: true }, () => this.map.on("sourcedata", this.subscribeToSlider));

@@ -5,6 +5,11 @@
 @blue4: #b73636;
 @blue5: #b73636;
 
+@red: #d73f3f;
+@pale-red: #f5ebeb;
+@light-gray3: #f0efef;
+@hot-gray: #68707f;
+
 body {
   overflow: hidden;
   font-family: "Archivo", sans-serif;
@@ -21,7 +26,7 @@ body {
 
 .sidebar {
   position: fixed;
-  top: 50px;
+  top: 0;
   bottom: 0;
   display: flex;
   z-index: 3;
@@ -30,7 +35,8 @@ body {
   background: white;
   transition: margin 0.3s ease-in;
   margin-left: 0;
-  box-shadow: @pt-elevation-shadow-2;
+  // box-shadow: @pt-elevation-shadow-2;
+  box-shadow: 0 0 0 1px rgba(16, 22, 26, 0.1), 0 1px 1px rgba(16, 22, 26, 0.1), 0 2px 6px rgba(16, 22, 26, 0.1);
 
   &--hiden {
     margin-left: -335px;
@@ -41,7 +47,7 @@ body {
   display: flex;
   flex-flow: column;
   flex-grow: 1;
-  padding: 5px;
+  margin-top: 50px;
 }
 
 .sidebar-tabs,
@@ -51,6 +57,7 @@ body {
 
 .sidebar-toggle {
   width: 15px;
+  min-width: 15px;
   height: 100%;
   background: @light-gray3;
 
@@ -60,14 +67,17 @@ body {
   cursor: pointer;
 
   &::after {
-    content: "\2807";
-    font-size: 30px;
+    content: "⁞";
+    font-size: 48px;
+    color: @red;
   }
 }
 
 .sidebar-footer {
-  background: @light-gray4;
-  height: 40px;
+  background: #f8f7f7;
+  border-top: 1px solid #eee;
+  max-height: 40px;
+  min-height: 40px;
 
   display: flex;
   align-items: center;
@@ -149,11 +159,12 @@ body {
 .map-footer__date {
   display: flex;
   align-items: center;
+  justify-content: center;
   padding: 0 10px;
   width: 100px;
   height: @map-footer-height;
 
-  background: @light-gray4;
+  background: @light-gray3;
 }
 
 .pt-daterangepicker {
@@ -173,7 +184,6 @@ body {
   background: #ffffff;
   display: inline-block;
   cursor: pointer;
-  border-radius: 3px;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
   // margin-right: 5px;
 }
@@ -203,17 +213,18 @@ body {
   align-items: center;
   justify-content: space-between;
   height: 30px;
+  color: @hot-gray;
 }
 
 .inline-label h5 {
   margin: 0;
+  color: @hot-gray;
 }
 
 .inline-label input[type="number"] {
   width: 30px;
   height: 20px;
   font-size: 11px;
-  border-radius: 3px;
   border: none;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
 }
@@ -221,7 +232,9 @@ body {
 .section__header {
   .inline-label();
   padding: 5px 0;
-  margin: 0 0 20px 0;
+  margin: 0 0 10px 0;
+  border-bottom: 1px solid @hot-gray;
+  padding-bottom: 20px;
   // border-bottom: 1px solid #f0f0f0;
 }
 
@@ -230,10 +243,18 @@ body {
   padding: 0;
 }
 
+.section {
+  margin-bottom: 15px;
+}
+
+.subsection {
+  padding-bottom: 10px;
+}
+
 .export-menu {
   position: absolute;
   z-index: 999;
-  top: 0;
+  top: 100px;
   left: calc(50% - 200px);
   margin: 10vh 0;
   width: 400px;
@@ -253,6 +274,7 @@ body {
   width: 50%;
   right: 50px;
   top: 20px;
+  border-radius: 0;
 }
 
 .mapboxgl-ctrl-top-right {
@@ -266,9 +288,13 @@ body {
   margin-bottom: 10px;
 }
 
+.sidebar-panel {
+  padding-top: 10px;
+}
+
 // Temp!
 .styles-panel {
-  height: calc(~"100vh - 100px - 50px");
+  height: calc(~"100vh - 100px - 60px");
   overflow: scroll;
 }
 
@@ -281,6 +307,7 @@ body {
 
 .pt-tab-list {
   padding: 10px 10px 0 10px;
+  font-size: 22px;
 }
 
 .pt-datepicker-year-select,
@@ -308,16 +335,16 @@ body {
   }
 }
 
-.pt-button.active {
-  text-decoration: underline;
-}
+// .pt-button.active {
+//   text-decoration: underline;
+// }
 
 .topbar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 10000;
+  z-index: 10;
 }
 
 .map.full-screen-mode {
@@ -349,5 +376,229 @@ body {
     max-width: 600px;
     text-align: justify;
     margin: 0 auto;
+  }
+}
+.pt-toast-container.pt-toast-container-top {
+  top: 50px;
+}
+
+.route {
+  border-radius: 0;
+}
+
+.pt-button.route {
+  background: none;
+  margin-left: 5px;
+}
+
+.pt-button.route:hover,
+.pt-button.route.active,
+.pt-button.route.active:hover {
+  box-shadow: inset 0 -2px 0 @red!important;
+  background: none !important;
+}
+
+.pt-tab[aria-selected="true"],
+.pt-tab[aria-selected="true"]:hover {
+  color: @red;
+  box-shadow: inset 0 -2px 0 @red !important;
+}
+.pt-tab[aria-selected="true"],
+.pt-tab:not([aria-disabled="true"]):hover {
+  color: @red;
+}
+.pt-button-group.pt-minimal .pt-button.pt-intent-primary {
+  color: @red;
+}
+
+.pt-label {
+  color: @hot-gray;
+}
+
+.info-label {
+  display: block;
+  padding: 40px 0;
+  color: @hot-gray;
+}
+
+.pt-button-group.pt-minimal {
+  a {
+    color: @red;
+    letter-spacing: 0.035em;
+  }
+}
+
+.pt-tab-indicator-wrapper .pt-tab-indicator {
+  display: none;
+}
+
+.pt-card {
+  border-radius: 0;
+}
+
+.pt-input {
+  border-radius: 0;
+  box-shadow: none;
+  border: 1px solid #d2d2d2;
+  width: 100%;
+}
+
+.pt-daterangepicker .DayPicker-Day--selected-range {
+  background-color: @pale-red;
+}
+
+.pt-datepicker .DayPicker-Day.DayPicker-Day--selected {
+  background-color: @red;
+}
+
+.pt-button {
+  border-radius: 0;
+}
+
+.pt-button:not([class*="pt-intent-"]):active,
+.pt-button:not([class*="pt-intent-"]).pt-active {
+  background: @pale-red;
+}
+
+// Datepicker
+.pt-datepicker .DayPicker-NavButton {
+  padding: 0;
+  top: 3px;
+}
+.pt-datepicker .pt-datepicker-caption {
+  text-align: center;
+}
+
+.pt-datepicker .pt-datepicker-caption .pt-datepicker-month-select {
+  padding: 0 5px;
+}
+
+.pt-datepicker .DayPicker-Weekday {
+  font-size: 11px;
+}
+
+.pt-datepicker .DayPicker-Day {
+  font-size: 12px;
+}
+
+// .pt-slider-track, .pt-slider-progress {
+//   background: @pale-red;
+// }
+
+.pt-slider-progress,
+.pt-dark .pt-slider-progress {
+  background: @red;
+}
+
+.export-menu {
+  .pt-button {
+    margin-left: 75%;
+  }
+  .pt-input {
+    width: auto;
+  }
+}
+.export-menu #pt-tab-panel_ExportTabs_Url .pt-input {
+  width: 100%;
+}
+
+.pt-navbar {
+  box-shadow: 0 0 0 1px rgba(16, 22, 26, 0.1), 0 0 0 rgba(16, 22, 26, 0), 0 1px 1px rgba(16, 22, 26, 0.1);
+}
+
+.pt-navbar-heading {
+  color: @red;
+  padding-left: 10px;
+}
+
+.logo {
+  width: 60px;
+  height: 36px;
+  display: block;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background: url("img/logo.svg");
+}
+
+.pt-button-group.pt-minimal .pt-button.pt-intent-primary:hover,
+.pt-button-group.pt-minimal .pt-button:hover {
+  background: @pale-red;
+  color: @red;
+}
+
+textarea.pt-input {
+  resize: none;
+}
+
+.export-menu {
+}
+div.pt-tab-list {
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 0px;
+  padding-bottom: 10px;
+}
+
+.inside-content {
+  padding: 20px;
+}
+
+.pt-tab-panel {
+  margin-top: 0;
+}
+
+.div.pt-button-group {
+  .pt-button:not([class*="pt-intent-"]),
+  .pt-button {
+    box-shadow: none;
+    background-image: none;
+    background: none;
+  }
+}
+
+.pt-button:not([class*="pt-intent-"]),
+.pt-button:not([class*="pt-intent-"]):hover {
+  box-shadow: none;
+  background: none;
+}
+.pt-button:not([class*="pt-intent-"]) {
+  box-shadow: none;
+  background-image: none;
+}
+.pt-button:not([class*="pt-intent-"]):active,
+.pt-button:not([class*="pt-intent-"]).pt-active {
+  box-shadow: none;
+  background: none;
+}
+.pt-button:not([class*="pt-intent-"]).pt-active {
+  border-bottom: 2px solid @red;
+}
+
+.separator {
+  margin: -10px;
+  color: #eee!important;
+  pointer-events: none;
+}
+
+.sidebar-data .inline-label {
+  padding-bottom: 10px;
+  margin-bottom: 30px;
+}
+
+// TODO: Fix this
+button.pt-button.action-button {
+  background: @red!important;
+  color: white !important;
+  padding: 15px !important;
+
+  border-radius: 2px;
+
+  .pt-icon {
+    color: white !important;
+  }
+
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 0.7;
   }
 }

@@ -8,18 +8,21 @@ const { hideExportMenu, sendToRenderer } = require("../actions");
 const { getShareUrl } = require("../utils");
 
 const URLShare = ({ url }) => (
-  <Card>
-    <div className="pt-input-group .modifier">
+  <div className="inside-content">
+    <div className="pt-input-group">
       <input type="text" className="pt-input" value={url} onChange={() => {}} />
       <button className="pt-button pt-minimal pt-intent-warning pt-icon-clipboard" onClick={() => clipboardCopy(url)} />
     </div>
-  </Card>
+    <label className="info-label" style={{ padding: "10px 0" }}>
+      Use this link to share the animation
+    </label>
+  </div>
 );
 
 class GenericMediaShare extends React.Component {
   constructor() {
     super();
-    this.state = { email: "", fps: 10 };
+    this.state = { email: "", fps: 10, size: "1280x720" };
   }
 
   onEmailChange = ev => {
@@ -30,13 +33,17 @@ class GenericMediaShare extends React.Component {
     this.setState({ fps: ev.target.value });
   };
 
+  onSizeChange = ev => {
+    this.setState({ size: ev.target.value });
+  };
+
   onExportClick = () => {
-    this.props.onExportClick({ email: this.state.email, fps: this.state.fps });
+    this.props.onExportClick({ email: this.state.email, size: this.state.size, fps: this.state.fps });
   };
 
   render() {
     return (
-      <Card>
+      <div className="inside-content">
         <div className="form-body">
           <label className="inline-label">
             E-mail:
@@ -46,18 +53,31 @@ class GenericMediaShare extends React.Component {
             FPS
             <input value={this.state.fps} onChange={this.onFPSChange} className="pt-input" />
           </label>
-          <Button icon="share" onClick={this.onExportClick}>
+          <label className="inline-label">
+            Size:
+            <div className="pt-select">
+              <select value={this.state.size} onChange={this.onSizeChange}>
+                <option value="1920x1080">1920x1080</option>
+                <option value="1280x720">1280x720</option>
+                <option value="1024x768">1024x768</option>
+                <option value="800x600">800x600</option>
+                <option value="640x480">640x480</option>
+              </select>
+            </div>
+          </label>
+          <label className="info-label">Exported video will be send to you via email when it's finished</label>
+          <Button className="action-button" icon="share" onClick={this.onExportClick}>
             Share
           </Button>
         </div>
-      </Card>
+      </div>
     );
   }
 }
 
 class ExportMenu extends React.Component {
-  onExportClick = (format, { email, fps }) => {
-    this.props.sendToRenderer({ format, email, fps });
+  onExportClick = (format, { email, fps, size }) => {
+    this.props.sendToRenderer({ format, email, fps, size });
   };
 
   render() {
@@ -82,35 +102,6 @@ class ExportMenu extends React.Component {
         </Card>
       </Overlay>
     );
-    // return (
-    //   <Overlay isOpen={isOpen} canOutsideClickClose={true} onClose={hideExportMenu}>
-    //     <Card elevation={Elevation.FOUR} className="export-menu">
-    //       <h4>Export</h4>
-    //       <div className="form-body">
-    //         <label className="inline-label">
-    //           E-mail:
-    //           <input value={this.state.email} onChange={this.onEmailChange} className="pt-input" />
-    //         </label>
-    //         <label className="inline-label">
-    //           Format
-    //           <div className="pt-select">
-    //             <select onChange={this.onFormatChange}>
-    //               <option value="video">Video</option>
-    //               <option value="gif">GIF</option>
-    //             </select>
-    //           </div>
-    //         </label>
-    //         <label className="inline-label">
-    //           FPS
-    //           <input value={this.state.fps} onChange={this.onFPSChange} className="pt-input" />
-    //         </label>
-    //         <Button icon="share" onClick={this.onExportClick}>
-    //           Export
-    //         </Button>
-    //       </div>
-    //     </Card>
-    //   </Overlay>
-    // );
   }
 }
 

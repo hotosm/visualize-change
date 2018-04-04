@@ -21,10 +21,6 @@ try {
   process.exit(1);
 }
 
-// TODO: get that from renderingConfig
-const width = 1280;
-const height = 720;
-
 // "/data/capture" is docker volume, env.captureDir allows us to test outside of docker
 const captureDir = path.join(process.env.CAPTURE_DIR || "/data/capture", renderingConfig.dir);
 
@@ -36,6 +32,8 @@ const FORMATS = {
   video: "mp4",
   gif: "gif"
 };
+
+const [width, height] = renderingConfig.size.split("x").map(d => parseInt(d));
 
 const convertToVideo = callback => {
   const outputFile = path.join(captureDir, `render.${FORMATS[renderingConfig.format]}`);

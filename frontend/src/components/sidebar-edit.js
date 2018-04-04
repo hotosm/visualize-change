@@ -1,17 +1,16 @@
 const React = require("react");
 const { connect } = require("react-redux");
-const { Button, ButtonGroup, Switch, Icon, Label, Tab, Tabs, Card } = require("@blueprintjs/core");
+const { Button, ButtonGroup, Switch, Label, Tab, Tabs } = require("@blueprintjs/core");
 const { DateRangePicker } = require("@blueprintjs/datetime");
 const { SketchPicker } = require("react-color");
-const classNames = require("classnames");
 const debounce = require("lodash.debounce");
 
 const { setInterval, setDateSpan, setMapBackground, setFeatureStyle, setMetadata } = require("../actions");
 const { capitalizeFirstLetter, rgbaObjectToString } = require("../utils");
 
 const DescribePanel = ({ metadata, setMetadata }) => (
-  <Card className="siderbar__card">
-    <div>
+  <div className="sidebar-panel">
+    <div className="inside-content">
       <Label text="Name" required={true}>
         <input className="pt-input" value={metadata.name} onChange={ev => setMetadata("name", ev.target.value)} />
       </Label>
@@ -26,19 +25,18 @@ const DescribePanel = ({ metadata, setMetadata }) => (
         <input className="pt-input" value={metadata.project} onChange={ev => setMetadata("project", ev.target.value)} />
       </Label>
     </div>
-  </Card>
+  </div>
 );
 
 const DatePanel = ({ date, onChangeDate, onChangeInterval }) => (
-  <div>
+  <div className="sidebar-panel">
     <DateRangePicker
       shortcuts={false}
       contiguousCalendarMonths={false}
-      maxDate={new Date()}
-      value={[new Date(date.start), date.end ? new Date(date.end) : null]}
+      value={[new Date(date.start || date.end), date.end ? new Date(date.end) : null]}
       onChange={onChangeDate}
     />
-    <Card>
+    <div className="inside-content">
       <label className="inline-label">
         Interval:
         <ButtonGroup>
@@ -49,7 +47,7 @@ const DatePanel = ({ date, onChangeDate, onChangeInterval }) => (
           ))}
         </ButtonGroup>
       </label>
-    </Card>
+    </div>
   </div>
 );
 
@@ -107,7 +105,7 @@ const StyleNumberPicker = ({ name, value, onChange }) => {
   return (
     <div>
       <label className="inline-label">
-        {capitalizeFirstLetter(name)}
+        {capitalizeFirstLetter(name.replace("-", " "))}
         <input type="number" min={0} max={10} step={0.1} value={value} onChange={ev => onChange(ev.target.value)} />
       </label>
     </div>
@@ -142,7 +140,7 @@ const StylePart = ({ style, onChange }) => {
 
 const StyleSection = ({ style, onStyleChange }) => {
   return (
-    <Card>
+    <div className="inside-content section">
       <div className="section__header">
         <h4>{capitalizeFirstLetter(style.name)}</h4>
         <StyleEnabledButton
@@ -150,7 +148,7 @@ const StyleSection = ({ style, onStyleChange }) => {
           onClick={newValue => onStyleChange(Object.assign({}, style, { enabled: newValue }))}
         />
       </div>
-      <Card>
+      <div className="subsection">
         <label className="inline-label">
           <h5>Base</h5>
           <StyleEnabledButton
@@ -162,8 +160,8 @@ const StyleSection = ({ style, onStyleChange }) => {
           style={style.base}
           onChange={newValue => onStyleChange(Object.assign({}, style, { base: newValue }))}
         />
-      </Card>
-      <Card>
+      </div>
+      <div className="subsection">
         <label className="inline-label">
           <h5>Highlighted</h5>
           <StyleEnabledButton
@@ -175,36 +173,38 @@ const StyleSection = ({ style, onStyleChange }) => {
           style={style.highlight}
           onChange={newValue => onStyleChange(Object.assign({}, style, { highlight: newValue }))}
         />
-      </Card>
-    </Card>
+      </div>
+    </div>
   );
 };
 
 const StylesPanel = ({ styles, onStyleChange, onBackgroundStyleChange }) => {
   return (
-    <div className="styles-panel">
-      <Card>
-        <div className="section__header">
-          <h4>Map</h4>
+    <div className="sidebar-panel">
+      <div className="styles-panel">
+        <div className="inside-content section">
+          <div className="section__header">
+            <h4>Map</h4>
+          </div>
+          <div>
+            <label className="inline-label">
+              Background Theme
+              <div className="pt-select">
+                <select value={styles.background} onChange={ev => onBackgroundStyleChange(ev.target.value)}>
+                  {["light", "dark", "basic", "streets", "bright", "satellite"].map(style => (
+                    <option key={style} value={style}>
+                      {capitalizeFirstLetter(style)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </label>
+          </div>
         </div>
-        <div>
-          <label className="inline-label">
-            Background Theme
-            <div className="pt-select">
-              <select value={styles.background} onChange={ev => onBackgroundStyleChange(ev.target.value)}>
-                {["light", "dark", "basic", "streets", "bright", "satellite"].map(style => (
-                  <option key={style} value={style}>
-                    {capitalizeFirstLetter(style)}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </label>
-        </div>
-      </Card>
-      {styles.features.map((style, idx) => (
-        <StyleSection key={style.name} style={style} onStyleChange={newStyle => onStyleChange(idx, newStyle)} />
-      ))}
+        {styles.features.map((style, idx) => (
+          <StyleSection key={style.name} style={style} onStyleChange={newStyle => onStyleChange(idx, newStyle)} />
+        ))}
+      </div>
     </div>
   );
 };
