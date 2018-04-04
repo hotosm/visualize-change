@@ -25,7 +25,7 @@ const makeTileReadyCheck = (map, sourceId) => {
     return Object.keys(map.style.sourceCaches[sourceId]._tiles).every(key => {
       const { state } = map.style.sourceCaches[sourceId]._tiles[key];
 
-      const isReady = state === "loaded" || state === "errored";
+      const isReady = state === "loaded" || state === "loading" || state === "errored";
       const wasErrored = tileState[key] === "errored";
 
       if (!isReady && wasErrored) {
@@ -141,6 +141,7 @@ const setupMap = map => {
 
   return {
     filter: date => {
+      console.log("date, date", date);
       const timestamp = date / 1000;
 
       const filter = ["all", ["<=", "@timestamp", timestamp]];
@@ -220,6 +221,8 @@ class Map extends React.Component {
       })
     );
 
+    this.map.addControl(new mapboxgl.ScaleControl(), "bottom-right");
+
     const { filter: filterMap, update: updateMap } = setupMap(this.map, props.style);
     this.filterMap = filterMap;
     this.updateMap = updateMap;
@@ -233,6 +236,7 @@ class Map extends React.Component {
     });
 
     this.map.on("load", () => {
+      console.log("LOADED");
       this.updateMap(props.style);
       this.filterMap(this.state.selectedDate);
 
@@ -285,9 +289,12 @@ class Map extends React.Component {
   };
 
   handleDateChange() {
+    console.log("handleDateChange", this.isMapReady());
     if (this.isMapReady()) {
+      console.log("we do filter, map is ready");
       this.filterMap(this.state.selectedDate);
     } else if (!this.state.subscribed) {
+      console.log("we do subscription");
       this.setState({ subscribed: true }, () => this.map.on("sourcedata", this.subscribeToSlider));
     }
   }

@@ -1,10 +1,10 @@
 const React = require("react");
 const moment = require("moment");
 const { connect } = require("react-redux");
-const { Button, ButtonGroup, Slider, Overlay, Card, Elevation } = require("@blueprintjs/core");
+const { Button, ButtonGroup, Slider } = require("@blueprintjs/core");
 
 const { FadeTransition } = require("./transitions");
-const { togglePlay, setSelectedDate, toggleFullscreen, showExportMenu, hidePlayerPanel } = require("../actions");
+const { togglePlay, setSelectedDate, toggleFullscreen, hidePlayerPanel } = require("../actions");
 const { capitalizeFirstLetter } = require("../utils");
 
 class PlayerPanel extends React.Component {
@@ -36,7 +36,7 @@ class PlayerPanel extends React.Component {
   }
 
   render() {
-    const { date, togglePlay, toggleFullscreen, showExportMenu, isSidebarOpen, isFullScreenMode } = this.props;
+    const { date, togglePlay, toggleFullscreen, isFullScreenMode } = this.props;
     return (
       <div className="map-footer__content" onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut}>
         <div className="map-footer__items">
@@ -55,7 +55,6 @@ class PlayerPanel extends React.Component {
           </div>
           <ButtonGroup minimal={true}>
             <Button icon="fullscreen" onClick={toggleFullscreen} />
-            <Button icon="share" onClick={showExportMenu} />
           </ButtonGroup>
         </div>
         <div className="map-footer__date">{moment(date.selected).format("YYYY-MM-DD")}</div>
@@ -63,6 +62,8 @@ class PlayerPanel extends React.Component {
     );
   }
 }
+
+// <Button icon="share" onClick={showExportMenu} />
 
 const PlayerPanelConnected = connect(
   ({ date, ui }) => ({
@@ -73,8 +74,7 @@ const PlayerPanelConnected = connect(
   {
     togglePlay,
     toggleFullscreen,
-    setSelectedDate,
-    showExportMenu
+    setSelectedDate
   }
 )(PlayerPanel);
 
@@ -112,7 +112,7 @@ class PlayerPanelWrapper extends React.Component {
   }
 
   render() {
-    const { visible, date, togglePlay, toggleFullscreen, showExportMenu, isSidebarOpen, isFullScreenMode } = this.props;
+    const { visible, isFullScreenMode } = this.props;
     return (
       <FadeTransition
         visible={visible}
