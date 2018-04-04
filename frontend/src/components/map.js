@@ -25,7 +25,8 @@ const makeTileReadyCheck = (map, sourceId) => {
     return Object.keys(map.style.sourceCaches[sourceId]._tiles).every(key => {
       const { state } = map.style.sourceCaches[sourceId]._tiles[key];
 
-      const isReady = state === "loaded" || state === "errored";
+      // TODO: Fixme
+      const isReady = state === "loaded" || state === "loading" || state === "errored";
       const wasErrored = tileState[key] === "errored";
 
       if (!isReady && wasErrored) {
