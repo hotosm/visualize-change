@@ -3,7 +3,7 @@ const { connect } = require("react-redux");
 const mapboxgl = require("mapbox-gl");
 const mapboxglGeoconder = require("mapbox-gl-geocoder");
 const classNames = require("classnames");
-const { rgbaObjectToString } = require("../utils");
+const { capitalizeFirstLetter, rgbaObjectToString } = require("../utils");
 
 const PlayerPanelConnected = require("./player-panel");
 const { setCoordinates, showExportMenu } = require("../actions");
@@ -204,6 +204,20 @@ const setupMap = map => {
   };
 };
 
+const MapLegend = ({ features }) => (
+  <div className="map-legend" style={{ position: "absolute", bottom: 85, right: 2 }}>
+    {features.map(style => (
+      <label className="inline-label">
+        <div
+          className="map-legend__square"
+          style={{ backgroundColor: rgbaObjectToString(Object.assign({}, style.base["line-color"], { a: 1 })) }}
+        />
+        {capitalizeFirstLetter(style.name)}
+      </label>
+    ))}
+  </div>
+);
+
 class Map extends React.Component {
   constructor(props) {
     super(props);
@@ -308,10 +322,12 @@ class Map extends React.Component {
   }
 
   render() {
+    console.log("props.sssss", this.props);
     return (
       <div className={classNames("map", { "full-screen-mode": this.props.isFullScreenMode })}>
         <div className="map-content" style={{ position: "relative" }}>
           <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }} ref={el => (this.elMap = el)} />
+          <MapLegend features={this.props.style.features} />
         </div>
         <PlayerPanelConnected />
       </div>

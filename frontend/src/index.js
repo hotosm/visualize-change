@@ -5,6 +5,7 @@ const { ConnectedRouter } = require("react-router-redux");
 const createHistory = require("history/createBrowserHistory").default;
 const { Route, Switch } = require("react-router-dom");
 const classNames = require("classnames");
+const { Link } = require("react-router-dom");
 
 const configureStore = require("./store");
 
@@ -174,6 +175,9 @@ const AboutPage = () => (
         The Visualize Change tool is an open service that creates customised animations of OpenStreetMap data mapped
         over time for an area of interest. Share these mapping visualizations easily through various file formats.
       </p>
+      <Link to="/edit" className="pt-button action-button start-button">
+        Click here to create visualization
+      </Link>
     </div>
   </div>
 );

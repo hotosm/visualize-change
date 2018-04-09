@@ -1,6 +1,6 @@
 const React = require("react");
 const { connect } = require("react-redux");
-const { Button, ButtonGroup, Switch, Label, Tab, Tabs } = require("@blueprintjs/core");
+const { Button, ButtonGroup, Switch, Label } = require("@blueprintjs/core");
 const { DateRangePicker } = require("@blueprintjs/datetime");
 const { SketchPicker } = require("react-color");
 const debounce = require("lodash.debounce");
@@ -8,8 +8,15 @@ const debounce = require("lodash.debounce");
 const { setInterval, setDateSpan, setMapBackground, setFeatureStyle, setMetadata } = require("../actions");
 const { capitalizeFirstLetter, rgbaObjectToString } = require("../utils");
 
+const SidebarPanelHeader = ({ title }) => (
+  <div className="sidebar-header">
+    <h5>{title}</h5>
+  </div>
+);
+
 const DescribePanel = ({ metadata, setMetadata }) => (
   <div className="sidebar-panel">
+    <SidebarPanelHeader title="Describe" />
     <div className="inside-content">
       <Label text="Name" required={true}>
         <input className="pt-input" value={metadata.name} onChange={ev => setMetadata("name", ev.target.value)} />
@@ -30,12 +37,15 @@ const DescribePanel = ({ metadata, setMetadata }) => (
 
 const DatePanel = ({ date, onChangeDate, onChangeInterval }) => (
   <div className="sidebar-panel">
-    <DateRangePicker
-      shortcuts={false}
-      contiguousCalendarMonths={false}
-      value={[new Date(date.start || date.end), date.end ? new Date(date.end) : null]}
-      onChange={onChangeDate}
-    />
+    <SidebarPanelHeader title="Dates" />
+    <div className="inside-content">
+      <DateRangePicker
+        shortcuts={false}
+        contiguousCalendarMonths={false}
+        value={[new Date(date.start || date.end), date.end ? new Date(date.end) : null]}
+        onChange={onChangeDate}
+      />
+    </div>
     <div className="inside-content">
       <label className="inline-label">
         Interval:
@@ -181,30 +191,29 @@ const StyleSection = ({ style, onStyleChange }) => {
 const StylesPanel = ({ styles, onStyleChange, onBackgroundStyleChange }) => {
   return (
     <div className="sidebar-panel">
-      <div className="styles-panel">
-        <div className="inside-content section">
-          <div className="section__header">
-            <h4>Map</h4>
-          </div>
-          <div>
-            <label className="inline-label">
-              Background Theme
-              <div className="pt-select">
-                <select value={styles.background} onChange={ev => onBackgroundStyleChange(ev.target.value)}>
-                  {["light", "dark", "basic", "streets", "bright", "satellite"].map(style => (
-                    <option key={style} value={style}>
-                      {capitalizeFirstLetter(style)}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </label>
-          </div>
+      <SidebarPanelHeader title="Styles" />
+      <div className="inside-content section">
+        <div className="section__header">
+          <h4>Map</h4>
         </div>
-        {styles.features.map((style, idx) => (
-          <StyleSection key={style.name} style={style} onStyleChange={newStyle => onStyleChange(idx, newStyle)} />
-        ))}
+        <div>
+          <label className="inline-label">
+            Background Theme
+            <div className="pt-select">
+              <select value={styles.background} onChange={ev => onBackgroundStyleChange(ev.target.value)}>
+                {["light", "dark", "basic", "streets", "bright", "satellite"].map(style => (
+                  <option key={style} value={style}>
+                    {capitalizeFirstLetter(style)}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </label>
+        </div>
       </div>
+      {styles.features.map((style, idx) => (
+        <StyleSection key={style.name} style={style} onStyleChange={newStyle => onStyleChange(idx, newStyle)} />
+      ))}
     </div>
   );
 };
@@ -220,6 +229,26 @@ const SidebarEdit = ({
   setMetadata
 }) => {
   return (
+    <div className="sidebar-content__inside">
+      <DescribePanel metadata={meta} setMetadata={setMetadata} />
+      <DatePanel date={date} onChangeDate={setDateSpan} onChangeInterval={setInterval} />
+      <StylesPanel styles={style} onStyleChange={setFeatureStyle} onBackgroundStyleChange={setMapBackground} />
+    </div>
+  );
+};
+
+const SidebarEditConnected = connect(({ meta, date, style }) => ({ meta, date, style }), {
+  setInterval,
+  setDateSpan,
+  setFeatureStyle,
+  setMapBackground,
+  setMetadata
+})(SidebarEdit);
+
+module.exports = SidebarEditConnected;
+
+{
+  /*
     <Tabs animate={true} id="SidebarTabs" className="sidebar-tabs" renderActiveTabPanelOnly={true}>
       <Tab id="Describe" title="Describe" panel={<DescribePanel metadata={meta} setMetadata={setMetadata} />} />
       <Tab
@@ -235,15 +264,5 @@ const SidebarEdit = ({
         }
       />
     </Tabs>
-  );
-};
-
-const SidebarEditConnected = connect(({ meta, date, style }) => ({ meta, date, style }), {
-  setInterval,
-  setDateSpan,
-  setFeatureStyle,
-  setMapBackground,
-  setMetadata
-})(SidebarEdit);
-
-module.exports = SidebarEditConnected;
+    */
+}
