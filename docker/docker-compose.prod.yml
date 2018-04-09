@@ -39,7 +39,7 @@ services:
       - NODE_ENV=production
       - MAPBOX_ACCESS_TOKEN # env passed from shell
     expose:
-      - "3000:3000"
+      - 3000
 
   renderer:
     build:
@@ -81,7 +81,7 @@ services:
       - db
       - rabbitmq
     expose:
-      - "4000:4000"
+      - 4000
 
   db:
     image: postgres
@@ -92,7 +92,7 @@ services:
       - ./data/db:/var/lib/postgresql/data
       - ./../db/init.sh:/docker-entrypoint-initdb.d/init.sh
     expose:
-      - "5432:5432"
+      - 5432
 
   rabbitmq:
     image: rabbitmq:3
@@ -100,6 +100,6 @@ services:
     volumes:
       - ./data/rabbitmq:/var/lib/rabbitmq
     expose:
-      - "15672:15672"
-      - "5672:5672"
+      - 15672
+      - 5672
 

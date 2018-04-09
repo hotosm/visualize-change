@@ -25,6 +25,7 @@ const makeTileReadyCheck = (map, sourceId) => {
     return Object.keys(map.style.sourceCaches[sourceId]._tiles).every(key => {
       const { state } = map.style.sourceCaches[sourceId]._tiles[key];
 
+      // TODO: Fixme
       const isReady = state === "loaded" || state === "loading" || state === "errored";
       const wasErrored = tileState[key] === "errored";
 
@@ -140,13 +141,19 @@ const setupMap = map => {
   });
 
   return {
-    filter: date => {
-      console.log("date, date", date);
+    filter: (date, interval) => {
       const timestamp = date / 1000;
 
       const filter = ["all", ["<=", "@timestamp", timestamp]];
 
-      const highlightedFilter = filter.concat([[">=", "@timestamp", timestamp - 86400]]);
+      // TODO: This varies between renderer, cause we dont want to use moment there.
+      const intervalSteps = {
+        hours: 3600,
+        days: 86400,
+        weeks: 604800
+      };
+
+      const highlightedFilter = filter.concat([[">=", "@timestamp", timestamp - intervalSteps[interval]]]);
 
       Object.keys(layers).forEach(layerGroupKey => {
         layers[layerGroupKey].forEach(layer => {
@@ -238,7 +245,7 @@ class Map extends React.Component {
     this.map.on("load", () => {
       console.log("LOADED");
       this.updateMap(props.style);
-      this.filterMap(this.state.selectedDate);
+      this.filterMap(this.state.selectedDate, props.date.interval);
 
       this.isMapReady = makeTileReadyCheck(this.map, "osm");
     });
@@ -283,18 +290,15 @@ class Map extends React.Component {
 
   subscribeToSlider = () => {
     if (this.isMapReady()) {
-      this.filterMap(this.state.selectedDate);
+      this.filterMap(this.state.selectedDate, this.props.date.interval);
       this.setState({ subscribed: false }, () => this.map.off("sourcedata", this.subscribeToSlider));
     }
   };
 
   handleDateChange() {
-    console.log("handleDateChange", this.isMapReady());
     if (this.isMapReady()) {
-      console.log("we do filter, map is ready");
-      this.filterMap(this.state.selectedDate);
+      this.filterMap(this.state.selectedDate, this.props.date.interval);
     } else if (!this.state.subscribed) {
-      console.log("we do subscription");
       this.setState({ subscribed: true }, () => this.map.on("sourcedata", this.subscribeToSlider));
     }
   }

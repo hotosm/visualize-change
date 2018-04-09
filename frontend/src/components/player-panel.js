@@ -22,6 +22,13 @@ class PlayerPanel extends React.Component {
   };
 
   componentWillReceiveProps(nextProps) {
+    // TODO: make this configurable from UI
+    const intervalToStepSpeed = {
+      hours: 1,
+      days: 3,
+      weeks: 5
+    };
+
     // Naive implementation
     if (nextProps.date.isPlaying) {
       this.playTimer = setTimeout(() => {
@@ -29,7 +36,7 @@ class PlayerPanel extends React.Component {
           .add(1, this.props.date.interval)
           .valueOf();
         this.props.setSelectedDate(next);
-      }, 1000);
+      }, 1000 * intervalToStepSpeed[this.props.date.interval]);
     } else {
       clearTimeout(this.playTimer);
     }
@@ -112,7 +119,7 @@ class PlayerPanelWrapper extends React.Component {
   }
 
   render() {
-    const { visible, isFullScreenMode } = this.props;
+    const { visible, isSidebarOpen, isFullScreenMode } = this.props;
     return (
       <FadeTransition
         visible={visible}
