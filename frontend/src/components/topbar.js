@@ -13,6 +13,8 @@ const { Link } = require("react-router-dom");
 // );
 
 // TODO: add defaults
+const isLinkDisabled = path => path !== "view" && path !== "edit";
+
 module.exports = ({ id = null, path, canSave, saving, isEditing, onSaveClick, isFullScreenMode, onShareClick }) => (
   <SlideTransition className="topbar" visible={!isFullScreenMode} direction="top">
     <Navbar>
@@ -45,14 +47,14 @@ module.exports = ({ id = null, path, canSave, saving, isEditing, onSaveClick, is
           <div className="pt-button separator">|</div>
 
           <Link
-            className={classNames("pt-button route", { active: path === "view", disabled: !isEditing })}
+            className={classNames("pt-button route", { active: path === "view", disabled: isLinkDisabled(path) })}
             to={`/view${id ? "/" + id : ""}`}
           >
             View
           </Link>
 
           <Link
-            className={classNames("pt-button route", { active: path === "edit", disabled: !isEditing })}
+            className={classNames("pt-button route", { active: path === "edit", disabled: isLinkDisabled(path) })}
             to={`/edit${id ? "/" + id : ""}`}
           >
             Edit

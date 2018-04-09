@@ -7,18 +7,15 @@ const {
   HIDE_PLAYER_PANEL,
   EXPORT_DATA_FETCHING,
   EXPORT_DATA_FETCHED,
-  SET_APP_READY
+  SET_APP_READY,
+  DEFAULT_STATE
 } = require("../constans");
 
-const initialState = {
-  sidebarOpen: true,
-  exportMenuOpen: false,
-  loaded: false,
-  fullScreenMode: false,
-  playerPanelVisible: true
-};
+const initialState = Object.assign({}, DEFAULT_STATE.UI, {
+  loaded: false
+});
 
-module.exports = (state = initialState, { type, payload }) => {
+module.exports = (state = initialState, { type }) => {
   switch (type) {
     case SET_APP_READY:
       return Object.assign({}, state, { loaded: true });

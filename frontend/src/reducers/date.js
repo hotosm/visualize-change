@@ -1,13 +1,14 @@
 const clamp = require("lodash.clamp");
-const { CHANGE_INTERVAL, SET_DATES, SET_SELECTED_DATE, TOGGLE_PLAY, EXPORT_DATA_FETCHED } = require("../constans");
+const {
+  CHANGE_INTERVAL,
+  SET_DATES,
+  SET_SELECTED_DATE,
+  TOGGLE_PLAY,
+  EXPORT_DATA_FETCHED,
+  DEFAULT_STATE
+} = require("../constans");
 
-const initialState = {
-  start: new Date("2018-01-01").getTime(),
-  end: new Date("2018-02-01").getTime(),
-  selected: new Date("2018-01-01").getTime(),
-  interval: "days",
-  isPlaying: false
-};
+const initialState = DEFAULT_STATE.DATE;
 
 module.exports = (state = initialState, { type, payload }) => {
   switch (type) {
