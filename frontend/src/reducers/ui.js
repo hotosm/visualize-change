@@ -11,11 +11,7 @@ const {
   DEFAULT_STATE
 } = require("../constans");
 
-const initialState = Object.assign({}, DEFAULT_STATE.UI, {
-  loaded: false
-});
-
-module.exports = (state = initialState, { type }) => {
+module.exports = (state = DEFAULT_STATE.ui, { type }) => {
   switch (type) {
     case SET_APP_READY:
       return Object.assign({}, state, { loaded: true });

@@ -1,29 +1,28 @@
 const DEFAULT_STATE = {
-  UI: {
+  ui: {
     sidebarOpen: true,
     exportMenuOpen: false,
-    loaded: false,
     fullScreenMode: false,
     playerPanelVisible: true
   },
-  DATE: {
+  date: {
     start: new Date("2018-01-01").getTime(),
     end: new Date("2018-02-01").getTime(),
     selected: new Date("2018-01-01").getTime(),
     interval: "days",
     isPlaying: false
   },
-  MAP: {
+  map: {
     lat: 4.565487650256799,
     lng: -119.15495680771471,
     zoom: 0
   },
-  META: {
+  meta: {
     name: "",
     description: "",
     project: ""
   },
-  STYLE: {
+  style: {
     background: "dark",
     features: [
       {
@@ -96,6 +95,10 @@ module.exports = {
   HIDE_PLAYER_PANEL: "HIDE_PLAYER_PANEL",
 
   SET_METADATA: "SET_METADATA",
+
+  //SET_DEFAULT_STATE: "SET_DEFAULT_STATE",
+
+  ROUTE_CHANGE: "@@router/LOCATION_CHANGE",
 
   EXPORT_DATA_FETCHING: "EXPORT_DATA_FETCHING",
   EXPORT_DATA_FETCHED: "EXPORT_DATA_FETCHED",

@@ -52,7 +52,8 @@ body {
 
 .sidebar-content__inside {
   height: calc(~'100vh - 40px - 40px');
-  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .sidebar-tabs,
@@ -61,8 +62,11 @@ body {
 }
 
 .sidebar-header {
-  background: #EBEBEB;
-  padding: 10px 20px;
+  background: #ebebeb;
+  padding: 5px 5px 5px 20px;
+  display:flex;
+  align-items: center;
+  justify-content: space-between;
 
   h5 {
     margin: 0;
@@ -206,8 +210,12 @@ body {
 }
 
 .color-picker {
-  display: flex;
-  align-items: center;
+  position: relative;
+  .popover {
+    right: 0;
+    bottom: 25px;
+    z-index: 7;
+  }
 }
 
 .color-picker__swatch {
@@ -699,5 +707,21 @@ a.pt-button.start-button {
     .pt-icon {
       color: @red;
     }
+    &.help-button {
+      border: none;
+    }
   }
+}
+
+.mapboxgl-ctrl-top-right {
+  opacity: 0;
+}
+
+.edit-mode .mapboxgl-ctrl-top-right {
+  opacity: 1;
+}
+
+.help-popover {
+  padding: 20px;
+  max-width: 200px;
 }

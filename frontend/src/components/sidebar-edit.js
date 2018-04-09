@@ -1,6 +1,6 @@
 const React = require("react");
 const { connect } = require("react-redux");
-const { Button, ButtonGroup, Switch, Label } = require("@blueprintjs/core");
+const { Button, ButtonGroup, Switch, Label, Popover } = require("@blueprintjs/core");
 const { DateRangePicker } = require("@blueprintjs/datetime");
 const { SketchPicker } = require("react-color");
 const debounce = require("lodash.debounce");
@@ -8,15 +8,35 @@ const debounce = require("lodash.debounce");
 const { setInterval, setDateSpan, setMapBackground, setFeatureStyle, setMetadata } = require("../actions");
 const { capitalizeFirstLetter, rgbaObjectToString } = require("../utils");
 
-const SidebarPanelHeader = ({ title }) => (
+const HelpPopover = ({ helpText }) => {
+  return (
+    <Popover
+      preventOverflow={{ enabled: true, boundariesElement: "scrollParent" }}
+      content={
+        <div className="help-popover">
+          Help Text For {helpText}. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mauris ipsum,
+          lobortis vel aliquet quis, elementum nec purus. Maecenas egestas risus varius, maximus sem quis, efficitur
+          purus. Donec vitae mauris vitae sapien sagittis accumsan et non diam. Fusce maximus, nunc sit amet tempus
+          posuere, odio odio malesuada ligula, nec pretium sapien lectus eget lectus. Ut vitae orci a quam pulvinar
+          consequat. Sed aliquam sapien vitae quam blandit, ut hendrerit nulla posuere. Nunc porttitor nulla id
+          tincidunt placerat.
+        </div>
+      }
+      target={<Button className="help-button" icon="help" />}
+    />
+  );
+};
+
+const SidebarPanelHeader = ({ title, helpText, id }) => (
   <div className="sidebar-header">
     <h5>{title}</h5>
+    <HelpPopover helpText={helpText} id={id} />
   </div>
 );
 
 const DescribePanel = ({ metadata, setMetadata }) => (
   <div className="sidebar-panel">
-    <SidebarPanelHeader title="Describe" />
+    <SidebarPanelHeader title="Describe" helpText="Describe" id="describe-help" />
     <div className="inside-content">
       <Label text="Name" required={true}>
         <input className="pt-input" value={metadata.name} onChange={ev => setMetadata("name", ev.target.value)} />
@@ -37,7 +57,7 @@ const DescribePanel = ({ metadata, setMetadata }) => (
 
 const DatePanel = ({ date, onChangeDate, onChangeInterval }) => (
   <div className="sidebar-panel">
-    <SidebarPanelHeader title="Dates" />
+    <SidebarPanelHeader title="Dates" helpText="Dates" id="dates-help" />
     <div className="inside-content">
       <DateRangePicker
         shortcuts={false}
@@ -191,7 +211,7 @@ const StyleSection = ({ style, onStyleChange }) => {
 const StylesPanel = ({ styles, onStyleChange, onBackgroundStyleChange }) => {
   return (
     <div className="sidebar-panel">
-      <SidebarPanelHeader title="Styles" />
+      <SidebarPanelHeader title="Styles" helpText="Styles" id="help-styles" />
       <div className="inside-content section">
         <div className="section__header">
           <h4>Map</h4>

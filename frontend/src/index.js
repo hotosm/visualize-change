@@ -39,8 +39,15 @@ const { connect } = require("react-redux");
 const { push: routerPush } = require("react-router-redux");
 const clipboardCopy = require("clipboard-copy");
 const { Intent } = require("@blueprintjs/core");
-const { createNewExport, getExportById, setAppReady, showPlayerPanel, showExportMenu } = require("./actions");
-const { isChanged } = require("./selectors");
+const {
+  createNewExport,
+  getExportById,
+  setAppReady,
+  setNewEdit,
+  showPlayerPanel,
+  showExportMenu
+} = require("./actions");
+const { isChanged, isEditMode } = require("./selectors");
 const { getShareUrl } = require("./utils");
 const AppToaster = require("./components/toaster");
 
@@ -132,6 +139,7 @@ const MainContainerConnected = connect(
     getExportById,
     routerPush,
     setAppReady,
+    setNewEdit,
     showExportMenu
   }
 )(MainContainer);
@@ -148,11 +156,17 @@ const Layout = ({ path, exact, main: MainComponent }) => (
   />
 );
 
-const MapWrapper = connect(({ ui }) => ({ isFullScreenMode: ui.fullScreenMode, loaded: ui.loaded }), {
-  showPlayerPanel
-})(({ loaded, isFullScreenMode, showPlayerPanel }) => {
+const MapWrapper = connect(
+  ({ ui, router }) => ({ isFullScreenMode: ui.fullScreenMode, loaded: ui.loaded, editMode: isEditMode(router) }),
+  {
+    showPlayerPanel
+  }
+)(({ loaded, isFullScreenMode, showPlayerPanel, editMode }) => {
   return (
-    <div className="map-wrapper" onMouseMove={isFullScreenMode ? showPlayerPanel : null}>
+    <div
+      className={classNames("map-wrapper", { "edit-mode": editMode })}
+      onMouseMove={isFullScreenMode ? showPlayerPanel : null}
+    >
       {loaded ? <MapConnected /> : null}
     </div>
   );

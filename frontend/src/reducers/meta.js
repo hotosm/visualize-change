@@ -1,6 +1,6 @@
 const { EXPORT_DATA_FETCHED, SET_METADATA, DEFAULT_STATE } = require("../constans");
 
-const initialState = DEFAULT_STATE.META;
+const initialState = DEFAULT_STATE.meta;
 
 module.exports = (state = initialState, { type, payload }) => {
   switch (type) {

@@ -17,6 +17,7 @@ const {
   SHOW_PLAYER_PANEL,
   HIDE_PLAYER_PANEL,
   SET_METADATA,
+  SET_DEFAULT_STATE,
   EXPORT_DATA_FETCHING,
   EXPORT_DATA_FETCHED,
   EXPORT_DATA_SAVING,
@@ -117,6 +118,7 @@ module.exports = {
   setMetadata: (name, value) => action(SET_METADATA, { name, value }),
 
   sendToRenderer,
+  setNewEdit: () => action(SET_DEFAULT_STATE),
   getExportById,
   createNewExport,
   setAppReady: () => action(SET_APP_READY)

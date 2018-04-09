@@ -8,12 +8,10 @@ const {
   DEFAULT_STATE
 } = require("../constans");
 
-const initialState = DEFAULT_STATE.DATE;
-
-module.exports = (state = initialState, { type, payload }) => {
+module.exports = (state = DEFAULT_STATE.date, { type, payload }) => {
   switch (type) {
     case EXPORT_DATA_FETCHED:
-      return Object.assign({}, initialState, {
+      return Object.assign({}, state, {
         start: payload.config.date.start,
         end: payload.config.date.end,
         selected: payload.config.date.start,
