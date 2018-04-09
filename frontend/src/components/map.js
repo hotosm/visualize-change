@@ -220,7 +220,11 @@ class Map extends React.Component {
       zoom: props.mapCoordinates.zoom
     });
 
-    this.map.addControl(new mapboxgl.NavigationControl());
+    this.map.addControl(
+      new mapboxgl.NavigationControl({
+        showCompass: false
+      })
+    );
     this.map.addControl(
       new mapboxglGeoconder({
         accessToken: mapboxgl.accessToken,

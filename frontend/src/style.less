@@ -1,4 +1,4 @@
-@import "~@blueprintjs/core/lib/less/variables.less";
+@import '~@blueprintjs/core/lib/less/variables.less';
 @blue1: #b73636;
 @blue2: #b73636;
 @blue3: #b73636;
@@ -12,7 +12,7 @@
 
 body {
   overflow: hidden;
-  font-family: "Archivo", sans-serif;
+  font-family: 'Archivo', sans-serif;
 }
 
 .container {
@@ -67,7 +67,7 @@ body {
   cursor: pointer;
 
   &::after {
-    content: "⁞";
+    content: '⁞';
     font-size: 48px;
     color: @red;
   }
@@ -221,7 +221,7 @@ body {
   color: @hot-gray;
 }
 
-.inline-label input[type="number"] {
+.inline-label input[type='number'] {
   width: 30px;
   height: 20px;
   font-size: 11px;
@@ -273,7 +273,7 @@ body {
   z-index: 1;
   width: 50%;
   right: 50px;
-  top: 20px;
+  top: 10px;
   border-radius: 0;
 }
 
@@ -294,7 +294,7 @@ body {
 
 // Temp!
 .styles-panel {
-  height: calc(~"100vh - 100px - 60px");
+  height: calc(~'100vh - 100px - 60px');
   overflow: scroll;
 }
 
@@ -394,17 +394,18 @@ body {
 .pt-button.route:hover,
 .pt-button.route.active,
 .pt-button.route.active:hover {
-  box-shadow: inset 0 -2px 0 @red!important;
+  // box-shadow: inset 0 -2px 0 @red!important;
+  border-bottom: 1px solid @red;
   background: none !important;
 }
 
-.pt-tab[aria-selected="true"],
-.pt-tab[aria-selected="true"]:hover {
+.pt-tab[aria-selected='true'],
+.pt-tab[aria-selected='true']:hover {
   color: @red;
   box-shadow: inset 0 -2px 0 @red !important;
 }
-.pt-tab[aria-selected="true"],
-.pt-tab:not([aria-disabled="true"]):hover {
+.pt-tab[aria-selected='true'],
+.pt-tab:not([aria-disabled='true']):hover {
   color: @red;
 }
 .pt-button-group.pt-minimal .pt-button.pt-intent-primary {
@@ -455,8 +456,8 @@ body {
   border-radius: 0;
 }
 
-.pt-button:not([class*="pt-intent-"]):active,
-.pt-button:not([class*="pt-intent-"]).pt-active {
+.pt-button:not([class*='pt-intent-']):active,
+.pt-button:not([class*='pt-intent-']).pt-active {
   background: @pale-red;
 }
 
@@ -503,6 +504,7 @@ body {
 }
 
 .pt-navbar {
+  height: 40px;
   box-shadow: 0 0 0 1px rgba(16, 22, 26, 0.1), 0 0 0 rgba(16, 22, 26, 0), 0 1px 1px rgba(16, 22, 26, 0.1);
 }
 
@@ -512,12 +514,12 @@ body {
 }
 
 .logo {
-  width: 60px;
-  height: 36px;
+  width: 45px;
+  height: 27px;
   display: block;
   background-size: contain;
   background-repeat: no-repeat;
-  background: url("img/logo.svg");
+  background: url('img/logo.svg');
 }
 
 .pt-button-group.pt-minimal .pt-button.pt-intent-primary:hover,
@@ -547,7 +549,7 @@ div.pt-tab-list {
 }
 
 .div.pt-button-group {
-  .pt-button:not([class*="pt-intent-"]),
+  .pt-button:not([class*='pt-intent-']),
   .pt-button {
     box-shadow: none;
     background-image: none;
@@ -555,21 +557,21 @@ div.pt-tab-list {
   }
 }
 
-.pt-button:not([class*="pt-intent-"]),
-.pt-button:not([class*="pt-intent-"]):hover {
+.pt-button:not([class*='pt-intent-']),
+.pt-button:not([class*='pt-intent-']):hover {
   box-shadow: none;
   background: none;
 }
-.pt-button:not([class*="pt-intent-"]) {
+.pt-button:not([class*='pt-intent-']) {
   box-shadow: none;
   background-image: none;
 }
-.pt-button:not([class*="pt-intent-"]):active,
-.pt-button:not([class*="pt-intent-"]).pt-active {
+.pt-button:not([class*='pt-intent-']):active,
+.pt-button:not([class*='pt-intent-']).pt-active {
   box-shadow: none;
   background: none;
 }
-.pt-button:not([class*="pt-intent-"]).pt-active {
+.pt-button:not([class*='pt-intent-']).pt-active {
   border-bottom: 2px solid @red;
 }
 
@@ -604,7 +606,7 @@ button.pt-button.action-button {
 }
 
 .mapboxgl-ctrl-bottom-right {
-  bottom:40px;
+  bottom: 40px;
 }
 
 .mapboxgl-ctrl-scale {
@@ -621,3 +623,47 @@ button.pt-button.action-button {
   margin: 0;
 }
 
+@navbar-height: 40px;
+
+.hot-theme {
+  // Navbar
+  .pt-navbar {
+    font-size: 18px;
+  }
+  .pt-navbar,
+  .pt-navbar-group {
+    height: @navbar-height;
+    .pt-button {
+      font-size: 13px;
+      box-sizing: border-box;
+
+      &.disabled,
+      &:disabled {
+        background: none;
+        cursor: not-allowed;
+        color: rgba(92, 112, 128, 0.5);
+        pointer-events: none;
+      }
+
+      &.route {
+        padding: 0 10px;
+        height: 20px;
+        border-bottom: 2px solid transparent;
+
+        &:hover,
+        &.active,
+        &.active:hover {
+          border-bottom: 2px solid @red;
+        }
+      }
+    }
+  }
+
+  // Buttons
+  .pt-button {
+    color: @red;
+    .pt-icon {
+      color: @red;
+    }
+  }
+}
