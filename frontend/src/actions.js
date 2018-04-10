@@ -11,6 +11,7 @@ const {
   TOGGLE_PLAY,
   SET_MAP_BACKGROUND,
   SET_FEATURE_STYLE,
+  TOGGLE_TUTORIAL_MODE,
   SHOW_POPOVER,
   HIDE_POPOVER,
   NEXT_TUTORIAL_SLIDE,
@@ -118,6 +119,7 @@ module.exports = {
   setMapBackground: background => action(SET_MAP_BACKGROUND, background),
   setFeatureStyle: (selectedIndex, newStyle) => action(SET_FEATURE_STYLE, { selectedIndex, newStyle }),
 
+  toggleTutorialMode: () => action(TOGGLE_TUTORIAL_MODE),
   showPopover: id => action(SHOW_POPOVER, id),
   hidePopover: id => action(HIDE_POPOVER, id),
   goToNextInTutorial: currentId => action(NEXT_TUTORIAL_SLIDE, currentId),

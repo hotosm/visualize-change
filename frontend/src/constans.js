@@ -6,7 +6,7 @@ const DEFAULT_STATE = {
     fullScreenMode: false,
     playerPanelVisible: true,
     visiblePopoversIds: [],
-    tutorialMode: true
+    tutorialMode: false
   },
   date: {
     start: new Date("2018-01-01").getTime(),
@@ -101,6 +101,7 @@ module.exports = {
   SHOW_POPOVER: "SHOW_POPOVER",
   HIDE_POPOVER: "HIDE_POPOVER",
   NEXT_TUTORIAL_SLIDE: "NEXT_TUTORIAL_SLIDE",
+  TOGGLE_TUTORIAL_MODE: "TOGGLE_TUTORIAL_MODE",
 
   SET_METADATA: "SET_METADATA",
 

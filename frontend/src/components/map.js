@@ -206,8 +206,8 @@ const setupMap = map => {
 
 const MapLegend = ({ features }) => (
   <div className="map-legend" style={{ position: "absolute", bottom: 85, right: 2 }}>
-    {features.map(style => (
-      <label className="inline-label">
+    {features.map((style, idx) => (
+      <label key={idx} className="inline-label">
         <div
           className="map-legend__square"
           style={{ backgroundColor: rgbaObjectToString(Object.assign({}, style.base["line-color"], { a: 1 })) }}

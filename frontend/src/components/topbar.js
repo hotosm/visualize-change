@@ -3,19 +3,24 @@ const classNames = require("classnames");
 const { Button, ButtonGroup, Navbar, NavbarGroup, NavbarHeading, Intent } = require("@blueprintjs/core");
 
 const { SlideTransition } = require("./transitions");
+const { connect } = require("react-redux");
 const { Link } = require("react-router-dom");
 
-// const LanguageMenu = () => (
-//   <Menu>
-//     <MenuItem text="English" />
-//     <MenuItem text="Polish" />
-//   </Menu>
-// );
+const { toggleTutorialMode } = require("../actions");
 
-// TODO: add defaults
 const isLinkDisabled = path => path !== "view" && path !== "edit";
 
-module.exports = ({ id = null, path, canSave, saving, isEditing, onSaveClick, isFullScreenMode, onShareClick }) => (
+const Topbar = ({
+  id = null,
+  path,
+  canSave,
+  saving,
+  isEditing,
+  onSaveClick,
+  isFullScreenMode,
+  onShareClick,
+  toggleTutorialMode
+}) => (
   <SlideTransition className="topbar" visible={!isFullScreenMode} direction="top">
     <Navbar>
       <Link to="/">
@@ -70,9 +75,13 @@ module.exports = ({ id = null, path, canSave, saving, isEditing, onSaveClick, is
 
       <NavbarGroup align="right">
         <ButtonGroup minimal={true}>
-          <Button icon="help">Help</Button>
+          <Button icon="help" onClick={toggleTutorialMode}>
+            Help
+          </Button>
         </ButtonGroup>
       </NavbarGroup>
     </Navbar>
   </SlideTransition>
 );
+
+module.exports = connect(({ ui }) => ({ ui }), { toggleTutorialMode })(Topbar);

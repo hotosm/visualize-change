@@ -45,7 +45,8 @@ const {
   setAppReady,
   setNewEdit,
   showPlayerPanel,
-  showExportMenu
+  showExportMenu,
+  toggleTutorialMode
 } = require("./actions");
 const { isChanged, isEditMode } = require("./selectors");
 const { getShareUrl } = require("./utils");
@@ -64,6 +65,12 @@ class MainContainer extends React.Component {
 
   componentDidMount() {
     const id = this.props.match.params.id;
+    const isFirstStarted = !localStorage.getItem("hot-changevis-used");
+    if (isFirstStarted) {
+      this.props.toggleTutorialMode();
+      localStorage.setItem("hot-changevis-used", true);
+    }
+    // localStorage.setItem('replaymap-first-started', true);
     if (!id) {
       // this.props.createNewExport();
       this.props.setAppReady();
@@ -140,7 +147,8 @@ const MainContainerConnected = connect(
     routerPush,
     setAppReady,
     setNewEdit,
-    showExportMenu
+    showExportMenu,
+    toggleTutorialMode
   }
 )(MainContainer);
 
