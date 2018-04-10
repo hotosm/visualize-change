@@ -4,7 +4,9 @@ const DEFAULT_STATE = {
     exportMenuOpen: false,
     exportMenuStatus: null,
     fullScreenMode: false,
-    playerPanelVisible: true
+    playerPanelVisible: true,
+    visiblePopoversIds: [],
+    tutorialMode: true
   },
   date: {
     start: new Date("2018-01-01").getTime(),
@@ -96,6 +98,9 @@ module.exports = {
   TOGGLE_FULLSCREEN: "TOGGLE_FULLSCREEN",
   SHOW_PLAYER_PANEL: "SHOW_PLAYER_PANEL",
   HIDE_PLAYER_PANEL: "HIDE_PLAYER_PANEL",
+  SHOW_POPOVER: "SHOW_POPOVER",
+  HIDE_POPOVER: "HIDE_POPOVER",
+  NEXT_TUTORIAL_SLIDE: "NEXT_TUTORIAL_SLIDE",
 
   SET_METADATA: "SET_METADATA",
 
@@ -109,6 +114,8 @@ module.exports = {
   EXPORT_DATA_SAVING: "EXPORT_DATA_SAVING",
   EXPORT_DATA_SAVED: "EXPORT_DATA_SAVED",
   SET_APP_READY: "SET_APP_READY",
+
+  HELP_SLIDE_ORDER: ["describe-help", "dates-help", "styles-help"],
 
   DEFAULT_STATE
 };

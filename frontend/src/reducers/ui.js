@@ -1,4 +1,7 @@
 const {
+  SHOW_POPOVER,
+  HIDE_POPOVER,
+  NEXT_TUTORIAL_SLIDE,
   SHOW_EXPORT_MENU,
   HIDE_EXPORT_MENU,
   TOGGLE_SIDEBAR,
@@ -9,10 +12,11 @@ const {
   EXPORT_DATA_FETCHED,
   EXPORT_RENDER_QUEUED,
   SET_APP_READY,
+  HELP_SLIDE_ORDER,
   DEFAULT_STATE
 } = require("../constans");
 
-module.exports = (state = DEFAULT_STATE.ui, { type }) => {
+module.exports = (state = DEFAULT_STATE.ui, { type, payload }) => {
   switch (type) {
     case SET_APP_READY:
       return Object.assign({}, state, { loaded: true });
@@ -38,6 +42,22 @@ module.exports = (state = DEFAULT_STATE.ui, { type }) => {
     case HIDE_EXPORT_MENU:
       return Object.assign({}, state, { exportMenuOpen: false, exportMenuStatus: null });
       break;
+    case SHOW_POPOVER:
+      return Object.assign({}, state, { visiblePopoversIds: state.visiblePopoversIds.concat(payload) });
+      break;
+    case HIDE_POPOVER:
+      return Object.assign({}, state, { visiblePopoversIds: state.visiblePopoversIds.filter(id => id !== payload) });
+      break;
+    case NEXT_TUTORIAL_SLIDE: {
+      // TODO: Rethink
+      const currentIndex = HELP_SLIDE_ORDER.findIndex(id => id === payload);
+      const nextSlideId = HELP_SLIDE_ORDER[currentIndex + 1] || HELP_SLIDE_ORDER[0];
+
+      return Object.assign({}, state, {
+        visiblePopoversIds: state.visiblePopoversIds.filter(id => id !== payload).concat(nextSlideId)
+      });
+      break;
+    }
     case EXPORT_RENDER_QUEUED:
       return Object.assign({}, state, { exportMenuStatus: "queued" });
       break;

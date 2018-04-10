@@ -5,12 +5,29 @@ const { DateRangePicker } = require("@blueprintjs/datetime");
 const { SketchPicker } = require("react-color");
 const debounce = require("lodash.debounce");
 
-const { setInterval, setSpeed, setDateSpan, setMapBackground, setFeatureStyle, setMetadata } = require("../actions");
+const { HELP_SLIDE_ORDER } = require("../constans");
+
+const {
+  setInterval,
+  setSpeed,
+  setDateSpan,
+  setMapBackground,
+  setFeatureStyle,
+  setMetadata,
+  showPopover,
+  hidePopover,
+  goToNextInTutorial
+} = require("../actions");
+
 const { capitalizeFirstLetter, rgbaObjectToString } = require("../utils");
 
-const HelpPopover = ({ helpText }) => {
+const HelpPopover = ({ helpText, id, tutorialMode, visiblePopovers, showPopover, hidePopover, goToNextInTutorial }) => {
+  const slideIndex = HELP_SLIDE_ORDER.findIndex(slideId => id === slideId);
+  const isLast = slideIndex >= HELP_SLIDE_ORDER.length - 1;
   return (
     <Popover
+      isOpen={visiblePopovers.includes(id)}
+      onClose={() => hidePopover(id)}
       preventOverflow={{ enabled: true, boundariesElement: "scrollParent" }}
       content={
         <div className="help-popover">
@@ -20,17 +37,31 @@ const HelpPopover = ({ helpText }) => {
           posuere, odio odio malesuada ligula, nec pretium sapien lectus eget lectus. Ut vitae orci a quam pulvinar
           consequat. Sed aliquam sapien vitae quam blandit, ut hendrerit nulla posuere. Nunc porttitor nulla id
           tincidunt placerat.
+          {tutorialMode && (
+            <Button className="action-button" onClick={() => (isLast ? hidePopover(id) : goToNextInTutorial(id))}>
+              {isLast ? "Close" : "Next"}
+            </Button>
+          )}
         </div>
       }
-      target={<Button className="help-button" icon="help" />}
+      target={<Button className="help-button" icon="help" onClick={() => showPopover(id)} />}
     />
   );
 };
 
+const HelpPopoverConnected = connect(
+  ({ ui }) => ({ tutorialMode: ui.tutorialMode, visiblePopovers: ui.visiblePopoversIds }),
+  {
+    showPopover,
+    hidePopover,
+    goToNextInTutorial
+  }
+)(HelpPopover);
+
 const SidebarPanelHeader = ({ title, helpText, id }) => (
   <div className="sidebar-header">
     <h5>{title}</h5>
-    <HelpPopover helpText={helpText} id={id} />
+    <HelpPopoverConnected helpText={helpText} id={id} />
   </div>
 );
 
@@ -225,7 +256,7 @@ const StyleSection = ({ style, onStyleChange }) => {
 const StylesPanel = ({ styles, onStyleChange, onBackgroundStyleChange }) => {
   return (
     <div className="sidebar-panel">
-      <SidebarPanelHeader title="Styles" helpText="Styles" id="help-styles" />
+      <SidebarPanelHeader title="Styles" helpText="Styles" id="styles-help" />
       <div className="inside-content section">
         <div className="section__header">
           <h4>Map</h4>
