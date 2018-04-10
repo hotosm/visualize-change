@@ -1,6 +1,5 @@
 const React = require("react");
 const { connect } = require("react-redux");
-const classNames = require("classnames");
 const { Icon } = require("@blueprintjs/core");
 
 const { SlideTransition } = require("./transitions");
@@ -22,7 +21,9 @@ const Sidebar = ({ isOpen, isFullScreen, toggleSidebar, children }) => (
         </div>
       </div>
     </div>
-    <div className="sidebar-toggle" onClick={toggleSidebar} />
+    <div className="sidebar-toggle" onClick={toggleSidebar}>
+      <Icon icon={isOpen ? "chevron-left" : "chevron-right"} />
+    </div>
   </SlideTransition>
 );
 
