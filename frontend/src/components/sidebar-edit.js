@@ -1,11 +1,11 @@
 const React = require("react");
 const { connect } = require("react-redux");
-const { Button, ButtonGroup, Switch, Label, Popover } = require("@blueprintjs/core");
+const { Button, ButtonGroup, Switch, Label, Popover, Slider } = require("@blueprintjs/core");
 const { DateRangePicker } = require("@blueprintjs/datetime");
 const { SketchPicker } = require("react-color");
 const debounce = require("lodash.debounce");
 
-const { setInterval, setDateSpan, setMapBackground, setFeatureStyle, setMetadata } = require("../actions");
+const { setInterval, setSpeed, setDateSpan, setMapBackground, setFeatureStyle, setMetadata } = require("../actions");
 const { capitalizeFirstLetter, rgbaObjectToString } = require("../utils");
 
 const HelpPopover = ({ helpText }) => {
@@ -55,7 +55,7 @@ const DescribePanel = ({ metadata, setMetadata }) => (
   </div>
 );
 
-const DatePanel = ({ date, onChangeDate, onChangeInterval }) => (
+const DatePanel = ({ date, onChangeDate, onChangeInterval, onChangeSpeed }) => (
   <div className="sidebar-panel">
     <SidebarPanelHeader title="Dates" helpText="Dates" id="dates-help" />
     <div className="inside-content">
@@ -77,6 +77,20 @@ const DatePanel = ({ date, onChangeDate, onChangeInterval }) => (
           ))}
         </ButtonGroup>
       </label>
+    </div>
+    <div className="inside-content">
+      <label className="inline-label">Animation speed</label>
+      <Slider
+        min={0.25}
+        max={2}
+        stepSize={0.25}
+        value={date.speed}
+        onChange={onChangeSpeed}
+        labelStepSize={0.25}
+        labelRenderer={v => {
+          return (v % 1 === 0 ? v.toFixed(0) : v) + "×";
+        }}
+      />
     </div>
   </div>
 );
@@ -244,6 +258,7 @@ const SidebarEdit = ({
   style,
   setDateSpan,
   setInterval,
+  setSpeed,
   setMapBackground,
   setFeatureStyle,
   setMetadata
@@ -251,7 +266,7 @@ const SidebarEdit = ({
   return (
     <div className="sidebar-content__inside">
       <DescribePanel metadata={meta} setMetadata={setMetadata} />
-      <DatePanel date={date} onChangeDate={setDateSpan} onChangeInterval={setInterval} />
+      <DatePanel date={date} onChangeDate={setDateSpan} onChangeInterval={setInterval} onChangeSpeed={setSpeed} />
       <StylesPanel styles={style} onStyleChange={setFeatureStyle} onBackgroundStyleChange={setMapBackground} />
     </div>
   );
@@ -259,6 +274,7 @@ const SidebarEdit = ({
 
 const SidebarEditConnected = connect(({ meta, date, style }) => ({ meta, date, style }), {
   setInterval,
+  setSpeed,
   setDateSpan,
   setFeatureStyle,
   setMapBackground,
@@ -266,23 +282,3 @@ const SidebarEditConnected = connect(({ meta, date, style }) => ({ meta, date, s
 })(SidebarEdit);
 
 module.exports = SidebarEditConnected;
-
-{
-  /*
-    <Tabs animate={true} id="SidebarTabs" className="sidebar-tabs" renderActiveTabPanelOnly={true}>
-      <Tab id="Describe" title="Describe" panel={<DescribePanel metadata={meta} setMetadata={setMetadata} />} />
-      <Tab
-        id="Date"
-        title="Date"
-        panel={<DatePanel date={date} onChangeDate={setDateSpan} onChangeInterval={setInterval} />}
-      />
-      <Tab
-        id="Style"
-        title="Style"
-        panel={
-          <StylesPanel styles={style} onStyleChange={setFeatureStyle} onBackgroundStyleChange={setMapBackground} />
-        }
-      />
-    </Tabs>
-    */
-}

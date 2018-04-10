@@ -38,6 +38,10 @@ const RENDER_CONFIG_SCHEMA = j.object().keys({
     .number()
     .min(1)
     .max(120),
+  speed: j
+    .number()
+    .min(0.25)
+    .max(2.0),
   size: j.string(),
   email: j.string().email()
 });
@@ -91,6 +95,7 @@ const initRoutes = ({ queueRender, exportsAdd, exportsGetById, exportsUpdate }, 
       map: mapConfig,
       format: req.body.format,
       fps: req.body.fps,
+      speed: req.body.speed,
       size: req.body.size,
       dir: md5(
         JSON.stringify({

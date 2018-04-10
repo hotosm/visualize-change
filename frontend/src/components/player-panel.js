@@ -22,21 +22,15 @@ class PlayerPanel extends React.Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    // TODO: make this configurable from UI
-    const intervalToStepSpeed = {
-      hours: 1,
-      days: 3,
-      weeks: 5
-    };
-
-    // Naive implementation
+    // TODO: Fix this, naive implementation
+    // and also the names are kind of unfortune ;)
     if (nextProps.date.isPlaying) {
       this.playTimer = setTimeout(() => {
         const next = moment(this.props.date.selected)
           .add(1, this.props.date.interval)
           .valueOf();
         this.props.setSelectedDate(next);
-      }, 1000 * intervalToStepSpeed[this.props.date.interval]);
+      }, 1000 / this.props.date.speed);
     } else {
       clearTimeout(this.playTimer);
     }
@@ -69,8 +63,6 @@ class PlayerPanel extends React.Component {
     );
   }
 }
-
-// <Button icon="share" onClick={showExportMenu} />
 
 const PlayerPanelConnected = connect(
   ({ date, ui }) => ({

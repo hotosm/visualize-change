@@ -22,15 +22,11 @@ const URLShare = ({ url }) => (
 class GenericMediaShare extends React.Component {
   constructor() {
     super();
-    this.state = { email: "", fps: 10, size: "1280x720" };
+    this.state = { email: "", size: "1280x720" };
   }
 
   onEmailChange = ev => {
     this.setState({ email: ev.target.value });
-  };
-
-  onFPSChange = ev => {
-    this.setState({ fps: ev.target.value });
   };
 
   onSizeChange = ev => {
@@ -38,7 +34,7 @@ class GenericMediaShare extends React.Component {
   };
 
   onExportClick = () => {
-    this.props.onExportClick({ email: this.state.email, size: this.state.size, fps: this.state.fps });
+    this.props.onExportClick({ email: this.state.email, size: this.state.size });
   };
 
   render() {
@@ -48,10 +44,6 @@ class GenericMediaShare extends React.Component {
           <label className="inline-label">
             E-mail:
             <input value={this.state.email} onChange={this.onEmailChange} className="pt-input" />
-          </label>
-          <label className="inline-label">
-            FPS
-            <input value={this.state.fps} onChange={this.onFPSChange} className="pt-input" />
           </label>
           <label className="inline-label">
             Size:
@@ -76,8 +68,8 @@ class GenericMediaShare extends React.Component {
 }
 
 class ExportMenu extends React.Component {
-  onExportClick = (format, { email, fps, size }) => {
-    this.props.sendToRenderer({ format, email, fps, size });
+  onExportClick = (format, { email, size }) => {
+    this.props.sendToRenderer({ format, email, size });
   };
 
   render() {

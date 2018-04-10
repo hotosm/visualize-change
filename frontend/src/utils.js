@@ -6,7 +6,8 @@ const createExportConfig = state => ({
   date: {
     start: state.date.start,
     end: state.date.end,
-    interval: state.date.interval
+    interval: state.date.interval,
+    speed: state.date.speed
   },
   style: state.style,
   map: state.map

@@ -10,7 +10,8 @@ const DEFAULT_STATE = {
     end: new Date("2018-02-01").getTime(),
     selected: new Date("2018-01-01").getTime(),
     interval: "days",
-    isPlaying: false
+    isPlaying: false,
+    speed: 1
   },
   map: {
     lat: 4.565487650256799,
@@ -79,6 +80,7 @@ const DEFAULT_STATE = {
 
 module.exports = {
   CHANGE_INTERVAL: "CHANGE_INTERVAL",
+  SET_SPEED: "SET_SPEED",
   SET_DATES: "SET_DATES",
   SET_SELECTED_DATE: "SET_SELECTED_DATE",
   SET_COORDINATES: "SET_COORDINATES",

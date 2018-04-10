@@ -4,6 +4,7 @@ const { createExportConfig } = require("./utils");
 
 const {
   CHANGE_INTERVAL,
+  SET_SPEED,
   SET_DATES,
   SET_SELECTED_DATE,
   SET_COORDINATES,
@@ -17,7 +18,6 @@ const {
   SHOW_PLAYER_PANEL,
   HIDE_PLAYER_PANEL,
   SET_METADATA,
-  SET_DEFAULT_STATE,
   EXPORT_DATA_FETCHING,
   EXPORT_DATA_FETCHED,
   EXPORT_DATA_SAVING,
@@ -33,15 +33,15 @@ const action = (type, payload) => {
   return { type, payload };
 };
 
-const sendToRenderer = ({ email, format, size, fps }) => (dispatch, getState) => {
+const sendToRenderer = ({ email, format, size }) => (dispatch, getState) => {
   const { map, date, style } = getState();
 
   const mapConfig = Object.assign({}, map, {
     startDate: date.start,
     endDate: date.end,
     interval: date.interval,
+    speed: date.speed,
     email,
-    fps,
     format,
     size,
     style: style
@@ -100,6 +100,7 @@ const getExportById = id => dispatch => {
 
 module.exports = {
   setInterval: interval => action(CHANGE_INTERVAL, interval),
+  setSpeed: speed => action(SET_SPEED, speed),
   setDateSpan: ([start, end]) => action(SET_DATES, { start: moment(start).valueOf(), end: moment(end).valueOf() }),
   setSelectedDate: date => action(SET_SELECTED_DATE, date),
   setCoordinates: coordinates => action(SET_COORDINATES, coordinates),
@@ -118,7 +119,6 @@ module.exports = {
   setMetadata: (name, value) => action(SET_METADATA, { name, value }),
 
   sendToRenderer,
-  setNewEdit: () => action(SET_DEFAULT_STATE),
   getExportById,
   createNewExport,
   setAppReady: () => action(SET_APP_READY)
