@@ -18,6 +18,7 @@ const {
   SHOW_PLAYER_PANEL,
   HIDE_PLAYER_PANEL,
   SET_METADATA,
+  EXPORT_RENDER_QUEUED,
   EXPORT_DATA_FETCHING,
   EXPORT_DATA_FETCHED,
   EXPORT_DATA_SAVING,
@@ -53,7 +54,12 @@ const sendToRenderer = ({ email, format, size }) => (dispatch, getState) => {
     },
     method: "post",
     body: JSON.stringify(mapConfig)
-  }).then(res => console.log(res));
+  }).then(res => {
+    console.log(res);
+    if (res.ok) {
+      dispatch(action(EXPORT_RENDER_QUEUED));
+    }
+  });
 };
 
 const exportDataFetching = data => action(EXPORT_DATA_FETCHING, data);

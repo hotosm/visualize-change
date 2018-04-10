@@ -1,4 +1,4 @@
-@import '~@blueprintjs/core/lib/less/variables.less';
+@import "~@blueprintjs/core/lib/less/variables.less";
 @blue1: #b73636;
 @blue2: #b73636;
 @blue3: #b73636;
@@ -12,7 +12,7 @@
 
 body {
   overflow: hidden;
-  font-family: 'Archivo', sans-serif;
+  font-family: "Archivo", sans-serif;
 }
 
 .container {
@@ -51,7 +51,7 @@ body {
 }
 
 .sidebar-content__inside {
-  height: calc(~'100vh - 40px - 40px');
+  height: calc(~"100vh - 40px - 40px");
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -88,7 +88,7 @@ body {
   cursor: pointer;
 
   &::after {
-    content: '⁞';
+    content: "⁞";
     font-size: 48px;
     color: @red;
   }
@@ -247,7 +247,7 @@ body {
   color: @hot-gray;
 }
 
-.inline-label input[type='number'] {
+.inline-label input[type="number"] {
   width: 30px;
   height: 20px;
   font-size: 11px;
@@ -291,7 +291,7 @@ body {
 }
 
 .form-body label {
-  padding: 10px 0;
+  padding: 20px 0;
 }
 
 .mapboxgl-ctrl-geocoder {
@@ -419,13 +419,13 @@ body {
   background: none !important;
 }
 
-.pt-tab[aria-selected='true'],
-.pt-tab[aria-selected='true']:hover {
+.pt-tab[aria-selected="true"],
+.pt-tab[aria-selected="true"]:hover {
   color: @red;
   box-shadow: inset 0 -2px 0 @red !important;
 }
-.pt-tab[aria-selected='true'],
-.pt-tab:not([aria-disabled='true']):hover {
+.pt-tab[aria-selected="true"],
+.pt-tab:not([aria-disabled="true"]):hover {
   color: @red;
 }
 .pt-button-group.pt-minimal .pt-button.pt-intent-primary {
@@ -476,8 +476,8 @@ body {
   border-radius: 0;
 }
 
-.pt-button:not([class*='pt-intent-']):active,
-.pt-button:not([class*='pt-intent-']).pt-active {
+.pt-button:not([class*="pt-intent-"]):active,
+.pt-button:not([class*="pt-intent-"]).pt-active {
   background: @pale-red;
 }
 
@@ -524,8 +524,19 @@ body {
     width: auto;
   }
 }
-.export-menu #pt-tab-panel_ExportTabs_Url .pt-input {
-  width: 100%;
+
+.export-menu {
+  h4 {
+    padding-bottom: 10px;
+    color: @red;
+  }
+  .url-share {
+    .pt-input {
+      width: 100%;
+    }
+
+    border-bottom: 1px solid @light-gray3;
+  }
 }
 
 .pt-navbar {
@@ -544,7 +555,7 @@ body {
   display: block;
   background-size: contain;
   background-repeat: no-repeat;
-  background: url('img/logo.svg');
+  background: url("img/logo.svg");
 }
 
 .pt-button-group.pt-minimal .pt-button.pt-intent-primary:hover,
@@ -557,8 +568,6 @@ textarea.pt-input {
   resize: none;
 }
 
-.export-menu {
-}
 div.pt-tab-list {
   border-bottom: 1px solid #f0f0f0;
   margin-bottom: 0px;
@@ -574,7 +583,7 @@ div.pt-tab-list {
 }
 
 .div.pt-button-group {
-  .pt-button:not([class*='pt-intent-']),
+  .pt-button:not([class*="pt-intent-"]),
   .pt-button {
     box-shadow: none;
     background-image: none;
@@ -582,21 +591,21 @@ div.pt-tab-list {
   }
 }
 
-.pt-button:not([class*='pt-intent-']),
-.pt-button:not([class*='pt-intent-']):hover {
+.pt-button:not([class*="pt-intent-"]),
+.pt-button:not([class*="pt-intent-"]):hover {
   box-shadow: none;
   background: none;
 }
-.pt-button:not([class*='pt-intent-']) {
+.pt-button:not([class*="pt-intent-"]) {
   box-shadow: none;
   background-image: none;
 }
-.pt-button:not([class*='pt-intent-']):active,
-.pt-button:not([class*='pt-intent-']).pt-active {
+.pt-button:not([class*="pt-intent-"]):active,
+.pt-button:not([class*="pt-intent-"]).pt-active {
   box-shadow: none;
   background: none;
 }
-.pt-button:not([class*='pt-intent-']).pt-active {
+.pt-button:not([class*="pt-intent-"]).pt-active {
   border-bottom: 2px solid @red;
 }
 

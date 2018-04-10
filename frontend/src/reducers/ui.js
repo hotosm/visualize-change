@@ -7,6 +7,7 @@ const {
   HIDE_PLAYER_PANEL,
   EXPORT_DATA_FETCHING,
   EXPORT_DATA_FETCHED,
+  EXPORT_RENDER_QUEUED,
   SET_APP_READY,
   DEFAULT_STATE
 } = require("../constans");
@@ -35,7 +36,10 @@ module.exports = (state = DEFAULT_STATE.ui, { type }) => {
       return Object.assign({}, state, { exportMenuOpen: true });
       break;
     case HIDE_EXPORT_MENU:
-      return Object.assign({}, state, { exportMenuOpen: false });
+      return Object.assign({}, state, { exportMenuOpen: false, exportMenuStatus: null });
+      break;
+    case EXPORT_RENDER_QUEUED:
+      return Object.assign({}, state, { exportMenuStatus: "queued" });
       break;
     default:
       return state;

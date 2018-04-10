@@ -27,6 +27,10 @@ const MAP_CONFIG_SCHEMA = j.object().keys({
   startDate: j.number(), // timestamp
   endDate: j.number(), // timestamp
   interval: j.string().valid("hours", "days", "weeks"),
+  speed: j
+    .number()
+    .min(0.25)
+    .max(2.0),
   style: j.object() // TODO: Need to add better validation for this
 });
 
@@ -59,6 +63,7 @@ const mapConfigFromReq = req => ({
   startDate: req.body.startDate,
   endDate: req.body.endDate,
   interval: req.body.interval,
+  speed: req.body.speed,
   style: req.body.style
 });
 

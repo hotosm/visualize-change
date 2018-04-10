@@ -2,6 +2,7 @@ const DEFAULT_STATE = {
   ui: {
     sidebarOpen: true,
     exportMenuOpen: false,
+    exportMenuStatus: null,
     fullScreenMode: false,
     playerPanelVisible: true
   },
@@ -102,6 +103,7 @@ module.exports = {
 
   ROUTE_CHANGE: "@@router/LOCATION_CHANGE",
 
+  EXPORT_RENDER_QUEUED: "EXPORT_RENDER_QUEUED",
   EXPORT_DATA_FETCHING: "EXPORT_DATA_FETCHING",
   EXPORT_DATA_FETCHED: "EXPORT_DATA_FETCHED",
   EXPORT_DATA_SAVING: "EXPORT_DATA_SAVING",
