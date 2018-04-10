@@ -2,7 +2,8 @@ const {
   SHOW_POPOVER,
   HIDE_POPOVER,
   NEXT_TUTORIAL_SLIDE,
-  TOGGLE_TUTORIAL_MODE,
+  SET_TUTORIAL_MODE_ON,
+  SET_TUTORIAL_MODE_OFF,
   SHOW_EXPORT_MENU,
   HIDE_EXPORT_MENU,
   TOGGLE_SIDEBAR,
@@ -43,15 +44,22 @@ module.exports = (state = DEFAULT_STATE.ui, { type, payload }) => {
     case HIDE_EXPORT_MENU:
       return Object.assign({}, state, { exportMenuOpen: false, exportMenuStatus: null });
       break;
-    case TOGGLE_TUTORIAL_MODE: {
-      // TODO: Rethink this too
-      // const tutorialMode = state.tutorialMode;
+    // case TOGGLE_TUTORIAL_MODE: {
+    //   return Object.assign({}, state, {
+    //     tutorialMode: true,
+    //     visiblePopoversIds: [HELP_SLIDE_ORDER[0]]
+    //   });
+    //   break;
+    // }
+    case SET_TUTORIAL_MODE_ON:
       return Object.assign({}, state, {
         tutorialMode: true,
         visiblePopoversIds: [HELP_SLIDE_ORDER[0]]
       });
       break;
-    }
+    case SET_TUTORIAL_MODE_OFF:
+      return Object.assign({}, state, { tutorialMode: false });
+      break;
     case SHOW_POPOVER:
       return Object.assign({}, state, { visiblePopoversIds: state.visiblePopoversIds.concat(payload) });
       break;

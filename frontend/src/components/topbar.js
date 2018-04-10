@@ -6,7 +6,7 @@ const { SlideTransition } = require("./transitions");
 const { connect } = require("react-redux");
 const { Link } = require("react-router-dom");
 
-const { toggleTutorialMode } = require("../actions");
+const { setTutorialModeOn } = require("../actions");
 
 const isLinkDisabled = path => path !== "view" && path !== "edit";
 
@@ -19,7 +19,7 @@ const Topbar = ({
   onSaveClick,
   isFullScreenMode,
   onShareClick,
-  toggleTutorialMode
+  setTutorialModeOn
 }) => (
   <SlideTransition className="topbar" visible={!isFullScreenMode} direction="top">
     <Navbar>
@@ -75,7 +75,7 @@ const Topbar = ({
 
       <NavbarGroup align="right">
         <ButtonGroup minimal={true}>
-          <Button icon="help" onClick={toggleTutorialMode}>
+          <Button icon="help" onClick={setTutorialModeOn}>
             Help
           </Button>
         </ButtonGroup>
@@ -84,4 +84,4 @@ const Topbar = ({
   </SlideTransition>
 );
 
-module.exports = connect(({ ui }) => ({ ui }), { toggleTutorialMode })(Topbar);
+module.exports = connect(({ ui }) => ({ tutorialMode: ui.tutorialMode }), { setTutorialModeOn })(Topbar);

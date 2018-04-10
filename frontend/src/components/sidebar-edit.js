@@ -1,6 +1,6 @@
 const React = require("react");
 const { connect } = require("react-redux");
-const { Button, ButtonGroup, Switch, Label, Popover, Slider } = require("@blueprintjs/core");
+const { Button, ButtonGroup, Switch, Label, Collapse, Popover, Slider } = require("@blueprintjs/core");
 const { DateRangePicker } = require("@blueprintjs/datetime");
 const { SketchPicker } = require("react-color");
 const debounce = require("lodash.debounce");
@@ -16,12 +16,23 @@ const {
   setMetadata,
   showPopover,
   hidePopover,
+  setTutorialModeOff,
   goToNextInTutorial
 } = require("../actions");
 
 const { capitalizeFirstLetter, rgbaObjectToString } = require("../utils");
 
-const HelpPopover = ({ helpText, id, visiblePopovers, showPopover, hidePopover, goToNextInTutorial }) => {
+// TODO: Maybe add another handler at onClickOutside?
+const HelpPopover = ({
+  helpText,
+  id,
+  tutorialMode,
+  visiblePopovers,
+  showPopover,
+  hidePopover,
+  setTutorialModeOff,
+  goToNextInTutorial
+}) => {
   const slideIndex = HELP_SLIDE_ORDER.findIndex(slideId => id === slideId);
   const isLast = slideIndex >= HELP_SLIDE_ORDER.length - 1;
   return (
@@ -37,9 +48,14 @@ const HelpPopover = ({ helpText, id, visiblePopovers, showPopover, hidePopover, 
           posuere, odio odio malesuada ligula, nec pretium sapien lectus eget lectus. Ut vitae orci a quam pulvinar
           consequat. Sed aliquam sapien vitae quam blandit, ut hendrerit nulla posuere. Nunc porttitor nulla id
           tincidunt placerat.
-          <Button className="action-button" onClick={() => (isLast ? hidePopover(id) : goToNextInTutorial(id))}>
-            {isLast ? "Close" : "Next"}
-          </Button>
+          {tutorialMode && (
+            <Button
+              className="action-button"
+              onClick={() => (isLast ? hidePopover(id) && setTutorialModeOff() : goToNextInTutorial(id))}
+            >
+              {isLast ? "Close" : "Next"}
+            </Button>
+          )}
         </div>
       }
       target={<Button className="help-button" icon="help" onClick={() => showPopover(id)} />}
@@ -52,75 +68,93 @@ const HelpPopoverConnected = connect(
   {
     showPopover,
     hidePopover,
+    setTutorialModeOff,
     goToNextInTutorial
   }
 )(HelpPopover);
 
-const SidebarPanelHeader = ({ title, helpText, id }) => (
+const SidebarPanelHeader = ({ title, helpText, id, isOpen = false, onToggleClick }) => (
   <div className="sidebar-header">
     <h5>{title}</h5>
-    <HelpPopoverConnected helpText={helpText} id={id} />
+    <div>
+      <HelpPopoverConnected helpText={helpText} id={id} />
+      <Button icon={isOpen ? "chevron-down" : "chevron-up"} onClick={onToggleClick} />
+    </div>
   </div>
 );
 
-const DescribePanel = ({ metadata, setMetadata }) => (
+const DescribePanel = ({ isOpen, metadata, setMetadata, onToggleClick }) => (
   <div className="sidebar-panel">
-    <SidebarPanelHeader title="Describe" helpText="Describe" id="describe-help" />
-    <div className="inside-content">
-      <Label text="Name" required={true}>
-        <input className="pt-input" value={metadata.name} onChange={ev => setMetadata("name", ev.target.value)} />
-      </Label>
-      <Label text="Description" required={true}>
-        <textarea
-          className="pt-input"
-          value={metadata.description}
-          onChange={ev => setMetadata("description", ev.target.value)}
+    <SidebarPanelHeader
+      title="Describe"
+      helpText="Describe"
+      isOpen={isOpen}
+      onToggleClick={onToggleClick}
+      id="describe-help"
+    />
+    <Collapse isOpen={isOpen}>
+      <div className="inside-content">
+        <Label text="Name" required={true}>
+          <input className="pt-input" value={metadata.name} onChange={ev => setMetadata("name", ev.target.value)} />
+        </Label>
+        <Label text="Description" required={true}>
+          <textarea
+            className="pt-input"
+            value={metadata.description}
+            onChange={ev => setMetadata("description", ev.target.value)}
+          />
+        </Label>
+        <Label text="Project" required={true}>
+          <input
+            className="pt-input"
+            value={metadata.project}
+            onChange={ev => setMetadata("project", ev.target.value)}
+          />
+        </Label>
+      </div>
+    </Collapse>
+  </div>
+);
+
+const DatePanel = ({ isOpen, onToggleClick, date, onChangeDate, onChangeInterval, onChangeSpeed }) => (
+  <div className="sidebar-panel">
+    <SidebarPanelHeader title="Dates" helpText="Dates" isOpen={isOpen} onToggleClick={onToggleClick} id="dates-help" />
+    <Collapse isOpen={isOpen}>
+      <div className="inside-content">
+        <DateRangePicker
+          shortcuts={false}
+          contiguousCalendarMonths={false}
+          value={[new Date(date.start || date.end), date.end ? new Date(date.end) : null]}
+          onChange={onChangeDate}
         />
-      </Label>
-      <Label text="Project" required={true}>
-        <input className="pt-input" value={metadata.project} onChange={ev => setMetadata("project", ev.target.value)} />
-      </Label>
-    </div>
-  </div>
-);
-
-const DatePanel = ({ date, onChangeDate, onChangeInterval, onChangeSpeed }) => (
-  <div className="sidebar-panel">
-    <SidebarPanelHeader title="Dates" helpText="Dates" id="dates-help" />
-    <div className="inside-content">
-      <DateRangePicker
-        shortcuts={false}
-        contiguousCalendarMonths={false}
-        value={[new Date(date.start || date.end), date.end ? new Date(date.end) : null]}
-        onChange={onChangeDate}
-      />
-    </div>
-    <div className="inside-content">
-      <label className="inline-label">
-        Interval:
-        <ButtonGroup>
-          {["hours", "days", "weeks"].map(v => (
-            <Button key={v} active={date.interval === v} onClick={() => onChangeInterval(v)}>
-              {capitalizeFirstLetter(v)}
-            </Button>
-          ))}
-        </ButtonGroup>
-      </label>
-    </div>
-    <div className="inside-content">
-      <label className="inline-label">Animation speed</label>
-      <Slider
-        min={0.25}
-        max={2}
-        stepSize={0.25}
-        value={date.speed}
-        onChange={onChangeSpeed}
-        labelStepSize={0.25}
-        labelRenderer={v => {
-          return (v % 1 === 0 ? v.toFixed(0) : v) + "×";
-        }}
-      />
-    </div>
+      </div>
+      <div className="inside-content">
+        <label className="inline-label">
+          Interval:
+          <ButtonGroup>
+            {["hours", "days", "weeks"].map(v => (
+              <Button key={v} active={date.interval === v} onClick={() => onChangeInterval(v)}>
+                {capitalizeFirstLetter(v)}
+              </Button>
+            ))}
+          </ButtonGroup>
+        </label>
+      </div>
+      <div className="inside-content">
+        <label className="inline-label">Animation speed</label>
+        <Slider
+          min={0.25}
+          max={2}
+          stepSize={0.25}
+          value={date.speed}
+          onChange={onChangeSpeed}
+          labelStepSize={0.25}
+          labelRenderer={v => {
+            return (v % 1 === 0 ? v.toFixed(0) : v) + "×";
+          }}
+        />
+      </div>
+    </Collapse>
   </div>
 );
 
@@ -251,55 +285,98 @@ const StyleSection = ({ style, onStyleChange }) => {
   );
 };
 
-const StylesPanel = ({ styles, onStyleChange, onBackgroundStyleChange }) => {
+const StylesPanel = ({ isOpen, onToggleClick, styles, onStyleChange, onBackgroundStyleChange }) => {
   return (
     <div className="sidebar-panel">
-      <SidebarPanelHeader title="Styles" helpText="Styles" id="styles-help" />
-      <div className="inside-content section">
-        <div className="section__header">
-          <h4>Map</h4>
+      <SidebarPanelHeader
+        isOpen={isOpen}
+        onToggleClick={onToggleClick}
+        title="Styles"
+        helpText="Styles"
+        id="styles-help"
+      />
+      <Collapse isOpen={isOpen}>
+        <div className="inside-content section">
+          <div className="section__header">
+            <h4>Map</h4>
+          </div>
+          <div>
+            <label className="inline-label">
+              Background Theme
+              <div className="pt-select">
+                <select value={styles.background} onChange={ev => onBackgroundStyleChange(ev.target.value)}>
+                  {["light", "dark", "basic", "streets", "bright", "satellite"].map(style => (
+                    <option key={style} value={style}>
+                      {capitalizeFirstLetter(style)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </label>
+          </div>
         </div>
-        <div>
-          <label className="inline-label">
-            Background Theme
-            <div className="pt-select">
-              <select value={styles.background} onChange={ev => onBackgroundStyleChange(ev.target.value)}>
-                {["light", "dark", "basic", "streets", "bright", "satellite"].map(style => (
-                  <option key={style} value={style}>
-                    {capitalizeFirstLetter(style)}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </label>
-        </div>
-      </div>
-      {styles.features.map((style, idx) => (
-        <StyleSection key={style.name} style={style} onStyleChange={newStyle => onStyleChange(idx, newStyle)} />
-      ))}
+        {styles.features.map((style, idx) => (
+          <StyleSection key={style.name} style={style} onStyleChange={newStyle => onStyleChange(idx, newStyle)} />
+        ))}
+      </Collapse>
     </div>
   );
 };
 
-const SidebarEdit = ({
-  meta,
-  date,
-  style,
-  setDateSpan,
-  setInterval,
-  setSpeed,
-  setMapBackground,
-  setFeatureStyle,
-  setMetadata
-}) => {
-  return (
-    <div className="sidebar-content__inside">
-      <DescribePanel metadata={meta} setMetadata={setMetadata} />
-      <DatePanel date={date} onChangeDate={setDateSpan} onChangeInterval={setInterval} onChangeSpeed={setSpeed} />
-      <StylesPanel styles={style} onStyleChange={setFeatureStyle} onBackgroundStyleChange={setMapBackground} />
-    </div>
-  );
-};
+class SidebarEdit extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { isDescribeOpen: true, isDateOpen: true, isStylesOpen: true };
+  }
+
+  onToggleClick = name => () => {
+    const propName = `is${name}Open`;
+    const currentValue = this.state[propName];
+    this.setState({ [propName]: !currentValue });
+  };
+
+  render() {
+    const {
+      meta,
+      date,
+      style,
+      setDateSpan,
+      setInterval,
+      setSpeed,
+      setMapBackground,
+      setFeatureStyle,
+      setMetadata
+    } = this.props;
+
+    const { isDescribeOpen, isDateOpen, isStylesOpen } = this.state;
+
+    return (
+      <div className="sidebar-content__inside">
+        <DescribePanel
+          isOpen={isDescribeOpen}
+          onToggleClick={this.onToggleClick("Describe")}
+          metadata={meta}
+          setMetadata={setMetadata}
+        />
+        <DatePanel
+          isOpen={isDateOpen}
+          onToggleClick={this.onToggleClick("Date")}
+          date={date}
+          onChangeDate={setDateSpan}
+          onChangeInterval={setInterval}
+          onChangeSpeed={setSpeed}
+        />
+        <StylesPanel
+          isOpen={isStylesOpen}
+          onToggleClick={this.onToggleClick("Styles")}
+          styles={style}
+          onStyleChange={setFeatureStyle}
+          onBackgroundStyleChange={setMapBackground}
+        />
+      </div>
+    );
+  }
+}
 
 const SidebarEditConnected = connect(({ meta, date, style }) => ({ meta, date, style }), {
   setInterval,
