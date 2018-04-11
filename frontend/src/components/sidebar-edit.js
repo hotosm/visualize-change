@@ -125,6 +125,16 @@ const DescribePanel = ({ isOpen, metadata, setMetadata, onToggleClick }) => (
   </div>
 );
 
+const isDateSpanAllowed = (v, { start, end }) => {
+  const diffDays = (end - start) / (24 * 60 * 60 * 1000);
+
+  return {
+    hours: diffDays < 30,
+    days: diffDays > 2 && diffDays < 90,
+    weeks: diffDays > 14
+  }[v];
+};
+
 const DatePanel = ({ isOpen, onToggleClick, date, onChangeDate, onChangeInterval, onChangeSpeed }) => (
   <div className="sidebar-panel">
     <SidebarPanelHeader title="Dates" helpText="Dates" isOpen={isOpen} onToggleClick={onToggleClick} id="dates-help" />
@@ -142,7 +152,12 @@ const DatePanel = ({ isOpen, onToggleClick, date, onChangeDate, onChangeInterval
           Interval:
           <ButtonGroup>
             {["hours", "days", "weeks"].map(v => (
-              <Button key={v} active={date.interval === v} onClick={() => onChangeInterval(v)}>
+              <Button
+                key={v}
+                active={date.interval === v}
+                disabled={!isDateSpanAllowed(v, date)}
+                onClick={() => onChangeInterval(v)}
+              >
                 {capitalizeFirstLetter(v)}
               </Button>
             ))}
