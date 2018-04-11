@@ -4,7 +4,7 @@ const { connect } = require("react-redux");
 const { Button, ButtonGroup, Slider } = require("@blueprintjs/core");
 
 const { FadeTransition } = require("./transitions");
-const { togglePlay, setSelectedDate, toggleFullscreen, showExportMenu, hidePlayerPanel } = require("../actions");
+const { togglePlay, setSelectedDate, toggleFullscreen, hidePlayerPanel } = require("../actions");
 const { capitalizeFirstLetter } = require("../utils");
 
 class PlayerPanel extends React.Component {
@@ -22,28 +22,22 @@ class PlayerPanel extends React.Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    // TODO: make this configurable from UI
-    const intervalToStepSpeed = {
-      hours: 1,
-      days: 3,
-      weeks: 5
-    };
-
-    // Naive implementation
+    // TODO: Fix this, naive implementation
+    // and also the names are kind of unfortune ;)
     if (nextProps.date.isPlaying) {
       this.playTimer = setTimeout(() => {
         const next = moment(this.props.date.selected)
           .add(1, this.props.date.interval)
           .valueOf();
         this.props.setSelectedDate(next);
-      }, 1000 * intervalToStepSpeed[this.props.date.interval]);
+      }, 1000 / this.props.date.speed);
     } else {
       clearTimeout(this.playTimer);
     }
   }
 
   render() {
-    const { date, togglePlay, toggleFullscreen, showExportMenu, isFullScreenMode } = this.props;
+    const { date, togglePlay, toggleFullscreen, isFullScreenMode } = this.props;
     return (
       <div className="map-footer__content" onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut}>
         <div className="map-footer__items">
@@ -62,7 +56,6 @@ class PlayerPanel extends React.Component {
           </div>
           <ButtonGroup minimal={true}>
             <Button icon="fullscreen" onClick={toggleFullscreen} />
-            <Button icon="share" onClick={showExportMenu} />
           </ButtonGroup>
         </div>
         <div className="map-footer__date">{moment(date.selected).format("YYYY-MM-DD")}</div>
@@ -80,8 +73,7 @@ const PlayerPanelConnected = connect(
   {
     togglePlay,
     toggleFullscreen,
-    setSelectedDate,
-    showExportMenu
+    setSelectedDate
   }
 )(PlayerPanel);
 

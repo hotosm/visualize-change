@@ -1,67 +1,87 @@
 const React = require("react");
 const classNames = require("classnames");
-const { Button, ButtonGroup, Navbar, NavbarGroup, NavbarHeading, Intent } = require("@blueprintjs/core");
+const { Button, ButtonGroup, Navbar, NavbarGroup, NavbarHeading } = require("@blueprintjs/core");
 
 const { SlideTransition } = require("./transitions");
+const { connect } = require("react-redux");
 const { Link } = require("react-router-dom");
 
-// const LanguageMenu = () => (
-//   <Menu>
-//     <MenuItem text="English" />
-//     <MenuItem text="Polish" />
-//   </Menu>
-// );
+const { setTutorialModeOn } = require("../actions");
 
-// TODO: add defaults
-module.exports = ({ id = null, path, canSave, saving, isEditing, onSaveClick, isFullScreenMode }) => (
+const isLinkDisabled = path => path !== "view" && path !== "edit";
+
+const Topbar = ({
+  id = null,
+  path,
+  canSave,
+  saving,
+  isEditing,
+  onSaveClick,
+  isFullScreenMode,
+  onShareClick,
+  setTutorialModeOn
+}) => (
   <SlideTransition className="topbar" visible={!isFullScreenMode} direction="top">
     <Navbar>
-      <NavbarGroup>
-        <div className="logo" />
-        <NavbarHeading>HOT Visualize Change</NavbarHeading>
-      </NavbarGroup>
+      <Link to="/">
+        <NavbarGroup>
+          <div className="logo" />
+          <NavbarHeading>Visualize Change</NavbarHeading>
+        </NavbarGroup>
+      </Link>
 
-      <NavbarGroup align="right">
+      <NavbarGroup align="left">
         <ButtonGroup minimal={true}>
-          {isEditing && (
-            <Button
-              intent={canSave ? Intent.PRIMARY : Intent.SUCCESS}
-              loading={saving}
-              onClick={canSave ? onSaveClick : null}
-            >
-              {canSave ? "Save" : "Saved"}
-            </Button>
-          )}
-
           <Link className="pt-button" to="/edit/">
             New
           </Link>
 
+          <Button
+            loading={saving}
+            disabled={!isEditing || !canSave}
+            style={{ width: 50 }}
+            onClick={canSave ? onSaveClick : null}
+          >
+            {isEditing ? (canSave ? "Save" : "Saved") : "Save"}
+          </Button>
+
+          <Button icon="share" disabled={!onShareClick} onClick={onShareClick}>
+            Share
+          </Button>
+
           <div className="pt-button separator">|</div>
 
           <Link
-            className={classNames("pt-button route", { active: path === "view" })}
+            className={classNames("pt-button route", { active: path === "view", disabled: isLinkDisabled(path) })}
             to={`/view${id ? "/" + id : ""}`}
           >
             View
           </Link>
 
           <Link
-            className={classNames("pt-button route", { active: path === "edit" })}
+            className={classNames("pt-button route", { active: path === "edit", disabled: isLinkDisabled(path) })}
             to={`/edit${id ? "/" + id : ""}`}
           >
             Edit
           </Link>
 
-          <Link className={classNames("pt-button route", { active: path === "about" })} to="/">
-            About
-          </Link>
-
-          <Link className={classNames("pt-button route", { active: path === "learn" })} to="/learn">
+          {/*
+          <Link className={classNames('pt-button route', { active: path === 'learn' })} to="/learn">
             Learn
           </Link>
+          */}
+        </ButtonGroup>
+      </NavbarGroup>
+
+      <NavbarGroup align="right">
+        <ButtonGroup minimal={true}>
+          <Button icon="help" onClick={setTutorialModeOn}>
+            Help
+          </Button>
         </ButtonGroup>
       </NavbarGroup>
     </Navbar>
   </SlideTransition>
 );
+
+module.exports = connect(({ ui }) => ({ tutorialMode: ui.tutorialMode }), { setTutorialModeOn })(Topbar);

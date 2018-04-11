@@ -5,6 +5,7 @@ const { ConnectedRouter } = require("react-router-redux");
 const createHistory = require("history/createBrowserHistory").default;
 const { Route, Switch } = require("react-router-dom");
 const classNames = require("classnames");
+const { Link } = require("react-router-dom");
 
 const configureStore = require("./store");
 
@@ -38,8 +39,16 @@ const { connect } = require("react-redux");
 const { push: routerPush } = require("react-router-redux");
 const clipboardCopy = require("clipboard-copy");
 const { Intent } = require("@blueprintjs/core");
-const { createNewExport, getExportById, setAppReady, showPlayerPanel } = require("./actions");
-const { isChanged } = require("./selectors");
+const {
+  createNewExport,
+  getExportById,
+  setAppReady,
+  setNewEdit,
+  showPlayerPanel,
+  showExportMenu,
+  toggleTutorialMode
+} = require("./actions");
+const { isChanged, isEditMode } = require("./selectors");
 const { getShareUrl } = require("./utils");
 const AppToaster = require("./components/toaster");
 
@@ -56,6 +65,12 @@ class MainContainer extends React.Component {
 
   componentDidMount() {
     const id = this.props.match.params.id;
+    const isFirstStarted = !localStorage.getItem("hot-changevis-used");
+    if (isFirstStarted) {
+      this.props.toggleTutorialMode();
+      localStorage.setItem("hot-changevis-used", true);
+    }
+    // localStorage.setItem('replaymap-first-started', true);
     if (!id) {
       // this.props.createNewExport();
       this.props.setAppReady();
@@ -112,6 +127,7 @@ class MainContainer extends React.Component {
           canSave={isEditing && this.props.isChanged}
           saving={this.props.saving}
           isEditing={isEditing}
+          onShareClick={this.props.showExportMenu}
           path={isEditing ? "edit" : "view"}
           onSaveClick={this.onSaveClick}
           id={id}
@@ -129,7 +145,10 @@ const MainContainerConnected = connect(
     createNewExport,
     getExportById,
     routerPush,
-    setAppReady
+    setAppReady,
+    setNewEdit,
+    showExportMenu,
+    toggleTutorialMode
   }
 )(MainContainer);
 
@@ -145,11 +164,17 @@ const Layout = ({ path, exact, main: MainComponent }) => (
   />
 );
 
-const MapWrapper = connect(({ ui }) => ({ isFullScreenMode: ui.fullScreenMode, loaded: ui.loaded }), {
-  showPlayerPanel
-})(({ loaded, isFullScreenMode, showPlayerPanel }) => {
+const MapWrapper = connect(
+  ({ ui, router }) => ({ isFullScreenMode: ui.fullScreenMode, loaded: ui.loaded, editMode: isEditMode(router) }),
+  {
+    showPlayerPanel
+  }
+)(({ loaded, isFullScreenMode, showPlayerPanel, editMode }) => {
   return (
-    <div className="map-wrapper" onMouseMove={isFullScreenMode ? showPlayerPanel : null}>
+    <div
+      className={classNames("map-wrapper", { "edit-mode": editMode })}
+      onMouseMove={isFullScreenMode ? showPlayerPanel : null}
+    >
       {loaded ? <MapConnected /> : null}
     </div>
   );
@@ -170,8 +195,11 @@ const AboutPage = () => (
       <h2>Visualize OpenStreetMap</h2>
       <p>
         The Visualize Change tool is an open service that creates customised animations of OpenStreetMap data mapped
-        over time for an area of interest. Share these mapping visualisations easily through various file formats.
+        over time for an area of interest. Share these mapping visualizations easily through various file formats.
       </p>
+      <Link to="/edit" className="pt-button action-button start-button">
+        Click here to create visualization
+      </Link>
     </div>
   </div>
 );
@@ -185,6 +213,7 @@ const LearnPage = () => (
       isEditing={false}
       onSaveClick={() => {}}
       onToggleViewState={() => {}}
+      onShareClick={null}
       isFullScreenMode={false}
     />
     <div className="about-page__content">
@@ -197,7 +226,7 @@ const LearnPage = () => (
 const AppContainer = () => (
   <Provider store={store}>
     <ConnectedRouter history={history}>
-      <div>
+      <div className="hot-theme">
         <Switch>
           <Layout exact path="/" main={AboutPage} />
           <Layout exact path="/learn" main={LearnPage} />

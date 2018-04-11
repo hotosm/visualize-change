@@ -1,26 +1,31 @@
 const clamp = require("lodash.clamp");
-const { CHANGE_INTERVAL, SET_DATES, SET_SELECTED_DATE, TOGGLE_PLAY, EXPORT_DATA_FETCHED } = require("../constans");
+const {
+  CHANGE_INTERVAL,
+  SET_SPEED,
+  SET_DATES,
+  SET_SELECTED_DATE,
+  TOGGLE_PLAY,
+  EXPORT_DATA_FETCHED,
+  DEFAULT_STATE
+} = require("../constans");
 
-const initialState = {
-  start: new Date("2018-01-01").getTime(),
-  end: new Date("2018-02-01").getTime(),
-  selected: new Date("2018-01-01").getTime(),
-  interval: "days",
-  isPlaying: false
-};
-
-module.exports = (state = initialState, { type, payload }) => {
+module.exports = (state = DEFAULT_STATE.date, { type, payload }) => {
   switch (type) {
     case EXPORT_DATA_FETCHED:
-      return Object.assign({}, initialState, {
+      return Object.assign({}, state, {
         start: payload.config.date.start,
         end: payload.config.date.end,
         selected: payload.config.date.start,
-        interval: payload.config.date.interval
+        interval: payload.config.date.interval,
+        speed: payload.config.date.speed
       });
     case CHANGE_INTERVAL:
       return Object.assign({}, state, { interval: payload });
       break;
+    case SET_SPEED:
+      return Object.assign({}, state, {
+        speed: payload
+      });
     case SET_DATES:
       return Object.assign({}, state, { start: payload.start, end: payload.end, selected: payload.start });
       break;

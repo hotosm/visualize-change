@@ -13,6 +13,14 @@
 body {
   overflow: hidden;
   font-family: "Archivo", sans-serif;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+}
+
+*:focus {
+  outline: 0 !important;
 }
 
 .container {
@@ -47,12 +55,35 @@ body {
   display: flex;
   flex-flow: column;
   flex-grow: 1;
-  margin-top: 50px;
+  margin-top: @navbar-height;
+}
+
+.sidebar-content__inside {
+  height: calc(~"100vh - 40px - 40px");
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .sidebar-tabs,
 .sidebar-data {
   flex-grow: 1;
+}
+
+.sidebar-header {
+  background: #ebebeb;
+  border-bottom: 2px solid white;
+  padding: 5px 5px 5px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+
+  h5 {
+    margin: 0;
+    padding: 0;
+    color: @red;
+    font-weight: normal;
+  }
 }
 
 .sidebar-toggle {
@@ -65,12 +96,6 @@ body {
   align-items: center;
 
   cursor: pointer;
-
-  &::after {
-    content: "⁞";
-    font-size: 48px;
-    color: @red;
-  }
 }
 
 .sidebar-footer {
@@ -103,6 +128,20 @@ body {
 
 .map-content {
   flex-grow: 1;
+}
+
+.map-legend {
+  background-color: rgba(255, 255, 255, 0.75);
+  font-size: 10px;
+  width: 100px;
+  padding: 5px 10px;
+
+  .map-legend__square {
+    width: 17px;
+    height: 17px;
+    display: block;
+    background-color: red;
+  }
 }
 
 @map-footer-height: 40px;
@@ -143,19 +182,6 @@ body {
   padding: 0 10px;
 }
 
-.map-footer__progressbar .pt-slider-track,
-.pt-slider-progress {
-  height: 10px;
-  border-radius: 5px;
-}
-
-.map-footer__progressbar .pt-slider-handle {
-  top: 5px;
-  width: 10px;
-  height: 10px;
-  border-radius: 10px;
-}
-
 .map-footer__date {
   display: flex;
   align-items: center;
@@ -175,8 +201,12 @@ body {
 }
 
 .color-picker {
-  display: flex;
-  align-items: center;
+  position: relative;
+  .popover {
+    right: 0;
+    bottom: 25px;
+    z-index: 7;
+  }
 }
 
 .color-picker__swatch {
@@ -265,7 +295,7 @@ body {
 }
 
 .form-body label {
-  padding: 10px 0;
+  padding: 20px 0;
 }
 
 .mapboxgl-ctrl-geocoder {
@@ -273,7 +303,7 @@ body {
   z-index: 1;
   width: 50%;
   right: 50px;
-  top: 20px;
+  top: 10px;
   border-radius: 0;
 }
 
@@ -289,13 +319,7 @@ body {
 }
 
 .sidebar-panel {
-  padding-top: 10px;
-}
-
-// Temp!
-.styles-panel {
-  height: calc(~"100vh - 100px - 60px");
-  overflow: scroll;
+  // padding-top: 10px;
 }
 
 .pt-card {
@@ -394,7 +418,8 @@ body {
 .pt-button.route:hover,
 .pt-button.route.active,
 .pt-button.route.active:hover {
-  box-shadow: inset 0 -2px 0 @red!important;
+  // box-shadow: inset 0 -2px 0 @red!important;
+  border-bottom: 1px solid @red;
   background: none !important;
 }
 
@@ -461,6 +486,11 @@ body {
 }
 
 // Datepicker
+
+.pt-datepicker {
+  padding: 0;
+}
+
 .pt-datepicker .DayPicker-NavButton {
   padding: 0;
   top: 3px;
@@ -498,11 +528,23 @@ body {
     width: auto;
   }
 }
-.export-menu #pt-tab-panel_ExportTabs_Url .pt-input {
-  width: 100%;
+
+.export-menu {
+  h4 {
+    padding-bottom: 10px;
+    color: @red;
+  }
+  .url-share {
+    .pt-input {
+      width: 100%;
+    }
+
+    border-bottom: 1px solid @light-gray3;
+  }
 }
 
 .pt-navbar {
+  height: 40px;
   box-shadow: 0 0 0 1px rgba(16, 22, 26, 0.1), 0 0 0 rgba(16, 22, 26, 0), 0 1px 1px rgba(16, 22, 26, 0.1);
 }
 
@@ -512,8 +554,8 @@ body {
 }
 
 .logo {
-  width: 60px;
-  height: 36px;
+  width: 45px;
+  height: 27px;
   display: block;
   background-size: contain;
   background-repeat: no-repeat;
@@ -530,8 +572,6 @@ textarea.pt-input {
   resize: none;
 }
 
-.export-menu {
-}
 div.pt-tab-list {
   border-bottom: 1px solid #f0f0f0;
   margin-bottom: 0px;
@@ -575,7 +615,7 @@ div.pt-tab-list {
 
 .separator {
   margin: -10px;
-  color: #eee!important;
+  color: #eee !important;
   pointer-events: none;
 }
 
@@ -585,7 +625,7 @@ div.pt-tab-list {
 }
 
 // TODO: Fix this
-button.pt-button.action-button {
+.pt-button.action-button {
   background: @red!important;
   color: white !important;
   padding: 15px !important;
@@ -601,4 +641,118 @@ button.pt-button.action-button {
   &:hover {
     opacity: 0.7;
   }
+}
+
+.mapboxgl-ctrl-bottom-right {
+  bottom: 40px;
+}
+
+.mapboxgl-ctrl-scale {
+  background-color: rgba(255, 255, 255, 0.75);
+  font-size: 10px;
+  border-width: medium 2px 2px;
+  border-style: none solid solid;
+  border-color: #333;
+  padding: 0 5px;
+  color: #333;
+}
+
+.mapboxgl-ctrl-bottom-right .mapboxgl-ctrl {
+  margin: 0;
+}
+
+@navbar-height: 40px;
+
+a.pt-button.start-button {
+  margin-top: 50px;
+}
+
+.hot-theme {
+  // Navbar
+  .pt-navbar {
+    font-size: 18px;
+  }
+  .pt-navbar,
+  .pt-navbar-group {
+    height: @navbar-height;
+    .pt-button {
+      font-size: 13px;
+      box-sizing: border-box;
+
+      &.disabled,
+      &:disabled {
+        background: none;
+        cursor: not-allowed;
+        color: rgba(92, 112, 128, 0.5);
+        pointer-events: none;
+      }
+
+      &.route {
+        padding: 0 10px;
+        height: 20px;
+        border-bottom: 2px solid transparent;
+
+        &:hover,
+        &.active,
+        &.active:hover {
+          border-bottom: 2px solid @red;
+        }
+      }
+    }
+  }
+
+  .pt-slider .pt-slider-label {
+    font-size: 10px;
+  }
+
+  .pt-slider .pt-slider-handle .pt-slider-label {
+    box-shadow: none;
+    background: @red;
+  }
+
+  // Map footer
+  .map-footer__progressbar {
+    .pt-slider-progress {
+      background: @red;
+    }
+    .pt-slider-track,
+    .pt-slider-progress {
+      height: 10px;
+      border-radius: 5px;
+    }
+    .pt-slider-handle {
+      top: 5px;
+      width: 10px;
+      height: 10px;
+      border-radius: 10px;
+    }
+  }
+
+  // Buttons
+  .pt-button {
+    color: @red;
+    .pt-icon {
+      color: @red;
+    }
+    &.help-button {
+      border: none;
+    }
+  }
+}
+
+.mapboxgl-ctrl-top-right {
+  opacity: 0;
+}
+
+.edit-mode .mapboxgl-ctrl-top-right {
+  opacity: 1;
+}
+
+.help-popover {
+  padding: 20px;
+  max-width: 250px;
+}
+
+.hot-theme .eye-icon .pt-icon {
+  color: @hot-gray;
 }

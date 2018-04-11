@@ -1,4 +1,9 @@
 const {
+  SHOW_POPOVER,
+  HIDE_POPOVER,
+  NEXT_TUTORIAL_SLIDE,
+  SET_TUTORIAL_MODE_ON,
+  SET_TUTORIAL_MODE_OFF,
   SHOW_EXPORT_MENU,
   HIDE_EXPORT_MENU,
   TOGGLE_SIDEBAR,
@@ -7,18 +12,13 @@ const {
   HIDE_PLAYER_PANEL,
   EXPORT_DATA_FETCHING,
   EXPORT_DATA_FETCHED,
-  SET_APP_READY
+  EXPORT_RENDER_QUEUED,
+  SET_APP_READY,
+  HELP_SLIDE_ORDER,
+  DEFAULT_STATE
 } = require("../constans");
 
-const initialState = {
-  sidebarOpen: true,
-  exportMenuOpen: false,
-  loaded: false,
-  fullScreenMode: false,
-  playerPanelVisible: true
-};
-
-module.exports = (state = initialState, { type, payload }) => {
+module.exports = (state = DEFAULT_STATE.ui, { type, payload }) => {
   switch (type) {
     case SET_APP_READY:
       return Object.assign({}, state, { loaded: true });
@@ -42,7 +42,42 @@ module.exports = (state = initialState, { type, payload }) => {
       return Object.assign({}, state, { exportMenuOpen: true });
       break;
     case HIDE_EXPORT_MENU:
-      return Object.assign({}, state, { exportMenuOpen: false });
+      return Object.assign({}, state, { exportMenuOpen: false, exportMenuStatus: null });
+      break;
+    // case TOGGLE_TUTORIAL_MODE: {
+    //   return Object.assign({}, state, {
+    //     tutorialMode: true,
+    //     visiblePopoversIds: [HELP_SLIDE_ORDER[0]]
+    //   });
+    //   break;
+    // }
+    case SET_TUTORIAL_MODE_ON:
+      return Object.assign({}, state, {
+        tutorialMode: true,
+        visiblePopoversIds: [HELP_SLIDE_ORDER[0]]
+      });
+      break;
+    case SET_TUTORIAL_MODE_OFF:
+      return Object.assign({}, state, { tutorialMode: false });
+      break;
+    case SHOW_POPOVER:
+      return Object.assign({}, state, { visiblePopoversIds: state.visiblePopoversIds.concat(payload) });
+      break;
+    case HIDE_POPOVER:
+      return Object.assign({}, state, { visiblePopoversIds: state.visiblePopoversIds.filter(id => id !== payload) });
+      break;
+    case NEXT_TUTORIAL_SLIDE: {
+      // TODO: Rethink
+      const currentIndex = HELP_SLIDE_ORDER.findIndex(id => id === payload);
+      const nextSlideId = HELP_SLIDE_ORDER[currentIndex + 1] || HELP_SLIDE_ORDER[0];
+
+      return Object.assign({}, state, {
+        visiblePopoversIds: state.visiblePopoversIds.filter(id => id !== payload).concat(nextSlideId)
+      });
+      break;
+    }
+    case EXPORT_RENDER_QUEUED:
+      return Object.assign({}, state, { exportMenuStatus: "queued" });
       break;
     default:
       return state;

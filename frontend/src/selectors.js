@@ -8,6 +8,11 @@ const isChanged = state => {
   return !equals(stateFromServer, stateInApp);
 };
 
+const isEditMode = router => {
+  return !!(router.location.pathname.split("/")[1] === "edit");
+};
+
 module.exports = {
-  isChanged
+  isChanged,
+  isEditMode
 };

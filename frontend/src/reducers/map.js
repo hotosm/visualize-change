@@ -1,10 +1,6 @@
-const { SET_COORDINATES, EXPORT_DATA_FETCHED } = require("../constans");
+const { SET_COORDINATES, EXPORT_DATA_FETCHED, DEFAULT_STATE } = require("../constans");
 
-const initialState = {
-  lat: -8.343,
-  lng: 115.507,
-  zoom: 12
-};
+const initialState = DEFAULT_STATE.map;
 
 module.exports = (state = initialState, { type, payload }) => {
   switch (type) {
