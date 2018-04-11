@@ -51,14 +51,26 @@ const HelpPopover = ({
           {tutorialMode && (
             <Button
               className="action-button"
-              onClick={() => (isLast ? hidePopover(id) && setTutorialModeOff() : goToNextInTutorial(id))}
+              onClick={ev => {
+                isLast && ev.stopPropagation();
+                isLast ? hidePopover(id) && setTutorialModeOff() : goToNextInTutorial(id);
+              }}
             >
               {isLast ? "Close" : "Next"}
             </Button>
           )}
         </div>
       }
-      target={<Button className="help-button" icon="help" onClick={() => showPopover(id)} />}
+      target={
+        <Button
+          className="help-button"
+          icon="help"
+          onClick={ev => {
+            ev.stopPropagation();
+            showPopover(id);
+          }}
+        />
+      }
     />
   );
 };
@@ -74,11 +86,11 @@ const HelpPopoverConnected = connect(
 )(HelpPopover);
 
 const SidebarPanelHeader = ({ title, helpText, id, isOpen = false, onToggleClick }) => (
-  <div className="sidebar-header">
+  <div className="sidebar-header" onClick={onToggleClick}>
     <h5>{title}</h5>
     <div>
       <HelpPopoverConnected helpText={helpText} id={id} />
-      <Button icon={isOpen ? "chevron-down" : "chevron-up"} onClick={onToggleClick} />
+      <Button icon={isOpen ? "chevron-down" : "chevron-up"} />
     </div>
   </div>
 );
@@ -226,7 +238,7 @@ const STYLE_TO_COMPONENT = {
 };
 
 const StyleEnabledButton = ({ enabled, onClick }) => (
-  <Button className="pt-minimal" icon={`eye-${enabled ? "open" : "off"}`} onClick={() => onClick(!enabled)} />
+  <Button className="pt-minimal eye-icon" icon={`eye-${enabled ? "open" : "off"}`} onClick={() => onClick(!enabled)} />
 );
 
 const StylePart = ({ style, onChange }) => {

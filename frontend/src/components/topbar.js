@@ -1,6 +1,6 @@
 const React = require("react");
 const classNames = require("classnames");
-const { Button, ButtonGroup, Navbar, NavbarGroup, NavbarHeading, Intent } = require("@blueprintjs/core");
+const { Button, ButtonGroup, Navbar, NavbarGroup, NavbarHeading } = require("@blueprintjs/core");
 
 const { SlideTransition } = require("./transitions");
 const { connect } = require("react-redux");
@@ -37,9 +37,9 @@ const Topbar = ({
           </Link>
 
           <Button
-            intent={isEditing ? (canSave ? Intent.PRIMARY : Intent.SUCCESS) : Intent.Primary}
             loading={saving}
-            disabled={!isEditing}
+            disabled={!isEditing || !canSave}
+            style={{ width: 50 }}
             onClick={canSave ? onSaveClick : null}
           >
             {isEditing ? (canSave ? "Save" : "Saved") : "Save"}
