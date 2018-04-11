@@ -139,7 +139,7 @@ const initRoutes = ({ queueRender, exportsAdd, exportsGetById, exportsUpdate }, 
           res.status(404);
           res.end();
         } else {
-          res.writeHead(200, headers);
+          res.writeHead(200, Object.assign(headers, { "Cache-Control": "private, max-age=3600" }));
           res.end(data);
         }
       });
