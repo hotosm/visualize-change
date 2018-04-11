@@ -149,36 +149,40 @@ const setupMap = map => {
     filter: (date, interval) => {
       const timestamp = date / 1000;
 
-      const filter = ["all", ["<=", "@timestamp", timestamp]];
+      const makeFilter = timestamp => ["<=", "@timestamp", timestamp];
 
-      // TODO: This varies between renderer, cause we dont want to use moment there.
-      const intervalSteps = {
-        hours: 3600,
-        days: 86400,
-        weeks: 604800
+      const makeHighlightFilter = timestamp => {
+        // TODO: This varies between renderer, cause we dont want to use moment there.
+        const intervalSteps = {
+          hours: 3600,
+          days: 86400,
+          weeks: 604800
+        };
+
+        return [["<=", "@timestamp", timestamp], [">=", "@timestamp", timestamp - intervalSteps[interval]]];
       };
-
-      const highlightedFilter = filter.concat([[">=", "@timestamp", timestamp - intervalSteps[interval]]]);
 
       Object.keys(layers).forEach(layerGroupKey => {
         layers[layerGroupKey].forEach(layer => {
-          map.setFilter(layer, filter.concat(filters[layer]));
+          const baseFilters = filters[layer];
+
+          // this array looks _wrong_ but it looks like without .slice(0) the filtering is working way worse...
+          map.setFilter(layer, ["all", makeFilter(timestamp).slice(0), ...baseFilters.slice(0)]);
         });
       });
 
       Object.keys(highlighted).forEach(layerGroupKey => {
         highlighted[layerGroupKey].forEach(layer => {
-          map.setFilter(
-            layer,
-            highlightedFilter.concat(
-              filters[
-                layer
-                  .split("-")
-                  .slice(0, -1)
-                  .join("-")
-              ]
-            )
-          );
+          const baseFilters =
+            filters[
+              layer
+                .split("-")
+                .slice(0, -1)
+                .join("-")
+            ];
+
+          // this array looks _wrong_ but it looks like without .slice(0) the filtering is working way worse...
+          map.setFilter(layer, ["all", ...makeHighlightFilter(timestamp).slice(0), ...baseFilters.slice(0)]);
         });
       });
     },
