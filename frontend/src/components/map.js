@@ -171,7 +171,7 @@ const setupMap = map => {
 
           setTimeout(() => {
             map.setFilter(layer, ["all", makeFilter(timestamp).slice(0), ...baseFilters.slice(0)]);
-          }, 1);
+          }, 10);
         });
       });
 
@@ -190,7 +190,7 @@ const setupMap = map => {
 
           setTimeout(() => {
             map.setFilter(layer, ["all", ...makeHighlightFilter(timestamp).slice(0), ...baseFilters.slice(0)]);
-          }, 1);
+          }, 10);
         });
       });
     },
