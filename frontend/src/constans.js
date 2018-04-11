@@ -6,7 +6,8 @@ const DEFAULT_STATE = {
     fullScreenMode: false,
     playerPanelVisible: true,
     visiblePopoversIds: [],
-    tutorialMode: false
+    tutorialMode: false,
+    mapLoaded: true
   },
   date: {
     start: new Date("2018-01-01").getTime(),
@@ -115,6 +116,10 @@ module.exports = {
   EXPORT_DATA_FETCHED: "EXPORT_DATA_FETCHED",
   EXPORT_DATA_SAVING: "EXPORT_DATA_SAVING",
   EXPORT_DATA_SAVED: "EXPORT_DATA_SAVED",
+
+  MAP_LOADING: "MAP_LOADING",
+  MAP_LOADED: "MAP_LOADED",
+
   SET_APP_READY: "SET_APP_READY",
 
   HELP_SLIDE_ORDER: ["describe-help", "dates-help", "styles-help"],

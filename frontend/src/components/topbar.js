@@ -1,6 +1,6 @@
 const React = require("react");
 const classNames = require("classnames");
-const { Button, ButtonGroup, Navbar, NavbarGroup, NavbarHeading } = require("@blueprintjs/core");
+const { Button, ButtonGroup, Navbar, NavbarGroup, NavbarHeading, Spinner } = require("@blueprintjs/core");
 
 const { SlideTransition } = require("./transitions");
 const { connect } = require("react-redux");
@@ -19,7 +19,8 @@ const Topbar = ({
   onSaveClick,
   isFullScreenMode,
   onShareClick,
-  setTutorialModeOn
+  setTutorialModeOn,
+  isMapLoaded
 }) => (
   <SlideTransition className="topbar" visible={!isFullScreenMode} direction="top">
     <Navbar>
@@ -65,6 +66,8 @@ const Topbar = ({
             Edit
           </Link>
 
+          {!isMapLoaded && <Spinner className="pt-small" />}
+
           {/*
           <Link className={classNames('pt-button route', { active: path === 'learn' })} to="/learn">
             Learn
@@ -84,4 +87,10 @@ const Topbar = ({
   </SlideTransition>
 );
 
-module.exports = connect(({ ui }) => ({ tutorialMode: ui.tutorialMode }), { setTutorialModeOn })(Topbar);
+module.exports = connect(
+  ({ ui }) => ({
+    tutorialMode: ui.tutorialMode,
+    isMapLoaded: ui.mapLoaded
+  }),
+  { setTutorialModeOn }
+)(Topbar);

@@ -15,6 +15,8 @@ const {
   EXPORT_RENDER_QUEUED,
   SET_APP_READY,
   HELP_SLIDE_ORDER,
+  MAP_LOADING,
+  MAP_LOADED,
   DEFAULT_STATE
 } = require("../constans");
 
@@ -78,6 +80,12 @@ module.exports = (state = DEFAULT_STATE.ui, { type, payload }) => {
     }
     case EXPORT_RENDER_QUEUED:
       return Object.assign({}, state, { exportMenuStatus: "queued" });
+      break;
+    case MAP_LOADING:
+      return Object.assign({}, state, { mapLoaded: false });
+      break;
+    case MAP_LOADED:
+      return Object.assign({}, state, { mapLoaded: true });
       break;
     default:
       return state;

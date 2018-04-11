@@ -6,7 +6,7 @@ const classNames = require("classnames");
 const { capitalizeFirstLetter, rgbaObjectToString } = require("../utils");
 
 const PlayerPanelConnected = require("./player-panel");
-const { setCoordinates, showExportMenu } = require("../actions");
+const { setCoordinates, showExportMenu, setMapLoading, setMapLoaded } = require("../actions");
 
 // TODO: Maybe types in object instead of this? Or some regex for '-color' ?
 const parseValue = value => (typeof value === "object" ? rgbaObjectToString(value) : parseFloat(value));
@@ -227,6 +227,7 @@ class Map extends React.Component {
 
   initMap(props) {
     if (this.map) this.map.remove();
+
     this.map = new mapboxgl.Map({
       container: this.elMap,
       style: `mapbox://styles/mapbox/${props.style.background}-v9`,
@@ -239,6 +240,7 @@ class Map extends React.Component {
         showCompass: false
       })
     );
+
     this.map.addControl(
       new mapboxglGeoconder({
         accessToken: mapboxgl.accessToken,
@@ -249,6 +251,7 @@ class Map extends React.Component {
     this.map.addControl(new mapboxgl.ScaleControl(), "bottom-right");
 
     const { filter: filterMap, update: updateMap } = setupMap(this.map, props.style);
+
     this.filterMap = filterMap;
     this.updateMap = updateMap;
 
@@ -261,7 +264,6 @@ class Map extends React.Component {
     });
 
     this.map.on("load", () => {
-      console.log("LOADED");
       this.updateMap(props.style);
       this.filterMap(this.state.selectedDate, props.date.interval);
 
@@ -308,6 +310,7 @@ class Map extends React.Component {
 
   subscribeToSlider = () => {
     if (this.isMapReady()) {
+      this.props.setMapLoaded();
       this.filterMap(this.state.selectedDate, this.props.date.interval);
       this.setState({ subscribed: false }, () => this.map.off("sourcedata", this.subscribeToSlider));
     }
@@ -315,14 +318,16 @@ class Map extends React.Component {
 
   handleDateChange() {
     if (this.isMapReady()) {
+      // TODO: setMapLoaded/setMapLoading should also happen based on tile status / on map movement, etc...(?)
+      this.props.setMapLoaded();
       this.filterMap(this.state.selectedDate, this.props.date.interval);
     } else if (!this.state.subscribed) {
+      this.props.setMapLoading();
       this.setState({ subscribed: true }, () => this.map.on("sourcedata", this.subscribeToSlider));
     }
   }
 
   render() {
-    console.log("props.sssss", this.props);
     return (
       <div className={classNames("map", { "full-screen-mode": this.props.isFullScreenMode })}>
         <div className="map-content" style={{ position: "relative" }}>
@@ -336,9 +341,16 @@ class Map extends React.Component {
 }
 
 const MapConnected = connect(
-  ({ date, map, style, ui }) => ({ date, mapCoordinates: map, style, isFullScreenMode: ui.fullScreenMode }),
+  ({ date, map, style, ui }) => ({
+    date,
+    mapCoordinates: map,
+    style,
+    isFullScreenMode: ui.fullScreenMode
+  }),
   {
     setCoordinates,
+    setMapLoading,
+    setMapLoaded,
     showExportMenu
   }
 )(Map);

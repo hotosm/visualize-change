@@ -28,7 +28,9 @@ const {
   EXPORT_DATA_FETCHED,
   EXPORT_DATA_SAVING,
   EXPORT_DATA_SAVED,
-  SET_APP_READY
+  SET_APP_READY,
+  MAP_LOADING,
+  MAP_LOADED
 } = require("./constans");
 
 // inspired by Flux Standard Action
@@ -131,6 +133,8 @@ module.exports = {
   toggleFullscreen: () => action(TOGGLE_FULLSCREEN),
   showPlayerPanel: () => action(SHOW_PLAYER_PANEL),
   hidePlayerPanel: () => action(HIDE_PLAYER_PANEL),
+  setMapLoading: () => action(MAP_LOADING),
+  setMapLoaded: () => action(MAP_LOADED),
 
   setMetadata: (name, value) => action(SET_METADATA, { name, value }),
 
