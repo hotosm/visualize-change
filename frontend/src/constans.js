@@ -6,7 +6,8 @@ const DEFAULT_STATE = {
     fullScreenMode: false,
     playerPanelVisible: true,
     visiblePopoversIds: [],
-    tutorialMode: false
+    tutorialMode: false,
+    selectedSidebarTabId: "simpleEdit"
   },
   date: {
     start: new Date("2018-01-01").getTime(),
@@ -82,6 +83,8 @@ const DEFAULT_STATE = {
 };
 
 module.exports = {
+  DEFAULT_DATE_FORMAT: "YYYY-MM-DD",
+
   CHANGE_INTERVAL: "CHANGE_INTERVAL",
   SET_SPEED: "SET_SPEED",
   SET_DATES: "SET_DATES",
@@ -92,6 +95,7 @@ module.exports = {
   SET_MAP_BACKGROUND: "SET_MAP_BACKGROUND",
   SET_FEATURE_STYLE: "SET_FEATURE_STYLE",
 
+  CHANGE_SIDEBAR_TAB: "CHANGE_SIDEBAR_TAB",
   SHOW_EXPORT_MENU: "SHOW_EXPORT_MENU",
   HIDE_EXPORT_MENU: "HIDE_EXPORT_MENU",
   TOGGLE_SIDEBAR: "TOGGLE_SIDEBAR",
@@ -117,7 +121,7 @@ module.exports = {
   EXPORT_DATA_SAVED: "EXPORT_DATA_SAVED",
   SET_APP_READY: "SET_APP_READY",
 
-  HELP_SLIDE_ORDER: ["describe-help", "dates-help", "styles-help"],
+  HELP_SLIDE_ORDER: ["simple-tab-help", "describe-help", "dates-help", "styles-help"],
 
   DEFAULT_STATE
 };

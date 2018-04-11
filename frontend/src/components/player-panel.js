@@ -3,6 +3,7 @@ const moment = require("moment");
 const { connect } = require("react-redux");
 const { Button, ButtonGroup, Slider } = require("@blueprintjs/core");
 
+const { DEFAULT_DATE_FORMAT } = require("../constans");
 const { FadeTransition } = require("./transitions");
 const { togglePlay, setSelectedDate, toggleFullscreen, hidePlayerPanel } = require("../actions");
 const { capitalizeFirstLetter } = require("../utils");
@@ -58,7 +59,7 @@ class PlayerPanel extends React.Component {
             <Button icon="fullscreen" onClick={toggleFullscreen} />
           </ButtonGroup>
         </div>
-        <div className="map-footer__date">{moment(date.selected).format("YYYY-MM-DD")}</div>
+        <div className="map-footer__date">{moment(date.selected).format(DEFAULT_DATE_FORMAT)}</div>
       </div>
     );
   }
