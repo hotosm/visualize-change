@@ -1,6 +1,6 @@
 const React = require("react");
 const { connect } = require("react-redux");
-const { Button, ButtonGroup, Switch, Label, Collapse, Popover, Slider } = require("@blueprintjs/core");
+const { Button, ButtonGroup, Switch, Label, Collapse, Popover, Slider, Tabs, Tab } = require("@blueprintjs/core");
 const { DateRangePicker } = require("@blueprintjs/datetime");
 const { SketchPicker } = require("react-color");
 const debounce = require("lodash.debounce");
@@ -332,7 +332,7 @@ const StylesPanel = ({ isOpen, onToggleClick, styles, onStyleChange, onBackgroun
   );
 };
 
-class SidebarEdit extends React.Component {
+class AdvancedEdit extends React.Component {
   constructor(props) {
     super(props);
     this.state = { isDescribeOpen: true, isDateOpen: true, isStylesOpen: true };
@@ -386,6 +386,50 @@ class SidebarEdit extends React.Component {
     );
   }
 }
+
+const DATE_RANGE_IN_MS = {
+  "three-month": 7776000000,
+  month: 2592000000,
+  week: 604800000
+};
+
+const SimpleEdit = ({ meta: metadata, setMetadata, setDateSpan }) => {
+  const now = new Date().setHours(0, 0, 0, 0);
+  return (
+    <div className="sidebar-content__inside">
+      <div className="inside-content">
+        <h5>Set title for your visualization</h5>
+        <input
+          className="pt-input"
+          value={metadata.name}
+          placeholder="Type your title..."
+          onChange={ev => setMetadata("name", ev.target.value)}
+        />
+      </div>
+      <div className="inside-content">
+        <label className="inline-label">
+          <h5>See changes from</h5>
+          <div className="pt-select">
+            <select onChange={({ target }) => setDateSpan([now - DATE_RANGE_IN_MS[target.value], now])}>
+              <option value="three-months">Last Three Months</option>
+              <option value="month">Last Month</option>
+              <option value="week">Last Week</option>
+            </select>
+          </div>
+        </label>
+      </div>
+    </div>
+  );
+};
+
+const SidebarEdit = props => {
+  return (
+    <Tabs animate={true} id="SidebarEditTabs" className="sidebar-tabs" renderActiveTabPanelOnly={true}>
+      <Tab id="SimpleEdit" title="Simple" panel={<SimpleEdit {...props} />} />
+      <Tab id="AdvancedEdit" title="Advanced" panel={<AdvancedEdit {...props} />} />
+    </Tabs>
+  );
+};
 
 const SidebarEditConnected = connect(({ meta, date, style }) => ({ meta, date, style }), {
   setInterval,
