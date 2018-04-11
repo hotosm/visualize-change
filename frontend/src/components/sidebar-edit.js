@@ -41,7 +41,7 @@ const HelpPopover = ({
       onClose={() => hidePopover(id)}
       preventOverflow={{ enabled: true, boundariesElement: "scrollParent" }}
       content={
-        <div className="help-popover">
+        <div className="help-popover" onClick={ev => ev.stopPropagation()}>
           Help Text For {helpText}. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mauris ipsum,
           lobortis vel aliquet quis, elementum nec purus. Maecenas egestas risus varius, maximus sem quis, efficitur
           purus. Donec vitae mauris vitae sapien sagittis accumsan et non diam. Fusce maximus, nunc sit amet tempus
@@ -51,10 +51,7 @@ const HelpPopover = ({
           {tutorialMode && (
             <Button
               className="action-button"
-              onClick={ev => {
-                ev.stopPropagation();
-                isLast ? hidePopover(id) && setTutorialModeOff() : goToNextInTutorial(id);
-              }}
+              onClick={() => (isLast ? hidePopover(id) && setTutorialModeOff() : goToNextInTutorial(id))}
             >
               {isLast ? "Close" : "Next"}
             </Button>
