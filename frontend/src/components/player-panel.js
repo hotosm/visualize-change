@@ -17,6 +17,10 @@ class PlayerPanel extends React.Component {
   };
 
   calcValueFromDates = selected => {
+    if (!selected) {
+      return 0;
+    }
+
     const { start, interval } = this.props.date;
     return moment.duration(moment(selected).diff(moment(start)))[`as${capitalizeFirstLetter(interval)}`]();
   };
@@ -38,6 +42,10 @@ class PlayerPanel extends React.Component {
 
   render() {
     const { date, togglePlay, toggleFullscreen, isFullScreenMode } = this.props;
+
+    const max = this.props.date.end ? this.calcValueFromDates(this.props.date.end) : 1;
+    const value = this.calcValueFromDates(this.props.date.selected);
+
     return (
       <div className="map-footer__content" onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut}>
         <div className="map-footer__items">
@@ -47,11 +55,11 @@ class PlayerPanel extends React.Component {
               isFullScreenMode={isFullScreenMode}
               disabled={date.isPlaying}
               min={0}
-              max={this.calcValueFromDates(this.props.date.end)}
+              max={max}
               stepSize={1}
               labelRenderer={false}
               onChange={this.onSliderUpdate}
-              value={this.calcValueFromDates(this.props.date.selected)}
+              value={value}
             />
           </div>
           <ButtonGroup minimal={true}>

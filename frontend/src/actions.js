@@ -114,7 +114,8 @@ const getExportById = id => dispatch => {
 module.exports = {
   setInterval: interval => action(CHANGE_INTERVAL, interval),
   setSpeed: speed => action(SET_SPEED, speed),
-  setDateSpan: ([start, end]) => action(SET_DATES, { start: moment(start).valueOf(), end: moment(end).valueOf() }),
+  setDateSpan: ([start, end]) =>
+    action(SET_DATES, { start: moment(start).valueOf(), end: end ? moment(end).valueOf() : null }),
   setSelectedDate: date => action(SET_SELECTED_DATE, date),
   setCoordinates: coordinates => action(SET_COORDINATES, coordinates),
   togglePlay: () => action(TOGGLE_PLAY),

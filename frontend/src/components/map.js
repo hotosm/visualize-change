@@ -85,7 +85,8 @@ const setupMap = map => {
         layout: {
           "line-join": "round",
           "line-cap": "round"
-        }
+        },
+        minzoom: 12
       },
       firstSymbolId
     );
@@ -101,7 +102,8 @@ const setupMap = map => {
         layout: {
           "line-join": "round",
           "line-cap": "round"
-        }
+        },
+        minzoom: 12
       },
       firstSymbolId
     );
@@ -117,7 +119,9 @@ const setupMap = map => {
         layout: {
           "line-join": "round",
           "line-cap": "round"
-        }
+        },
+
+        minzoom: 12
       },
       firstSymbolId
     );
@@ -133,7 +137,8 @@ const setupMap = map => {
         layout: {
           "line-join": "round",
           "line-cap": "round"
-        }
+        },
+        minzoom: 12
       },
       firstSymbolId
     );
