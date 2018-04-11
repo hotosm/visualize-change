@@ -52,7 +52,7 @@ const HelpPopover = ({
             <Button
               className="action-button"
               onClick={ev => {
-                isLast && ev.stopPropagation();
+                ev.stopPropagation();
                 isLast ? hidePopover(id) && setTutorialModeOff() : goToNextInTutorial(id);
               }}
             >

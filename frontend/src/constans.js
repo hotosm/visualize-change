@@ -27,7 +27,7 @@ const DEFAULT_STATE = {
     project: ""
   },
   style: {
-    background: "dark",
+    background: "light",
     features: [
       {
         name: "roads",
