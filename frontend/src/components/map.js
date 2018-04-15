@@ -231,7 +231,8 @@ class Map extends React.Component {
       container: this.elMap,
       style: `mapbox://styles/mapbox/${props.style.background}-v9`,
       center: [props.mapCoordinates.lng, props.mapCoordinates.lat],
-      zoom: props.mapCoordinates.zoom
+      zoom: props.mapCoordinates.zoom,
+      maxZoom: 12
     });
 
     this.map.addControl(
@@ -239,6 +240,9 @@ class Map extends React.Component {
         showCompass: false
       })
     );
+
+    this.map.dragRotate.disable();
+
     this.map.addControl(
       new mapboxglGeoconder({
         accessToken: mapboxgl.accessToken,
