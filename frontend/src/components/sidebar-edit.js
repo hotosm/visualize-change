@@ -28,8 +28,8 @@ const { capitalizeFirstLetter, rgbaObjectToString } = require("../utils");
 // TODO: Maybe add another handler at onClickOutside?
 class HelpPopover extends React.Component {
   handleClickOutside() {
-    // const className = ev.target.className;
-    // console.log("className", className);
+    const className = ev.target.className;
+    console.log("className", className);
     // if (className !== "pt-button-text" || className !== "pt-button action-button" || className !== "help-popover") {
     //   // this.props.setTutorialModeOff();
     // }
@@ -56,12 +56,15 @@ class HelpPopover extends React.Component {
         preventOverflow={{ enabled: true, boundariesElement: "scrollParent" }}
         content={
           <div className="help-popover" onClick={ev => ev.stopPropagation()}>
-            Help Text For {helpText}. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mauris ipsum,
-            lobortis vel aliquet quis, elementum nec purus. Maecenas egestas risus varius, maximus sem quis, efficitur
-            purus. Donec vitae mauris vitae sapien sagittis accumsan et non diam. Fusce maximus, nunc sit amet tempus
-            posuere, odio odio malesuada ligula, nec pretium sapien lectus eget lectus. Ut vitae orci a quam pulvinar
-            consequat. Sed aliquam sapien vitae quam blandit, ut hendrerit nulla posuere. Nunc porttitor nulla id
-            tincidunt placerat.
+            <Button className="close-button" icon="cross" onClick={() => setTutorialModeOff() && hidePopover(id)} />
+            <div className="help-content">
+              Help Text For {helpText}. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mauris ipsum,
+              lobortis vel aliquet quis, elementum nec purus. Maecenas egestas risus varius, maximus sem quis, efficitur
+              purus. Donec vitae mauris vitae sapien sagittis accumsan et non diam. Fusce maximus, nunc sit amet tempus
+              posuere, odio odio malesuada ligula, nec pretium sapien lectus eget lectus. Ut vitae orci a quam pulvinar
+              consequat. Sed aliquam sapien vitae quam blandit, ut hendrerit nulla posuere. Nunc porttitor nulla id
+              tincidunt placerat.
+            </div>
             {tutorialMode && (
               <Button
                 className="action-button"

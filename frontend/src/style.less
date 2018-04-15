@@ -59,7 +59,7 @@ body {
 }
 
 .sidebar-content__inside {
-  height: calc(~"100vh - 40px - 40px - 51px");
+  height: calc(~"100vh - 40px - 48px - 51px");
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -544,8 +544,13 @@ body {
 }
 
 .pt-navbar {
-  height: 40px;
+  height: 48px;
   box-shadow: 0 0 0 1px rgba(16, 22, 26, 0.1), 0 0 0 rgba(16, 22, 26, 0), 0 1px 1px rgba(16, 22, 26, 0.1);
+  .pt-button .pt-button-text,
+  a.pt-button {
+    font-family: "Barlow Condensed";
+    font-size: 15px !important;
+  }
 }
 
 .pt-navbar-heading {
@@ -631,6 +636,8 @@ div.pt-tab-list {
   padding: 15px !important;
 
   border-radius: 2px;
+  display: block;
+  // margin: 10px 0;
 
   .pt-icon {
     color: white !important;
@@ -661,7 +668,7 @@ div.pt-tab-list {
   margin: 0;
 }
 
-@navbar-height: 40px;
+@navbar-height: 48px;
 
 a.pt-button.start-button {
   margin-top: 50px;
@@ -757,7 +764,7 @@ a.pt-button.start-button {
 }
 
 .help-popover {
-  padding: 20px;
+  padding: 25px;
   max-width: 250px;
 }
 
@@ -802,4 +809,19 @@ a.pt-button.start-button {
 
 .mapboxgl-ctrl-compass {
   display: none !important;
+}
+
+.help-popover {
+  position: relative;
+  text-align: justify;
+
+  .help-content {
+    margin: 10px 0;
+  }
+
+  .close-button {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+  }
 }
