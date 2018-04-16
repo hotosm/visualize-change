@@ -15,7 +15,7 @@ const matchFeaturesToBackground = background => {
     case "dark":
       return FEATURES_STYLES[2];
     default:
-      return 1;
+      return FEATURES_STYLES[1];
   }
 };
 
