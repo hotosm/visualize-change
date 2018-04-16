@@ -16,6 +16,7 @@ const {
   SHOW_POPOVER,
   HIDE_POPOVER,
   NEXT_TUTORIAL_SLIDE,
+  CHANGE_SIDEBAR_TAB,
   SHOW_EXPORT_MENU,
   HIDE_EXPORT_MENU,
   TOGGLE_SIDEBAR,
@@ -123,6 +124,7 @@ module.exports = {
   setMapBackground: background => action(SET_MAP_BACKGROUND, background),
   setFeatureStyle: (selectedIndex, newStyle) => action(SET_FEATURE_STYLE, { selectedIndex, newStyle }),
 
+  changeSidebarTab: id => action(CHANGE_SIDEBAR_TAB, id),
   setTutorialModeOn: () => action(SET_TUTORIAL_MODE_ON),
   setTutorialModeOff: () => action(SET_TUTORIAL_MODE_OFF),
   showPopover: id => action(SHOW_POPOVER, id),

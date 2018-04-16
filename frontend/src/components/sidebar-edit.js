@@ -1,11 +1,13 @@
 const React = require("react");
 const { connect } = require("react-redux");
-const { Button, ButtonGroup, Switch, Label, Collapse, Popover, Slider } = require("@blueprintjs/core");
+const { Button, ButtonGroup, Switch, Label, Collapse, Popover, Slider, Tabs, Tab } = require("@blueprintjs/core");
 const { DateRangePicker } = require("@blueprintjs/datetime");
 const { SketchPicker } = require("react-color");
 const debounce = require("lodash.debounce");
+const moment = require("moment");
+const onClickOutside = require("react-onclickoutside").default;
 
-const { HELP_SLIDE_ORDER } = require("../constans");
+const { HELP_SLIDE_ORDER, DEFAULT_DATE_FORMAT } = require("../constans/index");
 
 const {
   setInterval,
@@ -17,60 +19,91 @@ const {
   showPopover,
   hidePopover,
   setTutorialModeOff,
-  goToNextInTutorial
+  goToNextInTutorial,
+  changeSidebarTab
 } = require("../actions");
 
 const { capitalizeFirstLetter, rgbaObjectToString } = require("../utils");
 
 // TODO: Maybe add another handler at onClickOutside?
-const HelpPopover = ({
-  helpText,
-  id,
-  tutorialMode,
-  visiblePopovers,
-  showPopover,
-  hidePopover,
-  setTutorialModeOff,
-  goToNextInTutorial
-}) => {
-  const slideIndex = HELP_SLIDE_ORDER.findIndex(slideId => id === slideId);
-  const isLast = slideIndex >= HELP_SLIDE_ORDER.length - 1;
-  return (
-    <Popover
-      isOpen={visiblePopovers.includes(id)}
-      onClose={() => hidePopover(id)}
-      preventOverflow={{ enabled: true, boundariesElement: "scrollParent" }}
-      content={
-        <div className="help-popover" onClick={ev => ev.stopPropagation()}>
-          Help Text For {helpText}. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mauris ipsum,
-          lobortis vel aliquet quis, elementum nec purus. Maecenas egestas risus varius, maximus sem quis, efficitur
-          purus. Donec vitae mauris vitae sapien sagittis accumsan et non diam. Fusce maximus, nunc sit amet tempus
-          posuere, odio odio malesuada ligula, nec pretium sapien lectus eget lectus. Ut vitae orci a quam pulvinar
-          consequat. Sed aliquam sapien vitae quam blandit, ut hendrerit nulla posuere. Nunc porttitor nulla id
-          tincidunt placerat.
-          {tutorialMode && (
-            <Button
-              className="action-button"
-              onClick={() => (isLast ? hidePopover(id) && setTutorialModeOff() : goToNextInTutorial(id))}
-            >
-              {isLast ? "Close" : "Next"}
-            </Button>
-          )}
-        </div>
-      }
-      target={
-        <Button
-          className="help-button"
-          icon="help"
-          onClick={ev => {
-            ev.stopPropagation();
-            showPopover(id);
-          }}
-        />
-      }
-    />
-  );
-};
+class HelpPopover extends React.Component {
+  handleClickOutside(ev) {
+    const className = ev.target.className;
+    const parentClassName = ev.target.parentNode.className;
+    console.log("className", className, parentClassName);
+    if (
+      className === "pt-button-text" ||
+      className === "pt-button action-button" ||
+      className === "help-popover" ||
+      className === "help-content" ||
+      parentClassName === "pt-button close-button" ||
+      parentClassName === "help-popover"
+    ) {
+      return;
+    }
+
+    this.props.setTutorialModeOff();
+  }
+
+  render() {
+    const {
+      helpText,
+      id,
+      tutorialMode,
+      visiblePopovers,
+      showPopover,
+      hidePopover,
+      setTutorialModeOff,
+      goToNextInTutorial
+    } = this.props;
+
+    const slideIndex = HELP_SLIDE_ORDER.findIndex(slideId => id === slideId);
+    const isLast = slideIndex >= HELP_SLIDE_ORDER.length - 1;
+    return (
+      <Popover
+        isOpen={visiblePopovers.includes(id)}
+        onClose={() => hidePopover(id)}
+        preventOverflow={{ enabled: true, boundariesElement: "scrollParent" }}
+        content={
+          <div className="help-popover" onClick={ev => ev.stopPropagation()}>
+            <Button className="close-button" icon="cross" onClick={() => setTutorialModeOff() && hidePopover(id)} />
+            <div className="help-content">
+              Help Text For {helpText}. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mauris ipsum,
+              lobortis vel aliquet quis, elementum nec purus. Maecenas egestas risus varius, maximus sem quis, efficitur
+              purus. Donec vitae mauris vitae sapien sagittis accumsan et non diam. Fusce maximus, nunc sit amet tempus
+              posuere, odio odio malesuada ligula, nec pretium sapien lectus eget lectus. Ut vitae orci a quam pulvinar
+              consequat. Sed aliquam sapien vitae quam blandit, ut hendrerit nulla posuere. Nunc porttitor nulla id
+              tincidunt placerat.
+            </div>
+            {tutorialMode && (
+              <Button
+                className="action-button"
+                onClick={ev => {
+                  ev.stopPropagation();
+                  isLast
+                    ? hidePopover(id) && setTutorialModeOff() && changeSidebarTab("simpleEdit")
+                    : goToNextInTutorial(id);
+                }}
+              >
+                {isLast ? "Close" : "Next"}
+              </Button>
+            )}
+          </div>
+        }
+        target={
+          <Button
+            className="help-button"
+            icon="help"
+            onClick={ev => {
+              ev.stopPropagation();
+              showPopover(id);
+            }}
+          />
+        }
+      />
+    );
+  }
+}
 
 const HelpPopoverConnected = connect(
   ({ ui }) => ({ tutorialMode: ui.tutorialMode, visiblePopovers: ui.visiblePopoversIds }),
@@ -80,7 +113,7 @@ const HelpPopoverConnected = connect(
     setTutorialModeOff,
     goToNextInTutorial
   }
-)(HelpPopover);
+)(onClickOutside(HelpPopover));
 
 const SidebarPanelHeader = ({ title, helpText, id, isOpen = false, onToggleClick }) => (
   <div className="sidebar-header" onClick={onToggleClick}>
@@ -309,6 +342,23 @@ const StyleSection = ({ style, onStyleChange }) => {
   );
 };
 
+const ThemeSelect = ({ styles, onBackgroundStyleChange }) => (
+  <div>
+    <label className="inline-label">
+      Background Theme
+      <div className="pt-select">
+        <select value={styles.background} onChange={ev => onBackgroundStyleChange(ev.target.value)}>
+          {["light", "dark", "basic", "streets", "bright", "satellite"].map(style => (
+            <option key={style} value={style}>
+              {capitalizeFirstLetter(style)}
+            </option>
+          ))}
+        </select>
+      </div>
+    </label>
+  </div>
+);
+
 const StylesPanel = ({ isOpen, onToggleClick, styles, onStyleChange, onBackgroundStyleChange }) => {
   return (
     <div className="sidebar-panel">
@@ -324,20 +374,7 @@ const StylesPanel = ({ isOpen, onToggleClick, styles, onStyleChange, onBackgroun
           <div className="section__header">
             <h4>Map</h4>
           </div>
-          <div>
-            <label className="inline-label">
-              Background Theme
-              <div className="pt-select">
-                <select value={styles.background} onChange={ev => onBackgroundStyleChange(ev.target.value)}>
-                  {["light", "dark", "basic", "streets", "bright", "satellite"].map(style => (
-                    <option key={style} value={style}>
-                      {capitalizeFirstLetter(style)}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </label>
-          </div>
+          <ThemeSelect styles={styles} onBackgroundStyleChange={onBackgroundStyleChange} />
         </div>
         {styles.features.map((style, idx) => (
           <StyleSection key={style.name} style={style} onStyleChange={newStyle => onStyleChange(idx, newStyle)} />
@@ -347,7 +384,7 @@ const StylesPanel = ({ isOpen, onToggleClick, styles, onStyleChange, onBackgroun
   );
 };
 
-class SidebarEdit extends React.Component {
+class AdvancedEdit extends React.Component {
   constructor(props) {
     super(props);
     this.state = { isDescribeOpen: true, isDateOpen: true, isStylesOpen: true };
@@ -402,13 +439,115 @@ class SidebarEdit extends React.Component {
   }
 }
 
-const SidebarEditConnected = connect(({ meta, date, style }) => ({ meta, date, style }), {
-  setInterval,
-  setSpeed,
+const DATE_RANGE_IN_MS = {
+  "three-months": 7776000000,
+  month: 2592000000,
+  week: 604800000,
+  custom: 1209600000
+};
+
+const calcSelectDateSpan = (now, date) => {
+  if (date.end === now) {
+    if (date.start === now - DATE_RANGE_IN_MS["week"]) return "week";
+    if (date.start === now - DATE_RANGE_IN_MS["month"]) return "month";
+    if (date.start === now - DATE_RANGE_IN_MS["three-months"]) return "three-months";
+  }
+  return "custom";
+};
+
+const SimpleEdit = ({
+  meta: metadata,
+  style: styles,
+  date,
+  setMetadata,
   setDateSpan,
-  setFeatureStyle,
   setMapBackground,
-  setMetadata
-})(SidebarEdit);
+  changeSidebarTab
+}) => {
+  const now = new Date().setHours(12, 0, 0, 0);
+  const selectDateSpanName = calcSelectDateSpan(now, date);
+  return (
+    <div className="sidebar-content__inside">
+      <div style={{ float: "right" }}>
+        <HelpPopoverConnected helpText="Simple Mode" id="simple-tab-help" />
+      </div>
+      <div className="inside-content">
+        <label className="inline-label">Set title for your visualization</label>
+        <input
+          className="pt-input"
+          value={metadata.name}
+          placeholder="Type your title..."
+          onChange={ev => setMetadata("name", ev.target.value)}
+        />
+      </div>
+      <div className="inside-content">
+        <label className="inline-label">
+          See changes from
+          <div className="pt-select">
+            <select
+              value={selectDateSpanName}
+              onChange={({ target }) => setDateSpan([now - DATE_RANGE_IN_MS[target.value], now])}
+            >
+              <option value="week">Last Week</option>
+              <option value="month">Last Month</option>
+              <option value="three-months">Last Three Months</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+        </label>
+        {selectDateSpanName === "custom" && (
+          <p className="tip">
+            You can change date span more precisely from{" "}
+            <span className="highlighted" onClick={() => changeSidebarTab("advancedEdit")}>
+              Advanced Tab
+            </span>
+          </p>
+        )}
+        <div className="date-span-range">
+          <div className="range-line">
+            <div className="range-marker">
+              <div className="range-marker__date">{moment(date.start).format(DEFAULT_DATE_FORMAT)}</div>
+            </div>
+            <div className="range-marker">
+              <div className="range-marker__date">{moment(date.end).format(DEFAULT_DATE_FORMAT)}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="inside-content">
+        <ThemeSelect styles={styles} onBackgroundStyleChange={setMapBackground} />
+      </div>
+    </div>
+  );
+};
+
+const SidebarEdit = props => {
+  return (
+    <Tabs
+      animate={true}
+      id="SidebarEditTabs"
+      className="sidebar-tabs"
+      renderActiveTabPanelOnly={true}
+      onChange={id => props.changeSidebarTab(id)}
+      selectedTabId={props.selectedSidebarTabId}
+    >
+      <Tab id="simpleEdit" title="Simple" panel={<SimpleEdit {...props} />} />
+      <Tab id="advancedEdit" title="Advanced" panel={<AdvancedEdit {...props} />} />
+    </Tabs>
+  );
+};
+
+const SidebarEditConnected = connect(
+  ({ meta, date, style, ui }) => ({ meta, date, style, selectedSidebarTabId: ui.selectedSidebarTabId }),
+  {
+    setInterval,
+    setSpeed,
+    setDateSpan,
+    setFeatureStyle,
+    setMapBackground,
+    setMetadata,
+    changeSidebarTab
+  }
+)(SidebarEdit);
 
 module.exports = SidebarEditConnected;

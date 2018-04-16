@@ -266,6 +266,7 @@ class Map extends React.Component {
     });
 
     this.map.addControl(geocoder);
+    this.map.dragRotate.disable();
 
     this.map.addControl(new mapboxgl.ScaleControl(), "bottom-right");
 
@@ -310,24 +311,25 @@ class Map extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (this.props.style.background !== nextProps.style.background) {
+      this.initMap(nextProps);
+      return;
+    }
+
     if (this.props.date.selected !== nextProps.date.selected) {
       this.setState({ selectedDate: nextProps.date.selected }, this.handleDateChange);
     }
 
     this.updateMap(nextProps.style);
 
-    if (this.props.style.background !== nextProps.style.background) {
-      this.initMap(nextProps);
-    }
-
-    if (nextProps.mapCoordinates.zoom < 11 && AppToaster.getToasts().length < 1) {
+    if (nextProps.mapCoordinates.zoom < 12 && AppToaster.getToasts().length < 1) {
       this.toastKey = AppToaster.show({
         key: "zoom",
         message: "Not supported zoom",
         intent: Intent.DANGER,
         timeout: 0,
         action: {
-          onClick: () => this.map.setZoom(11),
+          onClick: () => this.map.setZoom(12),
           text: "Get me back to supported zoom levels"
         }
       });
@@ -335,6 +337,13 @@ class Map extends React.Component {
 
     if (nextProps.mapCoordinates.zoom >= 12 && this.toastKey) {
       AppToaster.dismiss(this.toastKey);
+    }
+
+    if (
+      this.props.router.location.path !== nextProps.router.location.path &&
+      this.props.mapCoordinates.zoom !== nextProps.mapCoordinates.zoom
+    ) {
+      this.map.setZoom(nextProps.mapCoordinates.zoom);
     }
   }
 
@@ -368,11 +377,12 @@ class Map extends React.Component {
 }
 
 const MapConnected = connect(
-  ({ date, map, style, ui }) => ({
+  ({ date, map, style, ui, router }) => ({
     date,
     mapCoordinates: map,
     style,
-    isFullScreenMode: ui.fullScreenMode
+    isFullScreenMode: ui.fullScreenMode,
+    router
   }),
   {
     setCoordinates,

@@ -7,7 +7,7 @@ const {
   TOGGLE_PLAY,
   EXPORT_DATA_FETCHED,
   DEFAULT_STATE
-} = require("../constans");
+} = require("../constans/index");
 
 module.exports = (state = DEFAULT_STATE.date, { type, payload }) => {
   switch (type) {

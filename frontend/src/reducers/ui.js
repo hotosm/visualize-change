@@ -1,4 +1,5 @@
 const {
+  CHANGE_SIDEBAR_TAB,
   SHOW_POPOVER,
   HIDE_POPOVER,
   NEXT_TUTORIAL_SLIDE,
@@ -18,7 +19,7 @@ const {
   MAP_LOADING,
   MAP_LOADED,
   DEFAULT_STATE
-} = require("../constans");
+} = require("../constans/index");
 
 module.exports = (state = DEFAULT_STATE.ui, { type, payload }) => {
   switch (type) {
@@ -46,17 +47,15 @@ module.exports = (state = DEFAULT_STATE.ui, { type, payload }) => {
     case HIDE_EXPORT_MENU:
       return Object.assign({}, state, { exportMenuOpen: false, exportMenuStatus: null });
       break;
-    // case TOGGLE_TUTORIAL_MODE: {
-    //   return Object.assign({}, state, {
-    //     tutorialMode: true,
-    //     visiblePopoversIds: [HELP_SLIDE_ORDER[0]]
-    //   });
-    //   break;
-    // }
+    case CHANGE_SIDEBAR_TAB:
+      return Object.assign({}, state, { selectedSidebarTabId: payload });
+      break;
     case SET_TUTORIAL_MODE_ON:
+      // TODO: This is not elastic, rethink this
       return Object.assign({}, state, {
         tutorialMode: true,
-        visiblePopoversIds: [HELP_SLIDE_ORDER[0]]
+        visiblePopoversIds: [HELP_SLIDE_ORDER[0]],
+        selectedSidebarTabId: "simpleEdit"
       });
       break;
     case SET_TUTORIAL_MODE_OFF:
@@ -74,6 +73,8 @@ module.exports = (state = DEFAULT_STATE.ui, { type, payload }) => {
       const nextSlideId = HELP_SLIDE_ORDER[currentIndex + 1] || HELP_SLIDE_ORDER[0];
 
       return Object.assign({}, state, {
+        // TODO: Extract to a constans?
+        selectedSidebarTabId: payload === "simple-tab-help" ? "advancedEdit" : state.selectedSidebarTabId,
         visiblePopoversIds: state.visiblePopoversIds.filter(id => id !== payload).concat(nextSlideId)
       });
       break;

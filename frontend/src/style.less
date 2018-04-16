@@ -59,7 +59,7 @@ body {
 }
 
 .sidebar-content__inside {
-  height: calc(~"100vh - 40px - 40px");
+  height: calc(~"100vh - 40px - 48px - 51px");
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -553,8 +553,14 @@ body {
 }
 
 .pt-navbar {
-  height: 40px;
+  height: 48px;
   box-shadow: 0 0 0 1px rgba(16, 22, 26, 0.1), 0 0 0 rgba(16, 22, 26, 0), 0 1px 1px rgba(16, 22, 26, 0.1);
+  .pt-button .pt-button-text,
+  a.pt-button {
+    font-family: "Barlow Condensed";
+    text-transform: uppercase;
+    font-size: 15px !important;
+  }
 }
 
 .pt-navbar-heading {
@@ -640,6 +646,8 @@ div.pt-tab-list {
   padding: 15px !important;
 
   border-radius: 2px;
+  display: block;
+  // margin: 10px 0;
 
   .pt-icon {
     color: white !important;
@@ -670,7 +678,7 @@ div.pt-tab-list {
   margin: 0;
 }
 
-@navbar-height: 40px;
+@navbar-height: 48px;
 
 a.pt-button.start-button {
   margin-top: 50px;
@@ -751,6 +759,14 @@ a.pt-button.start-button {
       color: rgba(92, 112, 128, 0.5);
     }
   }
+
+  // Selects
+  .pt-select select {
+    box-shadow: none !important;
+    background-image: none !important;
+    background: white !important;
+    border: 1px solid @light-gray3;
+  }
 }
 
 .mapboxgl-ctrl-top-right {
@@ -762,10 +778,64 @@ a.pt-button.start-button {
 }
 
 .help-popover {
-  padding: 20px;
+  padding: 25px;
   max-width: 250px;
 }
 
 .hot-theme .eye-icon .pt-icon {
   color: @hot-gray;
+}
+
+.date-span-range {
+  .range-line {
+    width: 90%;
+    height: 15px;
+    background: rgba(236, 162, 162, 47);
+    margin: 20px auto;
+    display: flex;
+    justify-content: space-between;
+  }
+  .range-marker {
+    width: 15px;
+    height: 15px;
+    background: @red;
+    position: relative;
+  }
+  .range-marker__date {
+    position: absolute;
+    width: 70px;
+    text-align: center;
+    top: 25px;
+    left: -28px;
+    font-size: 12px;
+  }
+}
+
+.tip {
+  padding: 10px 0px;
+  font-size: 12px;
+  text-align: justify;
+}
+
+.highlighted {
+  color: @red;
+}
+
+.mapboxgl-ctrl-compass {
+  display: none !important;
+}
+
+.help-popover {
+  position: relative;
+  text-align: justify;
+
+  .help-content {
+    margin: 10px 0;
+  }
+
+  .close-button {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+  }
 }
