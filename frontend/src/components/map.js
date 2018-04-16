@@ -305,6 +305,11 @@ class Map extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    // FIXME: well, this maybe should wait for map to be ready, and then do the update? instead of just discarding?
+    if (!(this.map.loaded() && this.map.isStyleLoaded() && this.map.areTilesLoaded())) {
+      return;
+    }
+
     if (this.props.style.background !== nextProps.style.background) {
       this.map.setStyle(`mapbox://styles/mapbox/${nextProps.style.background}-v9`);
 
@@ -320,7 +325,7 @@ class Map extends React.Component {
 
           this.updateMap(nextProps.style);
         }
-      }, 100);
+      }, 10);
 
       return;
     }
