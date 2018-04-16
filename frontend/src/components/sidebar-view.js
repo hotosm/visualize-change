@@ -7,10 +7,14 @@ const formatDate = date => moment(date).format("YYYY-MM-DD");
 const SidebarView = ({ meta, date }) => {
   return (
     <div className="inside-content sidebar-data">
-      <div className="section__header">
-        <h4>Name</h4>
-      </div>
-      <label className="inline-label">{meta.name}</label>
+      {meta.name && (
+        <div>
+          <div className="section__header">
+            <h4>Name</h4>
+          </div>
+          <label className="inline-label">{meta.name}</label>
+        </div>
+      )}
 
       {meta.description && (
         <div>

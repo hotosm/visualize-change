@@ -30,7 +30,7 @@ class HelpPopover extends React.Component {
   handleClickOutside(ev) {
     const className = ev.target.className;
     const parentClassName = ev.target.parentNode.className;
-    console.log("className", className, parentClassName);
+
     if (
       className === "pt-button-text" ||
       className === "pt-button action-button" ||

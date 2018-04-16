@@ -66,83 +66,81 @@ const setupMap = map => {
     [`${layerId}-buildings`]: [["==", "$type", "Polygon"], ["has", "building"]]
   };
 
-  map.on("load", () => {
-    // sources and layers
-    map.addSource(sourceId, {
-      type: "vector",
-      tiles: [document.location.origin + "/api/tile/{z}/{x}/{y}"]
-    });
-
-    const firstSymbolId = map.getStyle().layers.filter(d => d.type === "symbol")[0].id;
-
-    map.addLayer(
-      {
-        id: `${layerId}-buildings`,
-        type: "line",
-        source: `${sourceId}`,
-        "source-layer": `${layerId}`,
-        filter: ["all"].concat(filters[`${layerId}-buildings`]),
-        layout: {
-          "line-join": "round",
-          "line-cap": "round"
-        },
-        minzoom: 12
-      },
-      firstSymbolId
-    );
-    layers.polygons.push(`${layerId}-buildings`);
-
-    map.addLayer(
-      {
-        id: `${layerId}-buildings-highlighted`,
-        type: "line",
-        source: `${sourceId}`,
-        "source-layer": `${layerId}`,
-        filter: ["all"].concat(filters[`${layerId}-buildings`]),
-        layout: {
-          "line-join": "round",
-          "line-cap": "round"
-        },
-        minzoom: 12
-      },
-      firstSymbolId
-    );
-    highlighted.polygons.push(`${layerId}-buildings-highlighted`);
-
-    map.addLayer(
-      {
-        id: `${layerId}-roads`,
-        type: "line",
-        source: `${sourceId}`,
-        "source-layer": `${layerId}`,
-        filter: ["all"].concat(filters[`${layerId}-roads`]),
-        layout: {
-          "line-join": "round",
-          "line-cap": "round"
-        },
-        minzoom: 12
-      },
-      firstSymbolId
-    );
-    layers.lines.push(`${layerId}-roads`);
-
-    map.addLayer(
-      {
-        id: `${layerId}-roads-highlighted`,
-        type: "line",
-        source: `${sourceId}`,
-        "source-layer": `${layerId}`,
-        filter: ["all"].concat(filters[`${layerId}-roads`]),
-        layout: {
-          "line-join": "round",
-          "line-cap": "round"
-        },
-        minzoom: 12
-      },
-      firstSymbolId
-    );
-    highlighted.lines.push(`${layerId}-roads-highlighted`);
+  // sources and layers
+  map.addSource(sourceId, {
+    type: "vector",
+    tiles: [document.location.origin + "/api/tile/{z}/{x}/{y}"]
   });
+
+  const firstSymbolId = map.getStyle().layers.filter(d => d.type === "symbol")[0].id;
+
+  map.addLayer(
+    {
+      id: `${layerId}-buildings`,
+      type: "line",
+      source: `${sourceId}`,
+      "source-layer": `${layerId}`,
+      filter: ["all"].concat(filters[`${layerId}-buildings`]),
+      layout: {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      minzoom: 12
+    },
+    firstSymbolId
+  );
+  layers.polygons.push(`${layerId}-buildings`);
+
+  map.addLayer(
+    {
+      id: `${layerId}-buildings-highlighted`,
+      type: "line",
+      source: `${sourceId}`,
+      "source-layer": `${layerId}`,
+      filter: ["all"].concat(filters[`${layerId}-buildings`]),
+      layout: {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      minzoom: 12
+    },
+    firstSymbolId
+  );
+  highlighted.polygons.push(`${layerId}-buildings-highlighted`);
+
+  map.addLayer(
+    {
+      id: `${layerId}-roads`,
+      type: "line",
+      source: `${sourceId}`,
+      "source-layer": `${layerId}`,
+      filter: ["all"].concat(filters[`${layerId}-roads`]),
+      layout: {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      minzoom: 12
+    },
+    firstSymbolId
+  );
+  layers.lines.push(`${layerId}-roads`);
+
+  map.addLayer(
+    {
+      id: `${layerId}-roads-highlighted`,
+      type: "line",
+      source: `${sourceId}`,
+      "source-layer": `${layerId}`,
+      filter: ["all"].concat(filters[`${layerId}-roads`]),
+      layout: {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      minzoom: 12
+    },
+    firstSymbolId
+  );
+  highlighted.lines.push(`${layerId}-roads-highlighted`);
 
   return {
     filter: (date, interval) => {
@@ -233,8 +231,8 @@ class Map extends React.Component {
     this.state = { selectedDate: this.props.date.selected, subscribed: false };
   }
 
-  initMap(props) {
-    if (this.map) this.map.remove();
+  componentDidMount() {
+    const { props } = this;
 
     this.map = new mapboxgl.Map({
       container: this.elMap,
@@ -270,20 +268,20 @@ class Map extends React.Component {
 
     this.map.addControl(new mapboxgl.ScaleControl(), "bottom-right");
 
-    const { filter: filterMap, update: updateMap } = setupMap(this.map, props.style);
-
-    this.filterMap = filterMap;
-    this.updateMap = updateMap;
-
-    this.map.on("move", () => {
-      props.setCoordinates({
-        lat: this.map.getCenter().lat,
-        lng: this.map.getCenter().lng,
-        zoom: this.map.getZoom()
-      });
-    });
-
     this.map.on("load", () => {
+      const { filter: filterMap, update: updateMap } = setupMap(this.map, props.style);
+
+      this.filterMap = filterMap;
+      this.updateMap = updateMap;
+
+      this.map.on("move", () => {
+        props.setCoordinates({
+          lat: this.map.getCenter().lat,
+          lng: this.map.getCenter().lng,
+          zoom: this.map.getZoom()
+        });
+      });
+
       this.updateMap(props.style);
       this.filterMap(this.state.selectedDate, props.date.interval);
 
@@ -292,29 +290,40 @@ class Map extends React.Component {
       this.loadedIntervalHandle = setInterval(() => {
         const isMapLoaded = this.map.loaded();
 
-        if (isMapLoaded !== this.props.isMapLoaded) {
-          if (isMapLoaded) {
-            this.props.setMapLoaded();
-          } else {
-            this.props.setMapLoading();
-          }
+        if (isMapLoaded && !props.isMapLoaded) {
+          props.setMapLoaded();
+        }
+
+        if (!isMapLoaded && props.isMapLoaded) {
+          props.setMapLoading();
         }
       }, 100);
     });
   }
 
-  componentDidMount() {
-    this.initMap(this.props);
-  }
-
   componententWillUmount() {
-    this.map.remove();
     clearInterval(this.loadedIntervalHandle);
+    this.map.remove();
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.style.background !== nextProps.style.background) {
-      this.initMap(nextProps);
+      this.map.setStyle(`mapbox://styles/mapbox/${nextProps.style.background}-v9`);
+
+      // mapboxgl is terrible, changing style removes layers/sources as well...
+      const waitForReady = setInterval(() => {
+        if (this.map.loaded()) {
+          clearInterval(waitForReady);
+
+          const { filter: filterMap, update: updateMap } = setupMap(this.map, nextProps.style);
+
+          this.filterMap = filterMap;
+          this.updateMap = updateMap;
+
+          this.updateMap(nextProps.style);
+        }
+      }, 100);
+
       return;
     }
 
@@ -355,7 +364,6 @@ class Map extends React.Component {
 
   handleDateChange() {
     if (this.isMapReady()) {
-      // TODO: setMapLoaded/setMapLoading should also happen based on tile status / on map movement, etc...(?)
       this.filterMap(this.state.selectedDate, this.props.date.interval);
     } else if (!this.state.subscribed) {
       this.setState({ subscribed: true }, () => this.map.on("sourcedata", this.subscribeToSlider));
