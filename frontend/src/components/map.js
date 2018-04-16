@@ -250,12 +250,22 @@ class Map extends React.Component {
       })
     );
 
-    this.map.addControl(
-      new mapboxglGeoconder({
-        accessToken: mapboxgl.accessToken,
-        zoom: 12
-      })
-    );
+    const geocoder = new mapboxglGeoconder({
+      accessToken: mapboxgl.accessToken,
+      flyTo: false
+    });
+
+    geocoder.on("result", e => {
+      if (e.result && e.result.center) {
+        this.map.flyTo({
+          center: e.result.center,
+          zoom: 12,
+          speed: 2.0
+        });
+      }
+    });
+
+    this.map.addControl(geocoder);
 
     this.map.addControl(new mapboxgl.ScaleControl(), "bottom-right");
 
