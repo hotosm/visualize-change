@@ -339,10 +339,7 @@ class Map extends React.Component {
       AppToaster.dismiss(this.toastKey);
     }
 
-    if (
-      this.props.router.location.path !== nextProps.router.location.path &&
-      this.props.mapCoordinates.zoom !== nextProps.mapCoordinates.zoom
-    ) {
+    if (this.props.mapCoordinates.zoom !== nextProps.mapCoordinates.zoom && nextProps.mapCoordinates.zoom === 0) {
       this.map.setZoom(nextProps.mapCoordinates.zoom);
     }
   }

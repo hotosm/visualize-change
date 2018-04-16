@@ -32,7 +32,7 @@ const {
   SET_APP_READY,
   MAP_LOADING,
   MAP_LOADED
-} = require("./constans");
+} = require("./constans/index");
 
 // inspired by Flux Standard Action
 const action = (type, payload) => {
