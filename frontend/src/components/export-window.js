@@ -23,7 +23,7 @@ const URLShare = ({ url }) => (
 class GenericMediaShare extends React.Component {
   constructor() {
     super();
-    this.state = { email: "", format: "video", size: "1280x720" };
+    this.state = { email: "", format: "mp4", size: "1280x720" };
   }
 
   onEmailChange = ev => {
@@ -55,7 +55,7 @@ class GenericMediaShare extends React.Component {
             Format
             <div className="pt-select">
               <select value={this.state.format} onChange={this.onFormatChange}>
-                <option value="video">Video (MP4)</option>
+                <option value="mp4">Video (MP4)</option>
                 <option value="gif">GIF</option>
               </select>
             </div>

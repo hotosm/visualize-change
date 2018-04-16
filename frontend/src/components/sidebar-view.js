@@ -11,10 +11,16 @@ const SidebarView = ({ meta, date }) => {
         <h4>Name</h4>
       </div>
       <label className="inline-label">{meta.name}</label>
-      <div className="section__header">
-        <h4>Description</h4>
-      </div>
-      <label className="inline-label">{meta.description}</label>
+
+      {meta.description && (
+        <div>
+          <div className="section__header">
+            <h4>Description</h4>
+          </div>
+          <label className="inline-label">{meta.description}</label>
+        </div>
+      )}
+
       <div className="section__header">
         <h5>Date Span</h5>
       </div>

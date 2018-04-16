@@ -345,7 +345,7 @@ const StyleSection = ({ style, onStyleChange }) => {
 const ThemeSelect = ({ styles, onBackgroundStyleChange }) => (
   <div>
     <label className="inline-label">
-      Background Theme
+      Theme
       <div className="pt-select">
         <select value={styles.background} onChange={ev => onBackgroundStyleChange(ev.target.value)}>
           {["light", "dark", "basic", "streets", "bright", "satellite"].map(style => (
