@@ -166,11 +166,7 @@ const setupMap = map => {
           const baseFilters = filters[layer];
 
           // this array looks _wrong_ but it looks like without .slice(0) the filtering is working way worse...
-          map.setFilter(layer, ["all", makeFilter(timestamp - 1).slice(0), ...baseFilters.slice(0)]);
-
-          setTimeout(() => {
-            map.setFilter(layer, ["all", makeFilter(timestamp).slice(0), ...baseFilters.slice(0)]);
-          }, 10);
+          map.setFilter(layer, ["all", makeFilter(timestamp), ...baseFilters]);
         });
       });
 
@@ -185,11 +181,7 @@ const setupMap = map => {
             ];
 
           // this array looks _wrong_ but it looks like without .slice(0) the filtering is working way worse...
-          map.setFilter(layer, ["all", ...makeHighlightFilter(timestamp - 1).slice(0), ...baseFilters.slice(0)]);
-
-          setTimeout(() => {
-            map.setFilter(layer, ["all", ...makeHighlightFilter(timestamp).slice(0), ...baseFilters.slice(0)]);
-          }, 10);
+          map.setFilter(layer, ["all", ...makeHighlightFilter(timestamp), ...baseFilters]);
         });
       });
     },
@@ -248,7 +240,8 @@ class Map extends React.Component {
       container: this.elMap,
       style: `mapbox://styles/mapbox/${props.style.background}-v9`,
       center: [props.mapCoordinates.lng, props.mapCoordinates.lat],
-      zoom: props.mapCoordinates.zoom
+      zoom: props.mapCoordinates.zoom,
+      maxZoom: 12 // temporary "fix" for mapboxgl-js issue
     });
 
     this.map.addControl(
