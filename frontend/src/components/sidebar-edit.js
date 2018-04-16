@@ -7,7 +7,7 @@ const debounce = require("lodash.debounce");
 const moment = require("moment");
 const onClickOutside = require("react-onclickoutside").default;
 
-const { HELP_SLIDE_ORDER, DEFAULT_DATE_FORMAT } = require("../constans");
+const { HELP_SLIDE_ORDER, DEFAULT_DATE_FORMAT } = require("../constans/index");
 
 const {
   setInterval,
@@ -27,12 +27,22 @@ const { capitalizeFirstLetter, rgbaObjectToString } = require("../utils");
 
 // TODO: Maybe add another handler at onClickOutside?
 class HelpPopover extends React.Component {
-  handleClickOutside() {
+  handleClickOutside(ev) {
     const className = ev.target.className;
-    console.log("className", className);
-    // if (className !== "pt-button-text" || className !== "pt-button action-button" || className !== "help-popover") {
-    //   // this.props.setTutorialModeOff();
-    // }
+    const parentClassName = ev.target.parentNode.className;
+    console.log("className", className, parentClassName);
+    if (
+      className === "pt-button-text" ||
+      className === "pt-button action-button" ||
+      className === "help-popover" ||
+      className === "help-content" ||
+      parentClassName === "pt-button close-button" ||
+      parentClassName === "help-popover"
+    ) {
+      return;
+    }
+
+    this.props.setTutorialModeOff();
   }
 
   render() {
@@ -463,9 +473,9 @@ const SimpleEdit = ({
               value={selectDateSpanName}
               onChange={({ target }) => setDateSpan([now - DATE_RANGE_IN_MS[target.value], now])}
             >
-              <option value="three-months">Last Three Months</option>
-              <option value="month">Last Month</option>
               <option value="week">Last Week</option>
+              <option value="month">Last Month</option>
+              <option value="three-months">Last Three Months</option>
               <option value="custom">Custom</option>
             </select>
           </div>

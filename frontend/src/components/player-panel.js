@@ -3,7 +3,7 @@ const moment = require("moment");
 const { connect } = require("react-redux");
 const { Button, ButtonGroup, Slider } = require("@blueprintjs/core");
 
-const { DEFAULT_DATE_FORMAT } = require("../constans");
+const { DEFAULT_DATE_FORMAT } = require("../constans/index");
 const { FadeTransition } = require("./transitions");
 const { togglePlay, setSelectedDate, toggleFullscreen, hidePlayerPanel } = require("../actions");
 const { capitalizeFirstLetter } = require("../utils");

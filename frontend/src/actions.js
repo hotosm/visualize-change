@@ -30,7 +30,7 @@ const {
   EXPORT_DATA_SAVING,
   EXPORT_DATA_SAVED,
   SET_APP_READY
-} = require("./constans");
+} = require("./constans/index");
 
 // inspired by Flux Standard Action
 const action = (type, payload) => {

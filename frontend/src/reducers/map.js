@@ -1,4 +1,4 @@
-const { SET_COORDINATES, EXPORT_DATA_FETCHED, DEFAULT_STATE } = require("../constans");
+const { SET_COORDINATES, EXPORT_DATA_FETCHED, DEFAULT_STATE } = require("../constans/index");
 
 const initialState = DEFAULT_STATE.map;
 

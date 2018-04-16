@@ -48,11 +48,11 @@ class GenericMediaShare extends React.Component {
         <h4>Export Media Format</h4>
         <div className="form-body">
           <label className="inline-label">
-            E-mail:
+            E-mail *
             <input value={this.state.email} onChange={this.onEmailChange} className="pt-input" />
           </label>
           <label className="inline-label">
-            Format:
+            Format
             <div className="pt-select">
               <select value={this.state.format} onChange={this.onFormatChange}>
                 <option value="video">Video (MP4)</option>
@@ -61,7 +61,7 @@ class GenericMediaShare extends React.Component {
             </div>
           </label>
           <label className="inline-label">
-            Size:
+            Size
             <div className="pt-select">
               <select value={this.state.size} onChange={this.onSizeChange}>
                 <option value="1920x1080">1920x1080</option>
@@ -73,7 +73,13 @@ class GenericMediaShare extends React.Component {
             </div>
           </label>
           <label className="info-label">Exported video will be send to you via email when it's finished.</label>
-          <Button className="action-button" icon="share" onClick={this.onExportClick}>
+          <Button
+            className="action-button"
+            icon="share"
+            style={{ width: 100 }}
+            disabled={this.state.email.indexOf("@") === -1}
+            onClick={this.onExportClick}
+          >
             Share
           </Button>
         </div>

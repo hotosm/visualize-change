@@ -1,4 +1,4 @@
-const { EXPORT_DATA_FETCHED, SET_METADATA, DEFAULT_STATE } = require("../constans");
+const { EXPORT_DATA_FETCHED, SET_METADATA, DEFAULT_STATE } = require("../constans/index");
 
 const initialState = DEFAULT_STATE.meta;
 

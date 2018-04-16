@@ -17,7 +17,7 @@ const {
   SET_APP_READY,
   HELP_SLIDE_ORDER,
   DEFAULT_STATE
-} = require("../constans");
+} = require("../constans/index");
 
 module.exports = (state = DEFAULT_STATE.ui, { type, payload }) => {
   switch (type) {

@@ -45,10 +45,6 @@ const Topbar = ({
             {isEditing ? (canSave ? "Save" : "Saved") : "Save"}
           </Button>
 
-          <Button icon="share" disabled={!onShareClick} onClick={onShareClick}>
-            Share
-          </Button>
-
           <div className="pt-button separator">|</div>
 
           <Link
@@ -75,6 +71,9 @@ const Topbar = ({
 
       <NavbarGroup align="right">
         <ButtonGroup minimal={true}>
+          <Button icon="share" disabled={!onShareClick} onClick={onShareClick}>
+            Share
+          </Button>
           <Button icon="help" onClick={setTutorialModeOn}>
             Help
           </Button>

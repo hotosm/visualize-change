@@ -14,7 +14,7 @@ const {
   EXPORT_DATA_SAVED,
   DEFAULT_STATE,
   ROUTE_CHANGE
-} = require("../constans");
+} = require("../constans/index");
 
 const initialState = {
   orginal: createExportConfig({
