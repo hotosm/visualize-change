@@ -29,7 +29,7 @@ if (!fs.existsSync(captureDir)) {
 }
 
 const FORMATS = {
-  video: "mp4",
+  mp4: "mp4",
   gif: "gif"
 };
 
@@ -50,7 +50,7 @@ const convertToVideo = callback => {
     .format(FORMATS[renderingConfig.format])
     .size(`${width}x${height}`);
 
-  if (renderingConfig.format === FORMATS.video) {
+  if (renderingConfig.format === FORMATS.mp4) {
     command
       .noAudio()
       .videoCodec("libx264")

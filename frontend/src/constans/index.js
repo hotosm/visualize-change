@@ -116,7 +116,8 @@ const DEFAULT_STATE = {
     playerPanelVisible: true,
     visiblePopoversIds: [],
     tutorialMode: false,
-    selectedSidebarTabId: "simpleEdit"
+    selectedSidebarTabId: "simpleEdit",
+    mapLoaded: true
   },
   date: {
     start: new Date().setHours(12, 0, 0, 0) - 604800000,

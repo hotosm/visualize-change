@@ -288,17 +288,19 @@ class Map extends React.Component {
       this.filterMap(this.state.selectedDate, props.date.interval);
 
       this.isMapReady = makeTileReadyCheck(this.map, "osm");
+
+      this.loadedIntervalHandle = setInterval(() => {
+        const isMapLoaded = this.map.loaded();
+
+        if (isMapLoaded !== this.props.isMapLoaded) {
+          if (isMapLoaded) {
+            this.props.setMapLoaded();
+          } else {
+            this.props.setMapLoading();
+          }
+        }
+      }, 100);
     });
-
-    this.loadedIntervalHandle = setInterval(() => {
-      const isMapLoaded = this.map.loaded();
-
-      if (isMapLoaded) {
-        this.props.setMapLoaded();
-      } else {
-        this.props.setMapLoading();
-      }
-    }, 100);
   }
 
   componentDidMount() {
@@ -379,6 +381,7 @@ const MapConnected = connect(
     mapCoordinates: map,
     style,
     isFullScreenMode: ui.fullScreenMode,
+    isMapLoaded: ui.mapLoaded,
     router
   }),
   {
