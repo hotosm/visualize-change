@@ -5,12 +5,12 @@ A toolkit to visualize changes in OSM, part of the OSM Analytics ecosystem. Work
 ## structure
 
 - `api` - api code (node + mongodb)
-- `docker` - docker related files / configs
+- `docker` - docker related files / configs and shared data volumes
 - `frontend` - frontend code
-- `server` - `nginx` config (`nginx` binds frontend and api together and exposes port `8080` in dev)
+- `server` - `nginx` config (`nginx` binds frontend and api together and exposes port `8080` in dev, and `80` in production)
 - `scripts` - common scripts
-- `renderer` - electron renderer
-- `tile-processor` - crontab and script that download and processes earth QA tiles daily, run only in production environment
+- `renderer` - electron based offline renderer (gif & mp4)
+- `tile-processor` - crontab and script that download and processes earth QA tiles daily, runs only in production environment
 
 ## env
 
@@ -54,15 +54,15 @@ For dev, this could be set in `PROJECT_ROOT/.env`, for production use it's preff
 
 Each app should crash on error, and will be picked up by `docker` and restarted.
 
-On start each app first installs missing deps (`yarn install`), and then starts.
+On start each app first installs missing deps (`yarn install`).
 
-All dockerized apps shadow `node_modules` folder to avoid native code problems (for example Electron installed on macOS wont run in docker).
+All dockerized apps shadow `node_modules` folder to avoid native code issues (for example Electron installed on macOS wont run in docker).
 
-All dockerized apps in dev mode run file watcher on `package.json` and re-install (`yarn install`) deps on changes to that file.
+All dockerized apps in dev mode run file watcher on `package.json` and re-install (`yarn install`) deps on changes to that file, in addition to running file watchers that should restart the dockerized app.
 
 ## offline renderer notes
 
-Exported `mp4` are stored in `./docker/data/capture` for now, mongodb (unused for now) data is stored in `./docker/data/db`. Both are docker shared volumes.
+Exported `mp4` are stored in `./docker/data/capture` (a docker data volume).
 
 Export flow is as follows:
 
@@ -70,7 +70,7 @@ Export flow is as follows:
 2. render button triggers `/api/render` endpoint, which queues RabbitMQ message for renderer
 3. renderer picks up the message, spawns headless electron, and renders frame by frame
 4. after all frames are renderer, renderer spawns ffmpeg process to create mp4 file (files are stored in `./docker/data/capture`)
-5. finally, server is notified back through RabitMQ, where email can be sent to the user
+5. finally, server is notified back through RabbitMQ, where email is sent to the user
 
 Renderer can be tested on host machine, so the Electron window is visible, to run: `yarn run test:local-render` providing proper rendering config as JSON, for example:
 
