@@ -67,12 +67,6 @@ const Topbar = ({
           </Link>
 
           {!isMapLoaded && <Spinner className="pt-small" />}
-
-          {/*
-          <Link className={classNames('pt-button route', { active: path === 'learn' })} to="/learn">
-            Learn
-          </Link>
-          */}
         </ButtonGroup>
       </NavbarGroup>
 

@@ -359,16 +359,25 @@ body {
   }
 }
 
-// .pt-button.active {
-//   text-decoration: underline;
-// }
-
 .topbar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 10;
+}
+
+.topbar .pt-spinner {
+  margin-left: 9px;
+  margin-top: 3px;
+
+  .pt-spinner-track {
+    stroke: rgba(0, 0, 0, 0);
+  }
+
+  .pt-spinner-head {
+    stroke: @red;
+  }
 }
 
 .map.full-screen-mode {

@@ -288,6 +288,16 @@ class Map extends React.Component {
 
       this.isMapReady = makeTileReadyCheck(this.map, "osm");
     });
+
+    this.loadedIntervalHandle = setInterval(() => {
+      const isMapLoaded = this.map.loaded();
+
+      if (isMapLoaded) {
+        this.props.setMapLoaded();
+      } else {
+        this.props.setMapLoading();
+      }
+    }, 100);
   }
 
   componentDidMount() {
@@ -296,6 +306,7 @@ class Map extends React.Component {
 
   componententWillUmount() {
     this.map.remove();
+    clearInterval(this.loadedIntervalHandle);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -329,7 +340,6 @@ class Map extends React.Component {
 
   subscribeToSlider = () => {
     if (this.isMapReady()) {
-      this.props.setMapLoaded();
       this.filterMap(this.state.selectedDate, this.props.date.interval);
       this.setState({ subscribed: false }, () => this.map.off("sourcedata", this.subscribeToSlider));
     }
@@ -338,10 +348,8 @@ class Map extends React.Component {
   handleDateChange() {
     if (this.isMapReady()) {
       // TODO: setMapLoaded/setMapLoading should also happen based on tile status / on map movement, etc...(?)
-      this.props.setMapLoaded();
       this.filterMap(this.state.selectedDate, this.props.date.interval);
     } else if (!this.state.subscribed) {
-      this.props.setMapLoading();
       this.setState({ subscribed: true }, () => this.map.on("sourcedata", this.subscribeToSlider));
     }
   }
