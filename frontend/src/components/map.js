@@ -232,13 +232,11 @@ class Map extends React.Component {
   }
 
   componentDidMount() {
-    const { props } = this;
-
     this.map = new mapboxgl.Map({
       container: this.elMap,
-      style: `mapbox://styles/mapbox/${props.style.background}-v9`,
-      center: [props.mapCoordinates.lng, props.mapCoordinates.lat],
-      zoom: props.mapCoordinates.zoom,
+      style: `mapbox://styles/mapbox/${this.props.style.background}-v9`,
+      center: [this.props.mapCoordinates.lng, this.props.mapCoordinates.lat],
+      zoom: this.props.mapCoordinates.zoom,
       maxZoom: 12 // temporary "fix" for mapboxgl-js issue
     });
 
@@ -269,33 +267,33 @@ class Map extends React.Component {
     this.map.addControl(new mapboxgl.ScaleControl(), "bottom-right");
 
     this.map.on("load", () => {
-      const { filter: filterMap, update: updateMap } = setupMap(this.map, props.style);
+      const { filter: filterMap, update: updateMap } = setupMap(this.map, this.props.style);
 
       this.filterMap = filterMap;
       this.updateMap = updateMap;
 
       this.map.on("move", () => {
-        props.setCoordinates({
+        this.props.setCoordinates({
           lat: this.map.getCenter().lat,
           lng: this.map.getCenter().lng,
           zoom: this.map.getZoom()
         });
       });
 
-      this.updateMap(props.style);
-      this.filterMap(this.state.selectedDate, props.date.interval);
+      this.updateMap(this.props.style);
+      this.filterMap(this.state.selectedDate, this.props.date.interval);
 
       this.isMapReady = makeTileReadyCheck(this.map, "osm");
 
       this.loadedIntervalHandle = setInterval(() => {
         const isMapLoaded = this.map.loaded();
 
-        if (isMapLoaded && !props.isMapLoaded) {
-          props.setMapLoaded();
+        if (isMapLoaded && !this.props.isMapLoaded) {
+          this.props.setMapLoaded();
         }
 
-        if (!isMapLoaded && props.isMapLoaded) {
-          props.setMapLoading();
+        if (!isMapLoaded && this.props.isMapLoaded) {
+          this.props.setMapLoading();
         }
       }, 100);
     });
