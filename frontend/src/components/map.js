@@ -303,6 +303,27 @@ class Map extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (nextProps.mapCoordinates.zoom < 12 && AppToaster.getToasts().length < 1) {
+      this.toastKey = AppToaster.show({
+        key: "zoom",
+        message: "Zoom in to see data.",
+        intent: Intent.DANGER,
+        timeout: 0,
+        action: {
+          onClick: () => this.map.setZoom(12),
+          text: "Take me to supported zoom levels."
+        }
+      });
+    }
+
+    if (nextProps.mapCoordinates.zoom >= 12 && this.toastKey) {
+      AppToaster.dismiss(this.toastKey);
+    }
+
+    if (this.props.mapCoordinates.zoom !== nextProps.mapCoordinates.zoom && nextProps.mapCoordinates.zoom === 0) {
+      this.map.setZoom(nextProps.mapCoordinates.zoom);
+    }
+
     // FIXME: well, this maybe should wait for map to be ready, and then do the update? instead of just discarding?
     if (!(this.map.loaded() && this.map.isStyleLoaded() && this.map.areTilesLoaded())) {
       return;
@@ -333,27 +354,6 @@ class Map extends React.Component {
     }
 
     this.updateMap(nextProps.style);
-
-    if (nextProps.mapCoordinates.zoom < 12 && AppToaster.getToasts().length < 1) {
-      this.toastKey = AppToaster.show({
-        key: "zoom",
-        message: "Not supported zoom",
-        intent: Intent.DANGER,
-        timeout: 0,
-        action: {
-          onClick: () => this.map.setZoom(12),
-          text: "Get me back to supported zoom levels"
-        }
-      });
-    }
-
-    if (nextProps.mapCoordinates.zoom >= 12 && this.toastKey) {
-      AppToaster.dismiss(this.toastKey);
-    }
-
-    if (this.props.mapCoordinates.zoom !== nextProps.mapCoordinates.zoom && nextProps.mapCoordinates.zoom === 0) {
-      this.map.setZoom(nextProps.mapCoordinates.zoom);
-    }
   }
 
   subscribeToSlider = () => {
