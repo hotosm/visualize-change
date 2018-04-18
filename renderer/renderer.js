@@ -177,42 +177,49 @@ map.on("load", () => {
     const currentDate = moment(mapConfig.startDate)
       .add(n, mapConfig.interval)
       .toDate();
-    const currentDateTimestamp = currentDate.getTime();
-    const lastDate = moment(currentDate)
-      .subtract(1, mapConfig.interval)
-      .toDate();
-    const lastDateTimestamp = lastDate.getTime();
+    const timestamp = moment(currentDate).unix();
+    const interval = mapConfig.interval;
+    // const lastDate = moment(currentDate)
+    //   .subtract(1, mapConfig.interval)
+    //   .toDate();
+    // const lastDateTimestamp = lastDate.unix();
 
     console.log(`${moment(currentDate).format("YYYY-MM-DD HH:mm:ss")} (${n}/${numUnits} [${mapConfig.interval}])`);
 
-    const filter = [
-      "all",
-      ["<=", "@timestamp", Math.round(currentDateTimestamp / 1000)] // VERY IMPORTANT - timestamp is of by 1000!
-    ];
+    const makeFilter = timestamp => ["<=", "@timestamp", timestamp];
 
-    const highlightedFilter = filter.concat([[">=", "@timestamp", Math.round(lastDateTimestamp / 1000)]]);
+    const makeHighlightFilter = timestamp => {
+      // TODO: This varies between renderer, cause we dont want to use moment there.
+      const intervalSteps = {
+        hours: 3600,
+        days: 86400,
+        weeks: 604800
+      };
+
+      return [["<=", "@timestamp", timestamp], [">=", "@timestamp", timestamp - intervalSteps[interval]]];
+    };
 
     Object.keys(layers).forEach(layerGroupKey => {
       layers[layerGroupKey].forEach(layer => {
-        map.setFilter(layer, filter.concat(filters[layer]));
+        const baseFilters = filters[layer];
+
+        // this array looks _wrong_ but it looks like without .slice(0) the filtering is working way worse...
+        map.setFilter(layer, ["all", makeFilter(timestamp), ...baseFilters]);
       });
     });
 
     Object.keys(highlighted).forEach(layerGroupKey => {
       highlighted[layerGroupKey].forEach(layer => {
-        // TODO: (it cuts '-highlight') nicer way of passing this things
-        // arround when the final data format will be ready
-        map.setFilter(
-          layer,
-          highlightedFilter.concat(
-            filters[
-              layer
-                .split("-")
-                .slice(0, -1)
-                .join("-")
-            ]
-          )
-        );
+        const baseFilters =
+          filters[
+            layer
+              .split("-")
+              .slice(0, -1)
+              .join("-")
+          ];
+
+        // this array looks _wrong_ but it looks like without .slice(0) the filtering is working way worse...
+        map.setFilter(layer, ["all", ...makeHighlightFilter(timestamp), ...baseFilters]);
       });
     });
   };
