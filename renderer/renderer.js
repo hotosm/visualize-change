@@ -98,7 +98,8 @@ map.on("load", () => {
       process.env.LOCAL_DEBUG
         ? "http://localhost:4000/tile/{z}/{x}/{y}" // tiles from docker when running electron on host machine
         : "http://api:4000/tile/{z}/{x}/{y}" // docker api address inside of docker-compoes
-    ]
+    ],
+    maxzoom: 12
   });
 
   map.addLayer(
@@ -111,7 +112,8 @@ map.on("load", () => {
       layout: {
         "line-join": "round",
         "line-cap": "round"
-      }
+      },
+      minzoom: 12
     },
     firstSymbolId
   );
@@ -127,7 +129,8 @@ map.on("load", () => {
       layout: {
         "line-join": "round",
         "line-cap": "round"
-      }
+      },
+      minzoom: 12
     },
     firstSymbolId
   );
@@ -143,7 +146,8 @@ map.on("load", () => {
       layout: {
         "line-join": "round",
         "line-cap": "round"
-      }
+      },
+      minzoom: 12
     },
     firstSymbolId
   );
@@ -159,7 +163,8 @@ map.on("load", () => {
       layout: {
         "line-join": "round",
         "line-cap": "round"
-      }
+      },
+      minzoom: 12
     },
     firstSymbolId
   );

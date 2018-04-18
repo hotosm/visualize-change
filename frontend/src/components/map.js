@@ -69,7 +69,8 @@ const setupMap = map => {
   // sources and layers
   map.addSource(sourceId, {
     type: "vector",
-    tiles: [document.location.origin + "/api/tile/{z}/{x}/{y}"]
+    tiles: [document.location.origin + "/api/tile/{z}/{x}/{y}"],
+    maxzoom: 12
   });
 
   const firstSymbolId = map.getStyle().layers.filter(d => d.type === "symbol")[0].id;
@@ -236,8 +237,7 @@ class Map extends React.Component {
       container: this.elMap,
       style: `mapbox://styles/mapbox/${this.props.style.background}-v9`,
       center: [this.props.mapCoordinates.lng, this.props.mapCoordinates.lat],
-      zoom: this.props.mapCoordinates.zoom,
-      maxZoom: 12 // temporary "fix" for mapboxgl-js issue
+      zoom: this.props.mapCoordinates.zoom
     });
 
     this.map.addControl(
