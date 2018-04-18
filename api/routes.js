@@ -23,7 +23,7 @@ const MAP_CONFIG_SCHEMA = j.object().keys({
   zoom: j
     .number()
     .min(0)
-    .max(18),
+    .max(22),
   startDate: j.number(), // timestamp
   endDate: j.number(), // timestamp
   interval: j.string().valid("hours", "days", "weeks"),
