@@ -30,9 +30,10 @@ For dev, this could be set in `PROJECT_ROOT/.env`, for production use it's preff
 ## dev setup
 
 1. `yarn install`
-2. `./scripts/get-indonesia-tiles.sh` (test tiles for `dev`, final application will use tiles for the whole earth)
-3. optionally generated underzoom for tiles (this takes a while) `./scripts/tiles-add-underzoom.sh`
-4. `yarn run build:dev` or `./scripts/build.dev.sh`
+2. `./scripts/setup-docker-data-folders.sh`
+3. `./scripts/get-indonesia-tiles.sh` (test tiles for `dev`, final application will use tiles for the whole earth)
+4. optionally generated underzoom for tiles (this takes a while) `./scripts/tiles-add-underzoom.sh`
+5. `yarn run build:dev` or `./scripts/build.dev.sh`
 
 ## dev run
 
@@ -42,8 +43,9 @@ For dev, this could be set in `PROJECT_ROOT/.env`, for production use it's preff
 ## prod setup
 
 1. `./scripts/get-indonesia-tiles.sh` (test tiles for now) OR `./scripts/get-earth-tiles.sh` (whole earth if you have the hard drive space)
-2. optionally generated underzoom for tiles (this takes a while) `./scripts/tiles-add-underzoom.sh`
-3. `yarn run build:prod` or `./scripts/build.prod.sh`
+2. `./scripts/setup-docker-data-folders.sh`
+3. optionally generated underzoom for tiles (this takes a while) `./scripts/tiles-add-underzoom.sh`
+4. `yarn run build:prod` or `./scripts/build.prod.sh`
 
 ## prod run
 
