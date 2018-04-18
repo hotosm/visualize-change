@@ -1,4 +1,5 @@
 const clamp = require("lodash.clamp");
+const findLast = require("lodash.findlast");
 const {
   CHANGE_INTERVAL,
   SET_SPEED,
@@ -6,8 +7,11 @@ const {
   SET_SELECTED_DATE,
   TOGGLE_PLAY,
   EXPORT_DATA_FETCHED,
-  DEFAULT_STATE
+  DEFAULT_STATE,
+  INTERVAL_VALUES
 } = require("../constans/index");
+
+const { isDateSpanAllowed } = require("../utils");
 
 module.exports = (state = DEFAULT_STATE.date, { type, payload }) => {
   switch (type) {
@@ -26,9 +30,11 @@ module.exports = (state = DEFAULT_STATE.date, { type, payload }) => {
       return Object.assign({}, state, {
         speed: payload
       });
-    case SET_DATES:
-      return Object.assign({}, state, { start: payload.start, end: payload.end, selected: payload.start });
+    case SET_DATES: {
+      const interval = findLast(INTERVAL_VALUES, v => isDateSpanAllowed(v, payload));
+      return Object.assign({}, state, { start: payload.start, end: payload.end, selected: payload.start, interval });
       break;
+    }
     case SET_SELECTED_DATE:
       return Object.assign({}, state, {
         selected: clamp(payload, state.start, state.end),

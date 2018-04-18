@@ -107,6 +107,8 @@ const FEATURES_STYLES = {
   2: FEATURES_2
 };
 
+const INTERVAL_VALUES = ["hours", "days", "weeks"];
+
 const DEFAULT_STATE = {
   ui: {
     sidebarOpen: true,
@@ -123,16 +125,13 @@ const DEFAULT_STATE = {
     start: new Date().setHours(12, 0, 0, 0) - 604800000,
     end: new Date().setHours(12, 0, 0, 0),
     selected: new Date().setHours(12, 0, 0, 0) - 604800000,
-    interval: "days",
+    interval: INTERVAL_VALUES[1],
     isPlaying: false,
     speed: 1
   },
   map: {
     lat: 4.565487650256799,
     lng: -119.15495680771471,
-    // lat: 0.13186958314936703,
-    // lng: 117.45485653517517,
-    // zoom: 12
     zoom: 0
   },
   meta: {
@@ -148,6 +147,7 @@ const DEFAULT_STATE = {
 
 module.exports = {
   DEFAULT_DATE_FORMAT: "YYYY-MM-DD",
+  INTERVAL_VALUES,
 
   CHANGE_INTERVAL: "CHANGE_INTERVAL",
   SET_SPEED: "SET_SPEED",

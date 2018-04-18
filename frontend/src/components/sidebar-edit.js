@@ -7,7 +7,7 @@ const debounce = require("lodash.debounce");
 const moment = require("moment");
 const onClickOutside = require("react-onclickoutside").default;
 
-const { HELP_SLIDE_ORDER, DEFAULT_DATE_FORMAT } = require("../constans/index");
+const { HELP_SLIDE_ORDER, DEFAULT_DATE_FORMAT, INTERVAL_VALUES } = require("../constans/index");
 
 const {
   setInterval,
@@ -23,7 +23,7 @@ const {
   changeSidebarTab
 } = require("../actions");
 
-const { capitalizeFirstLetter, rgbaObjectToString } = require("../utils");
+const { capitalizeFirstLetter, rgbaObjectToString, isDateSpanAllowed } = require("../utils");
 
 // TODO: Maybe add another handler at onClickOutside?
 class HelpPopover extends React.Component {
@@ -158,16 +158,6 @@ const DescribePanel = ({ isOpen, metadata, setMetadata, onToggleClick }) => (
   </div>
 );
 
-const isDateSpanAllowed = (v, { start, end }) => {
-  const diffDays = (end - start) / (24 * 60 * 60 * 1000);
-
-  return {
-    hours: diffDays < 30,
-    days: diffDays > 2 && diffDays < 90,
-    weeks: diffDays > 14
-  }[v];
-};
-
 const DatePanel = ({ isOpen, onToggleClick, date, onChangeDate, onChangeInterval, onChangeSpeed }) => (
   <div className="sidebar-panel">
     <SidebarPanelHeader title="Dates" helpText="Dates" isOpen={isOpen} onToggleClick={onToggleClick} id="dates-help" />
@@ -184,7 +174,7 @@ const DatePanel = ({ isOpen, onToggleClick, date, onChangeDate, onChangeInterval
         <label className="inline-label">
           Interval:
           <ButtonGroup>
-            {["hours", "days", "weeks"].map(v => (
+            {INTERVAL_VALUES.map(v => (
               <Button
                 key={v}
                 active={date.interval === v}

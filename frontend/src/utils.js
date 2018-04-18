@@ -15,4 +15,14 @@ const createExportConfig = state => ({
 
 const getShareUrl = id => `${window.location.host}/view/${id}`;
 
-module.exports = { capitalizeFirstLetter, rgbaObjectToString, createExportConfig, getShareUrl };
+const isDateSpanAllowed = (v, { start, end }) => {
+  const diffDays = (end - start) / (24 * 60 * 60 * 1000);
+
+  return {
+    hours: diffDays < 30,
+    days: diffDays > 2 && diffDays < 90,
+    weeks: diffDays > 14
+  }[v];
+};
+
+module.exports = { capitalizeFirstLetter, rgbaObjectToString, createExportConfig, getShareUrl, isDateSpanAllowed };
