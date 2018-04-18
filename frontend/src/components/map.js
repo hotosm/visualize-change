@@ -164,7 +164,6 @@ const setupMap = map => {
         layers[layerGroupKey].forEach(layer => {
           const baseFilters = filters[layer];
 
-          // this array looks _wrong_ but it looks like without .slice(0) the filtering is working way worse...
           map.setFilter(layer, ["all", makeFilter(timestamp), ...baseFilters]);
         });
       });
@@ -179,7 +178,6 @@ const setupMap = map => {
                 .join("-")
             ];
 
-          // this array looks _wrong_ but it looks like without .slice(0) the filtering is working way worse...
           map.setFilter(layer, ["all", ...makeHighlightFilter(timestamp), ...baseFilters]);
         });
       });
