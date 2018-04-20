@@ -5,7 +5,7 @@ const path = require("path");
 const { app, BrowserWindow, ipcMain } = require("electron");
 
 const logger = require("./logger");
-const { RENDERING_SHOT, RENDERING_DONE } = require("./common");
+const { RENDERING_SHOT, RENDERING_DONE, RENDERER_TIMEOUT } = require("./common");
 
 if (!process.argv[2]) {
   logger.info("pass stringified JSON data for rendering");
@@ -87,10 +87,15 @@ app.on("ready", () => {
   mainWindow.on("closed", () => (mainWindow = null));
 });
 
+let lastShotTime = Date.now();
+
 ipcMain.on(RENDERING_SHOT, (event, arg) => {
   mainWindow.webContents.capturePage(image => {
     const imgPath = path.join(captureDir, `${leftPad(arg, 4, "0")}.png`);
     fs.writeFileSync(imgPath, image.toPNG());
+
+    // update last show time
+    lastShotTime = Date.now();
 
     // we need return value because we do this synchronously
     event.returnValue = true;
@@ -106,6 +111,15 @@ ipcMain.on(RENDERING_DONE, () => {
     }
   });
 });
+
+setInterval(() => {
+  const time = Date.now() - lastShotTime;
+
+  if (time > RENDERER_TIMEOUT) {
+    logger.error("renderer timeouted, exiting...");
+    process.exit(1);
+  }
+}, 1000);
 
 app.on("window-all-closed", () => {
   app.quit();
