@@ -5,7 +5,7 @@ const path = require("path");
 const { app, BrowserWindow, ipcMain } = require("electron");
 
 const logger = require("./logger");
-const { RENDERING_SHOT, RENDERING_DONE, RENDERER_TIMEOUT } = require("./common");
+const { getCaptureDir, RENDERING_SHOT, RENDERING_DONE, RENDERER_TIMEOUT } = require("./common");
 
 if (!process.argv[2]) {
   logger.info("pass stringified JSON data for rendering");
@@ -21,8 +21,7 @@ try {
   process.exit(1);
 }
 
-// "/data/capture" is docker volume, env.captureDir allows us to test outside of docker
-const captureDir = path.join(process.env.CAPTURE_DIR || "/data/capture", renderingConfig.dir);
+const captureDir = getCaptureDir(renderingConfig.dir);
 
 if (!fs.existsSync(captureDir)) {
   fs.mkdirSync(captureDir);

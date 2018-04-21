@@ -1,9 +1,12 @@
 // simple server listening for rendering messages in the queue, and spawning headless electron renderer
 
 const { spawn } = require("child_process");
+const path = require("path");
+const fs = require("fs");
 const amqp = require("amqplib/callback_api");
 
 const logger = require("./logger");
+const { getCaptureDir, FINISHED_FLAG_FILENAME } = require("./common");
 
 const RENDER_QUEUE = process.env.RENDER_QUEUE || "render_queue";
 
@@ -40,31 +43,40 @@ amqp.connect("amqp://rabbitmq", (err, connection) => {
 
     channel.consume(RENDER_QUEUE, msg => {
       const renderConfig = JSON.parse(msg.content.toString());
+      const captureDir = getCaptureDir(renderConfig.dir);
+      const finishedFile = path.join(captureDir, FINISHED_FLAG_FILENAME);
+
+      const successRender = () => {
+        const replyMsg = JSON.stringify({
+          email: renderConfig.email,
+          dir: renderConfig.dir
+        });
+        logger.debug("renderer replying to server", { msg: replyMsg });
+        channel.sendToQueue(msg.properties.replyTo, Buffer.from(replyMsg), {
+          correlationId: msg.properties.correlationId
+        });
+
+        channel.ack(msg);
+      };
 
       logger.debug("renderer received message", renderConfig);
 
-      runElectron(msg.content.toString(), error => {
-        logger.debug("electron rendering finsished");
+      if (fs.existsSync(finishedFile)) {
+        logger.debug("this config was previously rendered");
+        successRender();
+      } else {
+        runElectron(msg.content.toString(), error => {
+          logger.debug("electron rendering finsished");
 
-        if (error) {
-          logger.error(error);
-          channel.nack(msg);
-        } else {
-          const replyMsg = JSON.stringify({
-            email: renderConfig.email,
-            dir: renderConfig.dir
-          });
-
-          logger.debug("renderer replying to server", { msg: replyMsg });
-
-          // if all went ok, notify back that we are done
-          channel.sendToQueue(msg.properties.replyTo, Buffer.from(replyMsg), {
-            correlationId: msg.properties.correlationId
-          });
-
-          channel.ack(msg);
-        }
-      });
+          if (error) {
+            logger.error(error);
+            channel.nack(msg);
+          } else {
+            fs.writeFileSync(finishedFile);
+            successRender();
+          }
+        });
+      }
     });
   });
 });
