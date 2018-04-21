@@ -3,9 +3,8 @@ const ReactDOM = require("react-dom");
 const { Provider } = require("react-redux");
 const { ConnectedRouter } = require("react-router-redux");
 const createHistory = require("history/createBrowserHistory").default;
-const { Route, Switch } = require("react-router-dom");
+const { Route, Redirect, Switch } = require("react-router-dom");
 const classNames = require("classnames");
-const { Link } = require("react-router-dom");
 
 const configureStore = require("./store");
 
@@ -178,61 +177,16 @@ const MapWrapper = connect(
   );
 });
 
-const AboutPage = () => (
-  <div className="about-page">
-    <Topbar
-      canSave={false}
-      saving={false}
-      isEditing={false}
-      path="about"
-      onSaveClick={() => {}}
-      onToggleViewState={() => {}}
-      isFullScreenMode={false}
-    />
-    <div className="about-page__content">
-      <h2>Visualize OpenStreetMap</h2>
-      <p>
-        The Visualize Change tool is an open service that creates customised animations of OpenStreetMap data mapped
-        over time for an area of interest. Share these mapping visualizations easily through various file formats.
-      </p>
-      <Link to="/edit" className="pt-button action-button start-button">
-        Click here to create visualization
-      </Link>
-    </div>
-  </div>
-);
-
-const LearnPage = () => (
-  <div className="about-page">
-    <Topbar
-      canSave={false}
-      saving={false}
-      path="learn"
-      isEditing={false}
-      onSaveClick={() => {}}
-      onToggleViewState={() => {}}
-      onShareClick={null}
-      isFullScreenMode={false}
-    />
-    <div className="about-page__content">
-      <h2>Learn Page</h2>
-      <p>Content how to use</p>
-    </div>
-  </div>
-);
-
 const AppContainer = () => (
   <Provider store={store}>
     <ConnectedRouter history={history}>
       <div className="hot-theme">
         <Switch>
-          <Layout exact path="/" main={AboutPage} />
-          <Layout exact path="/learn" main={LearnPage} />
+          <Route exact path="/" render={() => <Redirect to="/edit" />} />
           <Layout exact path="/edit" main={MainContainerConnected} />
           <Layout exact path="/edit/:id" main={MainContainerConnected} />
           <Layout exact path="/view" main={MainContainerConnected} />
           <Layout exact path="/view/:id" main={MainContainerConnected} />
-          <Layout exact path="/about" />
         </Switch>
         <MapWrapper />
         <ExportMenuConnected />
