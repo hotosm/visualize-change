@@ -55,7 +55,7 @@ module.exports = (state = DEFAULT_STATE.ui, { type, payload }) => {
       return Object.assign({}, state, {
         tutorialMode: true,
         visiblePopoversIds: [HELP_SLIDE_ORDER[0]],
-        selectedSidebarTabId: "simpleEdit"
+        selectedSidebarTabId: "basicEdit"
       });
       break;
     case SET_TUTORIAL_MODE_OFF:
@@ -74,7 +74,7 @@ module.exports = (state = DEFAULT_STATE.ui, { type, payload }) => {
 
       return Object.assign({}, state, {
         // TODO: Extract to a constans?
-        selectedSidebarTabId: payload === "simple-tab-help" ? "advancedEdit" : state.selectedSidebarTabId,
+        selectedSidebarTabId: payload === "basic-tab-help" ? "advancedEdit" : state.selectedSidebarTabId,
         visiblePopoversIds: state.visiblePopoversIds.filter(id => id !== payload).concat(nextSlideId)
       });
       break;

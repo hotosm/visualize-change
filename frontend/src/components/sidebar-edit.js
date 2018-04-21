@@ -435,7 +435,7 @@ const calcSelectDateSpan = (now, date) => {
   return "custom";
 };
 
-const SimpleEdit = ({
+const BasicEdit = ({
   meta: metadata,
   style: styles,
   date,
@@ -449,7 +449,7 @@ const SimpleEdit = ({
   return (
     <div className="sidebar-content__inside">
       <div style={{ float: "right" }}>
-        <HelpPopoverConnected helpText="Simple Mode" id="simple-tab-help" />
+        <HelpPopoverConnected helpText="Basic Mode" id="basic-tab-help" />
       </div>
       <div className="inside-content">
         <label className="inline-label">Set title for your visualization</label>
@@ -511,7 +511,7 @@ const SidebarEdit = props => {
       onChange={id => props.changeSidebarTab(id)}
       selectedTabId={props.selectedSidebarTabId}
     >
-      <Tab id="simpleEdit" title="Simple" panel={<SimpleEdit {...props} />} />
+      <Tab id="basicEdit" title="Basic" panel={<BasicEdit {...props} />} />
       <Tab id="advancedEdit" title="Advanced" panel={<AdvancedEdit {...props} />} />
     </Tabs>
   );
