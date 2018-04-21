@@ -189,17 +189,7 @@ const DatePanel = ({ isOpen, onToggleClick, date, onChangeDate, onChangeInterval
       </div>
       <div className="inside-content">
         <label className="inline-label">Animation speed</label>
-        <Slider
-          min={0.25}
-          max={2}
-          stepSize={0.25}
-          value={date.speed}
-          onChange={onChangeSpeed}
-          labelStepSize={0.25}
-          labelRenderer={v => {
-            return (v % 1 === 0 ? v.toFixed(0) : v) + "×";
-          }}
-        />
+        <Slider min={1} max={5} stepSize={1} value={date.speed} onChange={onChangeSpeed} labelStepSize={1} />
       </div>
     </Collapse>
   </div>

@@ -36,8 +36,8 @@ const RENDER_CONFIG_SCHEMA = j.object().keys({
   format: j.string().valid("mp4", "gif"),
   speed: j
     .number()
-    .min(0.25)
-    .max(2.0),
+    .min(1)
+    .max(5),
   size: j.string(),
   email: j.string().email()
 });
