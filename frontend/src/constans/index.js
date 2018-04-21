@@ -107,7 +107,7 @@ const FEATURES_STYLES = {
   2: FEATURES_2
 };
 
-const INTERVAL_VALUES = ["hours", "days", "weeks"];
+const INTERVAL_VALUES = ["hours", "days", "weeks", "months", "years"];
 
 const DEFAULT_STATE = {
   ui: {

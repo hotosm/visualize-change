@@ -170,7 +170,7 @@ const DatePanel = ({ isOpen, onToggleClick, date, onChangeDate, onChangeInterval
           onChange={onChangeDate}
         />
       </div>
-      <div className="inside-content">
+      <div className="inside-content interval-selection">
         <label className="inline-label">
           Interval:
           <ButtonGroup>

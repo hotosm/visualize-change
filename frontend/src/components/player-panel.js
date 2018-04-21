@@ -23,6 +23,7 @@ class PlayerPanel extends React.Component {
     }
 
     const { start, interval } = this.props.date;
+    if (!interval) return 0;
     return moment.duration(moment(selected).diff(moment(start)))[`as${capitalizeFirstLetter(interval)}`]();
   };
 
