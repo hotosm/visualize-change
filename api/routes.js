@@ -27,10 +27,6 @@ const MAP_CONFIG_SCHEMA = j.object().keys({
   startDate: j.number(), // timestamp
   endDate: j.number(), // timestamp
   interval: j.string().valid("hours", "days", "weeks"),
-  speed: j
-    .number()
-    .min(0.25)
-    .max(2.0),
   style: j.object() // TODO: Need to add better validation for this
 });
 
@@ -38,10 +34,6 @@ const RENDER_CONFIG_SCHEMA = j.object().keys({
   map: MAP_CONFIG_SCHEMA,
   dir: j.string(),
   format: j.string().valid("mp4", "gif"),
-  fps: j
-    .number()
-    .min(1)
-    .max(120),
   speed: j
     .number()
     .min(0.25)
@@ -63,7 +55,6 @@ const mapConfigFromReq = req => ({
   startDate: req.body.startDate,
   endDate: req.body.endDate,
   interval: req.body.interval,
-  speed: req.body.speed,
   style: req.body.style
 });
 
@@ -99,13 +90,14 @@ const initRoutes = ({ queueRender, exportsAdd, exportsGetById, exportsUpdate }, 
       email: req.body.email,
       map: mapConfig,
       format: req.body.format,
-      fps: req.body.fps,
       speed: req.body.speed,
       size: req.body.size,
       dir: md5(
         JSON.stringify({
           mapConfig,
-          email: req.body.email
+          speed: req.body.speed,
+          size: req.body.size,
+          format: req.body.format
         })
       )
     };
