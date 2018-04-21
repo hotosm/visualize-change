@@ -435,30 +435,13 @@ const calcSelectDateSpan = (now, date) => {
   return "custom";
 };
 
-const BasicEdit = ({
-  meta: metadata,
-  style: styles,
-  date,
-  setMetadata,
-  setDateSpan,
-  setMapBackground,
-  changeSidebarTab
-}) => {
+const BasicEdit = ({ date, setDateSpan, changeSidebarTab }) => {
   const now = new Date().setHours(12, 0, 0, 0);
   const selectDateSpanName = calcSelectDateSpan(now, date);
   return (
     <div className="sidebar-content__inside">
       <div style={{ float: "right" }}>
         <HelpPopoverConnected helpText="Basic Mode" id="basic-tab-help" />
-      </div>
-      <div className="inside-content">
-        <label className="inline-label">Set title for your visualization</label>
-        <input
-          className="pt-input"
-          value={metadata.name}
-          placeholder="Type your title..."
-          onChange={ev => setMetadata("name", ev.target.value)}
-        />
       </div>
       <div className="inside-content">
         <label className="inline-label">
@@ -493,9 +476,6 @@ const BasicEdit = ({
             </div>
           </div>
         </div>
-      </div>
-      <div className="inside-content">
-        <ThemeSelect styles={styles} onBackgroundStyleChange={setMapBackground} />
       </div>
     </div>
   );
