@@ -25,8 +25,7 @@ const makeTileReadyCheck = (map, sourceId) => {
     return Object.keys(map.style.sourceCaches[sourceId]._tiles).every(key => {
       const { state } = map.style.sourceCaches[sourceId]._tiles[key];
 
-      // TODO: Fixme
-      const isReady = state === "loaded" || state === "loading" || state === "errored";
+      const isReady = state === "loaded" || state === "errored";
       const wasErrored = tileState[key] === "errored";
 
       if (!isReady && wasErrored) {
@@ -324,6 +323,10 @@ class Map extends React.Component {
       this.map.setZoom(nextProps.mapCoordinates.zoom);
     }
 
+    if (this.props.date.selected !== nextProps.date.selected) {
+      this.setState({ selectedDate: nextProps.date.selected }, this.handleDateChange);
+    }
+
     // FIXME: well, this maybe should wait for map to be ready, and then do the update? instead of just discarding?
     if (!(this.map.loaded() && this.map.isStyleLoaded() && this.map.areTilesLoaded())) {
       return;
@@ -349,14 +352,11 @@ class Map extends React.Component {
       return;
     }
 
-    if (this.props.date.selected !== nextProps.date.selected) {
-      this.setState({ selectedDate: nextProps.date.selected }, this.handleDateChange);
-    }
-
     this.updateMap(nextProps.style);
   }
 
   subscribeToSlider = () => {
+    console.log(">>> subscribeToSlider", this.isMapReady());
     if (this.isMapReady()) {
       this.filterMap(this.state.selectedDate, this.props.date.interval);
       this.setState({ subscribed: false }, () => this.map.off("sourcedata", this.subscribeToSlider));
@@ -364,6 +364,7 @@ class Map extends React.Component {
   };
 
   handleDateChange() {
+    console.log(">>> handleDataChange", this.isMapReady());
     if (this.isMapReady()) {
       this.filterMap(this.state.selectedDate, this.props.date.interval);
     } else if (!this.state.subscribed) {

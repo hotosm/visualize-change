@@ -189,7 +189,7 @@ module.exports = {
 
   SET_APP_READY: "SET_APP_READY",
 
-  HELP_SLIDE_ORDER: ["basic-tab-help", "describe-help", "dates-help", "styles-help"],
+  HELP_SLIDE_ORDER: ["bottombar-help", "basic-tab-help", "describe-help", "dates-help", "styles-help"],
 
   DEFAULT_STATE,
   FEATURES_STYLES
