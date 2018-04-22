@@ -173,6 +173,15 @@ body {
   flex-grow: 1;
   padding: 0 10px;
   display: flex;
+	.pt-button.play-btn {
+padding-right: 10px;
+background: @red;
+border-radius: 2px;
+.pt-icon {
+background: @red;
+color: white;
+}
+	}	
 }
 
 .map-footer__progressbar {
@@ -185,12 +194,17 @@ body {
 .map-footer__date {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   padding: 0 10px;
-  width: 100px;
+  width: 135px;
   height: @map-footer-height;
 
-  background: @light-gray3;
+	color: white;
+  background: @red;
+	.pt-button.help-button .pt-icon {
+	color: white;
+	}
+
 }
 
 .pt-daterangepicker {
@@ -566,6 +580,7 @@ body {
 .pt-navbar-heading {
   color: @red;
   padding-left: 10px;
+	margin-right: 50px;
 }
 
 .logo {
@@ -591,6 +606,12 @@ div.pt-tab-list {
   border-bottom: 1px solid #f0f0f0;
   margin-bottom: 0px;
   padding-bottom: 10px;
+	font-family: "Barlow Condensed";
+	text-transform: uppercase;
+
+	.pt-tab {
+		font-size: 16px;
+	}
 }
 
 .inside-content {

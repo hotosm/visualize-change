@@ -5,6 +5,7 @@ const { Button, ButtonGroup, Slider } = require("@blueprintjs/core");
 
 const { DEFAULT_DATE_FORMAT } = require("../constans/index");
 const { FadeTransition } = require("./transitions");
+const HelpPopoverConnected = require("./help");
 const { togglePlay, setSelectedDate, toggleFullscreen, hidePlayerPanel } = require("../actions");
 const { capitalizeFirstLetter } = require("../utils");
 
@@ -51,7 +52,12 @@ class PlayerPanel extends React.Component {
     return (
       <div className="map-footer__content" onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut}>
         <div className="map-footer__items">
-          <Button className="pt-minimal" icon={date.isPlaying ? "pause" : "play"} onClick={togglePlay} />
+          <Button
+            className="pt-minimal play-btn"
+            icon={date.isPlaying ? "pause" : "play"}
+            size={20}
+            onClick={togglePlay}
+          />
           <div className="map-footer__progressbar">
             <Slider
               isFullScreenMode={isFullScreenMode}
@@ -68,7 +74,12 @@ class PlayerPanel extends React.Component {
             <Button icon="fullscreen" onClick={toggleFullscreen} />
           </ButtonGroup>
         </div>
-        <div className="map-footer__date">{moment(date.selected).format(DEFAULT_DATE_FORMAT)}</div>
+        <div className="map-footer__date">
+          {moment(date.selected).format(DEFAULT_DATE_FORMAT)}
+          <div className="o">
+            <HelpPopoverConnected id="bottombar-help" text="Bottombar Help" />
+          </div>
+        </div>
       </div>
     );
   }
