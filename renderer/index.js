@@ -20,11 +20,10 @@ const runElectron = (renderingConfig, callback) => {
   );
 
   electron.stdout.on("data", data => logger.info(`electron process: ${data.toString()}`));
-
   electron.stderr.on("data", data => logger.error(`electron process: ${data.toString()}`));
 
   electron.on("error", error => callback(error));
-  electron.on("close", () => callback(null));
+  electron.on("close", code => callback(code === 0 ? null : `exited with ${code}`));
 };
 
 amqp.connect("amqp://rabbitmq", (err, connection) => {
