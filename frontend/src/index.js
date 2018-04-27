@@ -11,6 +11,7 @@ const configureStore = require("./store");
 const Sidebar = require("./components/sidebar");
 const Topbar = require("./components/topbar");
 const MapConnected = require("./components/map");
+const { PAGE_TITLE } = require("./constans/index");
 
 const SidebarEditConnected = require("./components/sidebar-edit");
 const SidebarViewConnected = require("./components/sidebar-view");
@@ -184,23 +185,27 @@ const MapWrapper = connect(
   );
 });
 
-const AppContainer = () => (
-  <Provider store={store}>
-    <ConnectedRouter history={history}>
-      <div className="hot-theme">
-        <Switch>
-          <Route exact path="/" render={() => <Redirect to="/edit" />} />
-          <Layout exact path="/edit" main={MainContainerConnected} />
-          <Layout exact path="/edit/:id" main={MainContainerConnected} />
-          <Layout exact path="/view" main={MainContainerConnected} />
-          <Layout exact path="/view/:id" main={MainContainerConnected} />
-        </Switch>
-        <MapWrapper />
-        <ExportMenuConnected />
-      </div>
-    </ConnectedRouter>
-  </Provider>
-);
-// <Route exact path="/" render={() => <Redirect to="/edit" />} />
+const setDocumentTitle = title => (document.title = title);
+
+const AppContainer = () => {
+  setDocumentTitle(PAGE_TITLE);
+  return (
+    <Provider store={store}>
+      <ConnectedRouter history={history}>
+        <div className="hot-theme">
+          <Switch>
+            <Route exact path="/" render={() => <Redirect to="/edit" />} />
+            <Layout exact path="/edit" main={MainContainerConnected} />
+            <Layout exact path="/edit/:id" main={MainContainerConnected} />
+            <Layout exact path="/view" main={MainContainerConnected} />
+            <Layout exact path="/view/:id" main={MainContainerConnected} />
+          </Switch>
+          <MapWrapper />
+          <ExportMenuConnected />
+        </div>
+      </ConnectedRouter>
+    </Provider>
+  );
+};
 
 ReactDOM.render(<AppContainer />, document.getElementById("app"));

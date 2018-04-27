@@ -6,6 +6,7 @@ const { SlideTransition } = require("./transitions");
 const { connect } = require("react-redux");
 const { Link } = require("react-router-dom");
 
+const { TOPBAR_TITLE } = require("../constans/index");
 const { setTutorialModeOn } = require("../actions");
 
 const isLinkDisabled = path => path !== "view" && path !== "edit";
@@ -20,6 +21,7 @@ const Topbar = ({
   isFullScreenMode,
   onShareClick,
   setTutorialModeOn,
+  isSidebarOpen,
   isMapLoaded
 }) => (
   <SlideTransition className="topbar" visible={!isFullScreenMode} direction="top">
@@ -27,7 +29,7 @@ const Topbar = ({
       <Link to="/">
         <NavbarGroup>
           <div className="logo" />
-          <NavbarHeading>Visualize Change</NavbarHeading>
+          <NavbarHeading>{TOPBAR_TITLE}</NavbarHeading>
         </NavbarGroup>
       </Link>
 
@@ -63,7 +65,7 @@ const Topbar = ({
           </Link>
 
           {!isMapLoaded && (
-            <div className="center-on-top">
+            <div className="center-on-top" style={{ marginLeft: isSidebarOpen ? 160 : 0 }}>
               <Spinner className="pt-small" />
             </div>
           )}
@@ -87,7 +89,8 @@ const Topbar = ({
 module.exports = connect(
   ({ ui }) => ({
     tutorialMode: ui.tutorialMode,
-    isMapLoaded: ui.mapLoaded
+    isMapLoaded: ui.mapLoaded,
+    isSidebarOpen: ui.sidebarOpen
   }),
   { setTutorialModeOn }
 )(Topbar);
