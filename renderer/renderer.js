@@ -27,7 +27,6 @@ const makeTileReadyCheck = (map, sourceId) => {
     return Object.keys(map.style.sourceCaches[sourceId]._tiles).every(key => {
       const { state } = map.style.sourceCaches[sourceId]._tiles[key];
 
-      // TODO: Fixme
       const isReady = state === "loaded" || state === "loading" || state === "errored";
       const wasErrored = tileState[key] === "errored";
 
@@ -179,10 +178,6 @@ map.on("load", () => {
       .toDate();
     const timestamp = moment(currentDate).unix();
     const interval = mapConfig.interval;
-    // const lastDate = moment(currentDate)
-    //   .subtract(1, mapConfig.interval)
-    //   .toDate();
-    // const lastDateTimestamp = lastDate.unix();
 
     console.log(`${moment(currentDate).format("YYYY-MM-DD HH:mm:ss")} (${n}/${numUnits} [${mapConfig.interval}])`);
 

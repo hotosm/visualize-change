@@ -30,7 +30,6 @@ class PlayerPanel extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     // TODO: Fix this, naive implementation
-    // and also the names are kind of unfortune ;)
     if (nextProps.date.isPlaying) {
       this.playTimer = setTimeout(() => {
         const next = moment(this.props.date.selected)
