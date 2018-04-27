@@ -173,15 +173,17 @@ body {
   flex-grow: 1;
   padding: 0 10px;
   display: flex;
-	.pt-button.play-btn {
-padding-right: 10px;
-background: @red;
-border-radius: 2px;
-.pt-icon {
-background: @red;
-color: white;
-}
-	}	
+  .pt-button.play-btn,
+  .pt-button.play-btn:active,
+  .pt-button.play-btn:hover {
+    padding-right: 10px;
+    background: @red;
+    border-radius: 2px;
+    .pt-icon {
+      background: @red;
+      color: white;
+    }
+  }
 }
 
 .map-footer__progressbar {
@@ -199,12 +201,11 @@ color: white;
   width: 135px;
   height: @map-footer-height;
 
-	color: white;
+  color: white;
   background: @red;
-	.pt-button.help-button .pt-icon {
-	color: white;
-	}
-
+  .pt-button.help-button .pt-icon {
+    color: white;
+  }
 }
 
 .pt-daterangepicker {
@@ -580,7 +581,7 @@ color: white;
 .pt-navbar-heading {
   color: @red;
   padding-left: 10px;
-	margin-right: 50px;
+  margin-right: 50px;
 }
 
 .logo {
@@ -606,12 +607,12 @@ div.pt-tab-list {
   border-bottom: 1px solid #f0f0f0;
   margin-bottom: 0px;
   padding-bottom: 10px;
-	font-family: "Barlow Condensed";
-	text-transform: uppercase;
+  font-family: "Barlow Condensed";
+  text-transform: uppercase;
 
-	.pt-tab {
-		font-size: 16px;
-	}
+  .pt-tab {
+    font-size: 16px;
+  }
 }
 
 .inside-content {

@@ -227,7 +227,7 @@ const getLocation = callback => {
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => callback({ lat: coords.latitude, lng: coords.longitude, zoom: 12 }),
       () => callback({ lat: 0, lng: 0, zoom: 1 }),
-      { timeout: 10000, enableHighAccuracy: false }
+      { timeout: 6000, enableHighAccuracy: false }
     );
   } else {
     callback(null);
@@ -266,9 +266,6 @@ class Map extends React.Component {
       });
 
       this.map.addControl(geolocate);
-      // setTimeout(geolocate._onClickGeolocate.bind(geolocate), 5)
-
-      // console.log(geolocate);
 
       const geocoder = new mapboxglGeoconder({
         accessToken: mapboxgl.accessToken,
@@ -410,7 +407,7 @@ class Map extends React.Component {
           <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }} ref={el => (this.elMap = el)} />
           {this.state.loaded && <MapLegend features={this.props.style.features} />}
         </div>
-        {this.state.loaded && <PlayerPanelConnected />}
+        <PlayerPanelConnected />
       </div>
     );
   }

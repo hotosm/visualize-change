@@ -63,7 +63,6 @@ const sendToRenderer = ({ email, format, size }) => (dispatch, getState) => {
     method: "post",
     body: JSON.stringify(mapConfig)
   }).then(res => {
-    console.log(res);
     if (res.ok) {
       dispatch(action(EXPORT_RENDER_QUEUED));
     }
