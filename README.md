@@ -82,3 +82,11 @@ $ MAPBOX_ACCESS_TOKEN=... yarn run test:local-render '$STRINGIFIED_RENDER_CONFIG
 
 Where `$STRINGIFIED_RENDER_CONFIG` should conform to api render config validation.
 
+## future work
+
+Possible future enhancements for the project:
+
+- removing rendered mp4/gif files after some timeout (with additional user notification)
+- updating step size <-> time span correlation if this is ran on better server (1CPU and 2GB RAM is not enough for reliably rendering a lot of PNG files with Electron and xvfb), 4CPUS and 4GB of RAM gives better results
+- combining this with OSM tasking tool
+
