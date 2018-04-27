@@ -130,9 +130,9 @@ const DEFAULT_STATE = {
     speed: 1
   },
   map: {
-    lat: 4.565487650256799,
-    lng: -119.15495680771471,
-    zoom: 0
+    lat: 0,
+    lng: 0,
+    zoom: 1
   },
   meta: {
     name: "",

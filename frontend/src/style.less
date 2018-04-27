@@ -382,8 +382,8 @@ color: white;
 }
 
 .topbar .pt-spinner {
-  margin-left: 9px;
-  margin-top: 3px;
+  // margin-left: 9px;
+  // margin-top: 3px;
 
   .pt-spinner-track {
     stroke: rgba(0, 0, 0, 0);
@@ -865,4 +865,23 @@ a.pt-button.start-button {
   .pt-button-group button.pt-button .pt-button-text {
     font-size: 11px;
   }
+}
+
+.map .pt-overlay-backdrop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.center-on-top {
+  position: fixed;
+  top: 50vh;
+  left: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 100px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

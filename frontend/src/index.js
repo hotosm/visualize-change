@@ -45,7 +45,8 @@ const {
   setNewEdit,
   showPlayerPanel,
   showExportMenu,
-  setTutorialModeOn
+  setTutorialModeOn,
+  setCoordinates
 } = require("./actions");
 
 const { isChanged, isEditMode } = require("./selectors");
@@ -71,6 +72,7 @@ class MainContainer extends React.Component {
       localStorage.setItem("hot-changevis-used", true);
     }
     if (!id) {
+      // getLocation(this.props.setCoordinates);
       this.props.setAppReady();
     } else {
       this.props.getExportById(id);
@@ -86,6 +88,9 @@ class MainContainer extends React.Component {
     const newId = nextProps.match.params.id;
     if (prevId !== newId && !!newId) {
       this.props.getExportById(newId);
+    }
+    if (!newId) {
+      this.props.setAppReady();
     }
     if (this.props.saving === true && nextProps.saving === false) {
       AppToaster.show({
@@ -146,7 +151,8 @@ const MainContainerConnected = connect(
     setAppReady,
     setNewEdit,
     showExportMenu,
-    setTutorialModeOn
+    setTutorialModeOn,
+    setCoordinates
   }
 )(MainContainer);
 
