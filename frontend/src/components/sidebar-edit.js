@@ -45,6 +45,13 @@ const DescribePanel = ({ isOpen, metadata, setMetadata, onToggleClick }) => (
         <Label text="Title" required={true}>
           <input className="pt-input" value={metadata.name} onChange={ev => setMetadata("name", ev.target.value)} />
         </Label>
+        <Label text="Location" required={true}>
+          <input
+            className="pt-input"
+            value={metadata.location}
+            onChange={ev => setMetadata("location", ev.target.value)}
+          />
+        </Label>
         <Label text="Description" required={true}>
           <textarea
             className="pt-input"

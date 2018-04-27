@@ -16,6 +16,15 @@ const SidebarView = ({ meta, date }) => {
         </div>
       )}
 
+      {meta.location && (
+        <div>
+          <div className="section__header">
+            <h4>Location</h4>
+          </div>
+          <label className="inline-label">{meta.location}</label>
+        </div>
+      )}
+
       {meta.description && (
         <div>
           <div className="section__header">

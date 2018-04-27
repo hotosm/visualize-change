@@ -136,6 +136,7 @@ const DEFAULT_STATE = {
   },
   meta: {
     name: "",
+    location: "",
     description: "",
     project: ""
   },

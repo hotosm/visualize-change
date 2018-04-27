@@ -223,14 +223,15 @@ const MapLegend = ({ features }) => (
 );
 
 const getLocation = callback => {
+  const defaultLocation = { lat: 0, lng: 0, zoom: 1 };
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => callback({ lat: coords.latitude, lng: coords.longitude, zoom: 12 }),
-      () => callback({ lat: 0, lng: 0, zoom: 1 }),
+      () => callback(defaultLocation),
       { timeout: 6000, enableHighAccuracy: false }
     );
   } else {
-    callback(null);
+    callback(defaultLocation);
   }
 };
 

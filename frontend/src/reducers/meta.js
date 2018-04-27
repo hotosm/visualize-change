@@ -8,6 +8,7 @@ module.exports = (state = initialState, { type, payload }) => {
       return Object.assign({}, initialState, {
         name: payload.config.meta.name,
         description: payload.config.meta.description,
+        location: payload.config.meta.location,
         project: payload.config.meta.project
       });
     case SET_METADATA:
