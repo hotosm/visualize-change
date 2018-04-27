@@ -63,7 +63,6 @@ const sendToRenderer = ({ email, format, size }) => (dispatch, getState) => {
     method: "post",
     body: JSON.stringify(mapConfig)
   }).then(res => {
-    console.log(res);
     if (res.ok) {
       dispatch(action(EXPORT_RENDER_QUEUED));
     }
@@ -95,6 +94,8 @@ const createNewExport = parentId => (dispatch, getState) => {
     });
 };
 
+const setAppReady = () => action(SET_APP_READY);
+
 const getExportById = id => dispatch => {
   dispatch(exportDataFetching);
   fetch(`/api/exports/${id}`, {
@@ -104,10 +105,15 @@ const getExportById = id => dispatch => {
     },
     method: "GET"
   })
-    .then(res => res.json())
+    .then(res => {
+      return res.json();
+    })
     .then(data => {
       if (data.length > 0) {
         dispatch(exportDataFetched({ config: data[0].config }));
+      } else {
+        dispatch(push(`/edit/`));
+        dispatch(setAppReady);
       }
     });
 };
@@ -144,5 +150,5 @@ module.exports = {
   sendToRenderer,
   getExportById,
   createNewExport,
-  setAppReady: () => action(SET_APP_READY)
+  setAppReady
 };

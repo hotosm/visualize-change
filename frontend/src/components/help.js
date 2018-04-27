@@ -4,6 +4,7 @@ const { Button, Popover } = require("@blueprintjs/core");
 const onClickOutside = require("react-onclickoutside").default;
 
 const { HELP_SLIDE_ORDER } = require("../constans/index");
+const { HELP_TEXTS } = require("../constans/help");
 
 const { showPopover, hidePopover, setTutorialModeOff, goToNextInTutorial, changeSidebarTab } = require("../actions");
 
@@ -28,7 +29,6 @@ class HelpPopover extends React.Component {
 
   render() {
     const {
-      helpText,
       id,
       tutorialMode,
       visiblePopovers,
@@ -48,14 +48,7 @@ class HelpPopover extends React.Component {
         content={
           <div className="help-popover" onClick={ev => ev.stopPropagation()}>
             <Button className="close-button" icon="cross" onClick={() => setTutorialModeOff() && hidePopover(id)} />
-            <div className="help-content">
-              Help Text For {helpText}. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mauris ipsum,
-              lobortis vel aliquet quis, elementum nec purus. Maecenas egestas risus varius, maximus sem quis, efficitur
-              purus. Donec vitae mauris vitae sapien sagittis accumsan et non diam. Fusce maximus, nunc sit amet tempus
-              posuere, odio odio malesuada ligula, nec pretium sapien lectus eget lectus. Ut vitae orci a quam pulvinar
-              consequat. Sed aliquam sapien vitae quam blandit, ut hendrerit nulla posuere. Nunc porttitor nulla id
-              tincidunt placerat.
-            </div>
+            <div className="help-content">{HELP_TEXTS[id]}</div>
             {tutorialMode && (
               <Button
                 className="action-button"

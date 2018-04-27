@@ -62,7 +62,11 @@ const Topbar = ({
             Edit
           </Link>
 
-          {!isMapLoaded && <Spinner className="pt-small" />}
+          {!isMapLoaded && (
+            <div className="center-on-top">
+              <Spinner className="pt-small" />
+            </div>
+          )}
         </ButtonGroup>
       </NavbarGroup>
 

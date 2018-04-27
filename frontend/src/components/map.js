@@ -13,7 +13,7 @@ const parseValue = value => (typeof value === "object" ? rgbaObjectToString(valu
 
 mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
 
-const { Intent } = require("@blueprintjs/core");
+const { Intent, Spinner } = require("@blueprintjs/core");
 
 const AppToaster = require("./toaster");
 
@@ -222,77 +222,102 @@ const MapLegend = ({ features }) => (
   </div>
 );
 
+const getLocation = callback => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => callback({ lat: coords.latitude, lng: coords.longitude, zoom: 12 }),
+      () => callback({ lat: 0, lng: 0, zoom: 1 }),
+      { timeout: 6000, enableHighAccuracy: false }
+    );
+  } else {
+    callback(null);
+  }
+};
+
 class Map extends React.Component {
   constructor(props) {
     super(props);
     this.toastKey = null;
-    this.state = { selectedDate: this.props.date.selected, subscribed: false };
+    this.state = { selectedDate: this.props.date.selected, subscribed: false, loaded: false };
   }
 
   componentDidMount() {
-    this.map = new mapboxgl.Map({
-      container: this.elMap,
-      style: `mapbox://styles/mapbox/${this.props.style.background}-v9`,
-      center: [this.props.mapCoordinates.lng, this.props.mapCoordinates.lat],
-      zoom: this.props.mapCoordinates.zoom
-    });
-
-    this.map.addControl(
-      new mapboxgl.NavigationControl({
-        showCompass: false
-      })
-    );
-
-    const geocoder = new mapboxglGeoconder({
-      accessToken: mapboxgl.accessToken,
-      flyTo: false
-    });
-
-    geocoder.on("result", e => {
-      if (e.result && e.result.center) {
-        this.map.flyTo({
-          center: e.result.center,
-          zoom: 12,
-          speed: 2.0
-        });
-      }
-    });
-
-    this.map.addControl(geocoder);
-    this.map.dragRotate.disable();
-
-    this.map.addControl(new mapboxgl.ScaleControl(), "bottom-right");
-
-    this.map.on("load", () => {
-      const { filter: filterMap, update: updateMap } = setupMap(this.map, this.props.style);
-
-      this.filterMap = filterMap;
-      this.updateMap = updateMap;
-
-      this.map.on("move", () => {
-        this.props.setCoordinates({
-          lat: this.map.getCenter().lat,
-          lng: this.map.getCenter().lng,
-          zoom: this.map.getZoom()
-        });
+    getLocation(({ lat, lng, zoom }) => {
+      this.map = new mapboxgl.Map({
+        container: this.elMap,
+        style: `mapbox://styles/mapbox/${this.props.style.background}-v9`,
+        center: [lng, lat],
+        zoom
       });
 
-      this.updateMap(this.props.style);
-      this.filterMap(this.state.selectedDate, this.props.date.interval);
+      this.setState({ loaded: true });
 
-      this.isMapReady = makeTileReadyCheck(this.map, "osm");
+      this.map.addControl(
+        new mapboxgl.NavigationControl({
+          showCompass: false
+        })
+      );
 
-      this.loadedIntervalHandle = setInterval(() => {
-        const isMapLoaded = this.map.loaded();
+      const geolocate = new mapboxgl.GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: true
+        },
+        trackUserLocation: true
+      });
 
-        if (isMapLoaded && !this.props.isMapLoaded) {
-          this.props.setMapLoaded();
+      this.map.addControl(geolocate);
+
+      const geocoder = new mapboxglGeoconder({
+        accessToken: mapboxgl.accessToken,
+        flyTo: false
+      });
+
+      geocoder.on("result", e => {
+        if (e.result && e.result.center) {
+          this.map.flyTo({
+            center: e.result.center,
+            zoom: 12,
+            speed: 2.0
+          });
         }
+      });
 
-        if (!isMapLoaded && this.props.isMapLoaded) {
-          this.props.setMapLoading();
-        }
-      }, 100);
+      this.map.addControl(geocoder);
+      this.map.dragRotate.disable();
+
+      this.map.addControl(new mapboxgl.ScaleControl(), "bottom-right");
+
+      this.map.on("load", () => {
+        const { filter: filterMap, update: updateMap } = setupMap(this.map, this.props.style);
+
+        this.filterMap = filterMap;
+        this.updateMap = updateMap;
+
+        this.map.on("move", () => {
+          this.props.setCoordinates({
+            lat: this.map.getCenter().lat,
+            lng: this.map.getCenter().lng,
+            zoom: this.map.getZoom()
+          });
+        });
+
+        this.updateMap(this.props.style);
+        this.filterMap(this.state.selectedDate, this.props.date.interval);
+
+        this.isMapReady = makeTileReadyCheck(this.map, "osm");
+
+        this.loadedIntervalHandle = setInterval(() => {
+          const isMapLoaded = this.map.loaded();
+
+          if (isMapLoaded && !this.props.isMapLoaded) {
+            this.props.setMapLoaded();
+          }
+
+          if (!isMapLoaded && this.props.isMapLoaded) {
+            this.props.setMapLoading();
+          }
+        }, 100);
+      });
     });
   }
 
@@ -319,7 +344,7 @@ class Map extends React.Component {
       AppToaster.dismiss(this.toastKey);
     }
 
-    if (this.props.mapCoordinates.zoom !== nextProps.mapCoordinates.zoom && nextProps.mapCoordinates.zoom === 0) {
+    if (this.props.mapCoordinates.zoom !== nextProps.mapCoordinates.zoom && nextProps.mapCoordinates.zoom === 1) {
       this.map.setZoom(nextProps.mapCoordinates.zoom);
     }
 
@@ -356,7 +381,6 @@ class Map extends React.Component {
   }
 
   subscribeToSlider = () => {
-    console.log(">>> subscribeToSlider", this.isMapReady());
     if (this.isMapReady()) {
       this.filterMap(this.state.selectedDate, this.props.date.interval);
       this.setState({ subscribed: false }, () => this.map.off("sourcedata", this.subscribeToSlider));
@@ -364,7 +388,6 @@ class Map extends React.Component {
   };
 
   handleDateChange() {
-    console.log(">>> handleDataChange", this.isMapReady());
     if (this.isMapReady()) {
       this.filterMap(this.state.selectedDate, this.props.date.interval);
     } else if (!this.state.subscribed) {
@@ -375,9 +398,14 @@ class Map extends React.Component {
   render() {
     return (
       <div className={classNames("map", { "full-screen-mode": this.props.isFullScreenMode })}>
+        {!this.state.loaded && (
+          <div className="pt-overlay-backdrop">
+            <Spinner className="pt-big" />
+          </div>
+        )}
         <div className="map-content" style={{ position: "relative" }}>
           <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }} ref={el => (this.elMap = el)} />
-          <MapLegend features={this.props.style.features} />
+          {this.state.loaded && <MapLegend features={this.props.style.features} />}
         </div>
         <PlayerPanelConnected />
       </div>

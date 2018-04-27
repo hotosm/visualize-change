@@ -228,12 +228,16 @@ const StyleSection = ({ style, onStyleChange }) => {
   );
 };
 
-const ThemeSelect = ({ styles, onBackgroundStyleChange }) => (
+const ThemeSelect = ({ styles, onBackgroundStyleChange, isMapLoaded }) => (
   <div>
     <label className="inline-label">
       Theme
       <div className="pt-select">
-        <select value={styles.background} onChange={ev => onBackgroundStyleChange(ev.target.value)}>
+        <select
+          disabled={!isMapLoaded}
+          value={styles.background}
+          onChange={ev => onBackgroundStyleChange(ev.target.value)}
+        >
           {["light", "dark", "basic", "streets", "bright", "satellite"].map(style => (
             <option key={style} value={style}>
               {capitalizeFirstLetter(style)}
@@ -245,7 +249,7 @@ const ThemeSelect = ({ styles, onBackgroundStyleChange }) => (
   </div>
 );
 
-const StylesPanel = ({ isOpen, onToggleClick, styles, onStyleChange, onBackgroundStyleChange }) => {
+const StylesPanel = ({ isOpen, onToggleClick, styles, onStyleChange, onBackgroundStyleChange, isMapLoaded }) => {
   return (
     <div className="sidebar-panel">
       <SidebarPanelHeader
@@ -260,7 +264,7 @@ const StylesPanel = ({ isOpen, onToggleClick, styles, onStyleChange, onBackgroun
           <div className="section__header">
             <h4>Map</h4>
           </div>
-          <ThemeSelect styles={styles} onBackgroundStyleChange={onBackgroundStyleChange} />
+          <ThemeSelect styles={styles} onBackgroundStyleChange={onBackgroundStyleChange} isMapLoaded={isMapLoaded} />
         </div>
         {styles.features.map((style, idx) => (
           <StyleSection key={style.name} style={style} onStyleChange={newStyle => onStyleChange(idx, newStyle)} />
@@ -292,7 +296,8 @@ class AdvancedEdit extends React.Component {
       setSpeed,
       setMapBackground,
       setFeatureStyle,
-      setMetadata
+      setMetadata,
+      isMapLoaded
     } = this.props;
 
     const { isDescribeOpen, isDateOpen, isStylesOpen } = this.state;
@@ -314,6 +319,7 @@ class AdvancedEdit extends React.Component {
           onChangeSpeed={setSpeed}
         />
         <StylesPanel
+          isMapLoaded={isMapLoaded}
           isOpen={isStylesOpen}
           onToggleClick={this.onToggleClick("Styles")}
           styles={style}
@@ -407,7 +413,13 @@ const SidebarEdit = props => {
 };
 
 const SidebarEditConnected = connect(
-  ({ meta, date, style, ui }) => ({ meta, date, style, selectedSidebarTabId: ui.selectedSidebarTabId }),
+  ({ meta, date, style, ui }) => ({
+    meta,
+    date,
+    style,
+    selectedSidebarTabId: ui.selectedSidebarTabId,
+    isMapLoaded: ui.mapLoaded
+  }),
   {
     setInterval,
     setSpeed,
