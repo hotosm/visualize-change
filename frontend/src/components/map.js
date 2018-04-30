@@ -242,84 +242,88 @@ class Map extends React.Component {
     this.state = { selectedDate: this.props.date.selected, subscribed: false, loaded: false };
   }
 
-  componentDidMount() {
-    getLocation(({ lat, lng, zoom }) => {
-      this.map = new mapboxgl.Map({
-        container: this.elMap,
-        style: `mapbox://styles/mapbox/${this.props.style.background}-v9`,
-        center: [lng, lat],
-        zoom
-      });
-
-      this.setState({ loaded: true });
-
-      this.map.addControl(
-        new mapboxgl.NavigationControl({
-          showCompass: false
-        })
-      );
-
-      const geolocate = new mapboxgl.GeolocateControl({
-        positionOptions: {
-          enableHighAccuracy: true
-        },
-        trackUserLocation: true
-      });
-
-      this.map.addControl(geolocate);
-
-      const geocoder = new mapboxglGeoconder({
-        accessToken: mapboxgl.accessToken,
-        flyTo: false
-      });
-
-      geocoder.on("result", e => {
-        if (e.result && e.result.center) {
-          this.map.flyTo({
-            center: e.result.center,
-            zoom: 12,
-            speed: 2.0
-          });
-        }
-      });
-
-      this.map.addControl(geocoder);
-      this.map.dragRotate.disable();
-
-      this.map.addControl(new mapboxgl.ScaleControl(), "bottom-right");
-
-      this.map.on("load", () => {
-        const { filter: filterMap, update: updateMap } = setupMap(this.map, this.props.style);
-
-        this.filterMap = filterMap;
-        this.updateMap = updateMap;
-
-        this.map.on("move", () => {
-          this.props.setCoordinates({
-            lat: this.map.getCenter().lat,
-            lng: this.map.getCenter().lng,
-            zoom: this.map.getZoom()
-          });
-        });
-
-        this.updateMap(this.props.style);
-        this.filterMap(this.state.selectedDate, this.props.date.interval);
-
-        this.isMapReady = makeTileReadyCheck(this.map, "osm");
-
-        this.loadedIntervalHandle = setInterval(() => {
-          const isMapLoaded = this.map.loaded();
-
-          if (isMapLoaded && !this.props.isMapLoaded) {
-            this.props.setMapLoaded();
-          }
-
-          if (!isMapLoaded && this.props.isMapLoaded) {
-            this.props.setMapLoading();
-          }
-        }, 100);
-      });
+  setupMap({ lat, lng, zoom }) {
+    this.map = new mapboxgl.Map({
+      container: this.elMap,
+      style: `mapbox://styles/mapbox/${this.props.style.background}-v9`,
+      center: [lng, lat],
+      zoom
     });
+
+    this.setState({ loaded: true });
+
+    this.map.addControl(
+      new mapboxgl.NavigationControl({
+        showCompass: false
+      })
+    );
+
+    const geolocate = new mapboxgl.GeolocateControl({
+      positionOptions: {
+        enableHighAccuracy: true
+      },
+      trackUserLocation: true
+    });
+
+    this.map.addControl(geolocate);
+
+    const geocoder = new mapboxglGeoconder({
+      accessToken: mapboxgl.accessToken,
+      flyTo: false
+    });
+
+    geocoder.on("result", e => {
+      if (e.result && e.result.center) {
+        this.map.flyTo({
+          center: e.result.center,
+          zoom: 12,
+          speed: 2.0
+        });
+      }
+    });
+
+    this.map.addControl(geocoder);
+    this.map.dragRotate.disable();
+
+    this.map.addControl(new mapboxgl.ScaleControl(), "bottom-right");
+
+    this.map.on("load", () => {
+      const { filter: filterMap, update: updateMap } = setupMap(this.map, this.props.style);
+
+      this.filterMap = filterMap;
+      this.updateMap = updateMap;
+
+      this.map.on("move", () => {
+        this.props.setCoordinates({
+          lat: this.map.getCenter().lat,
+          lng: this.map.getCenter().lng,
+          zoom: this.map.getZoom()
+        });
+      });
+
+      this.updateMap(this.props.style);
+      this.filterMap(this.state.selectedDate, this.props.date.interval);
+
+      this.isMapReady = makeTileReadyCheck(this.map, "osm");
+
+      this.loadedIntervalHandle = setInterval(() => {
+        const isMapLoaded = this.map.loaded();
+
+        if (isMapLoaded && !this.props.isMapLoaded) {
+          this.props.setMapLoaded();
+        }
+
+        if (!isMapLoaded && this.props.isMapLoaded) {
+          this.props.setMapLoading();
+        }
+      }, 100);
+    });
+  }
+
+  componentDidMount() {
+    const id = parseInt(location.pathname.split("/").slice(-1));
+
+    id ? this.setupMap(this.props.mapCoordinates) : getLocation(this.setupMap.bind(this));
   }
 
   componententWillUmount() {
@@ -402,6 +406,7 @@ class Map extends React.Component {
         {!this.state.loaded && (
           <div className="pt-overlay-backdrop">
             <Spinner className="pt-big" />
+            <div className="overlay-text">Your location is being determined...</div>
           </div>
         )}
         <div className="map-content" style={{ position: "relative" }}>

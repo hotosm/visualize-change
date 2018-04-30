@@ -11,6 +11,16 @@ const { setTutorialModeOn } = require("../actions");
 
 const isLinkDisabled = path => path !== "view" && path !== "edit";
 
+// const SaveButton = ({   }) => (
+//   <Button
+//     loading={saving}
+//     disabled={!isEditing || !canSave}
+//     style={{ width: 50 }}
+//     onClick={canSave ? onSaveClick : null}>
+//     {isEditing ? (canSave ? "Save" : "Saved") : "Save"}
+//   </Button>
+// );
+
 const Topbar = ({
   id = null,
   path,

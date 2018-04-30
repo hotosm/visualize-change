@@ -7,18 +7,25 @@ const { hideExportMenu, sendToRenderer } = require("../actions");
 
 const { getShareUrl } = require("../utils");
 
-const URLShare = ({ url }) => (
-  <div className="inside-content url-share">
-    <h4>URL Share</h4>
-    <div className="pt-input-group">
-      <input type="text" className="pt-input" value={url} onChange={() => {}} />
-      <button className="pt-button pt-minimal pt-intent-warning pt-icon-clipboard" onClick={() => clipboardCopy(url)} />
+const URLShare = ({ id }) => {
+  const url = getShareUrl(id);
+  return (
+    <div className="inside-content url-share">
+      <h4>URL Share</h4>
+      <div className="pt-input-group">
+        <input disabled={!id} type="text" className="pt-input" value={id ? url : "Non saved"} onChange={() => {}} />
+        <button
+          disabled={!id}
+          className="pt-button pt-minimal pt-intent-warning pt-icon-clipboard"
+          onClick={() => clipboardCopy(url)}
+        />
+      </div>
+      <label className="info-label" style={{ padding: "10px 0" }}>
+        {id ? "Use this link to share the animation" : "Please save visualization to share It"}
+      </label>
     </div>
-    <label className="info-label" style={{ padding: "10px 0" }}>
-      Use this link to share the animation
-    </label>
-  </div>
-);
+  );
+};
 
 class GenericMediaShare extends React.Component {
   constructor() {
@@ -104,11 +111,11 @@ class ExportMenu extends React.Component {
 
   render() {
     const { isOpen, status, hideExportMenu, location } = this.props;
-    const id = location.pathname.split("/").slice(-1);
+    const id = parseInt(location.pathname.split("/").slice(-1));
     return (
       <Overlay isOpen={isOpen} canOutsideClickClose={true} onClose={hideExportMenu}>
         <Card elevation={Elevation.FOUR} className="export-menu">
-          <URLShare url={getShareUrl(id)} />
+          <URLShare id={id} />
           {status === null ? <GenericMediaShare onExportClick={this.onExportClick} /> : <SucessMessage />}
         </Card>
       </Overlay>
