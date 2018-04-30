@@ -44,7 +44,7 @@ class PlayerPanel extends React.Component {
   }
 
   render() {
-    const { date, togglePlay, toggleFullscreen, isFullScreenMode } = this.props;
+    const { date, togglePlay, toggleFullscreen, isFullScreenMode, isMapLoaded } = this.props;
 
     const max = this.props.date.end ? this.calcValueFromDates(this.props.date.end) : 1;
     const value = this.calcValueFromDates(this.props.date.selected);
@@ -56,6 +56,7 @@ class PlayerPanel extends React.Component {
             className="pt-minimal play-btn"
             icon={date.isPlaying ? "pause" : "play"}
             size={20}
+            disabled={!isMapLoaded}
             onClick={togglePlay}
           />
           <div className="map-footer__progressbar">
@@ -89,7 +90,8 @@ const PlayerPanelConnected = connect(
   ({ date, ui }) => ({
     date,
     isSidebarOpen: ui.sidebarOpen,
-    isFullScreenMode: ui.fullScreenMode
+    isFullScreenMode: ui.fullScreenMode,
+    isMapLoaded: ui.mapLoaded
   }),
   {
     togglePlay,

@@ -106,6 +106,10 @@ body {
 
   display: flex;
   align-items: center;
+
+  a {
+    color: @red;
+  }
 }
 
 .sidebar-footer__content {
@@ -175,12 +179,20 @@ body {
   display: flex;
   .pt-button.play-btn,
   .pt-button.play-btn:active,
+  .pt-button.play-btn:disabled,
   .pt-button.play-btn:hover {
     padding-right: 10px;
     background: @red;
     border-radius: 2px;
     .pt-icon {
       background: @red;
+      color: white;
+    }
+  }
+  .pt-button.play-btn:disabled {
+    background: @light-gray3;
+    .pt-icon {
+      background: @light-gray3;
       color: white;
     }
   }
@@ -880,8 +892,10 @@ a.pt-button.start-button {
   left: 50%;
   background: rgba(255, 255, 255, 0.9);
   border-radius: 100px;
-  width: 30px;
-  height: 30px;
+  width: 55px;
+  height: 55px;
+  padding: 5px;
+  margin-top: -30px;
   display: flex;
   justify-content: center;
   align-items: center;

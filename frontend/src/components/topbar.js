@@ -65,8 +65,8 @@ const Topbar = ({
           </Link>
 
           {!isMapLoaded && (
-            <div className="center-on-top" style={{ marginLeft: isSidebarOpen ? 160 : 0 }}>
-              <Spinner className="pt-small" />
+            <div className="center-on-top" style={{ marginLeft: isSidebarOpen ? 150 : 0 }}>
+              <Spinner className="pt-large" />
             </div>
           )}
         </ButtonGroup>

@@ -16,8 +16,17 @@ const Sidebar = ({ isOpen, isFullScreen, toggleSidebar, children }) => (
       <div className="sidebar-footer">
         <div className="sidebar-footer__content">
           <span>Made with </span>
-          <Icon icon="heart" iconSize={12} style={{ marginTop: 3 }} />
-          <span> by HOT and friends</span>
+          <Icon icon="heart" iconSize={12} style={{ marginTop: 3 }} />{" "}
+          <span>
+            by{" "}
+            <a href="https://www.hotosm.org" target="blank">
+              HOT
+            </a>{" "}
+            and{" "}
+            <a href="https://github.com/hotosm/visualize-change/graphs/contributors" target="blank">
+              friends
+            </a>
+          </span>
         </div>
       </div>
     </div>
