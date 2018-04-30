@@ -1,5 +1,3 @@
-// TODO: Move this to JSON that HOT can configure
-
 const FEATURES_1 = [
   {
     name: "roads",
@@ -147,6 +145,10 @@ const DEFAULT_STATE = {
 };
 
 module.exports = {
+  // set page title and top bar title below
+  PAGE_TITLE: "HOT",
+  TOPBAR_TITLE: "Visualize Change",
+
   DEFAULT_DATE_FORMAT: "YYYY-MM-DD",
   MAX_ANIMATION_UNITS: 30,
   INTERVAL_VALUES,
@@ -177,8 +179,6 @@ module.exports = {
   SET_TUTORIAL_MODE_OFF: "TUTORIAL_MODE_OFF",
 
   SET_METADATA: "SET_METADATA",
-
-  //SET_DEFAULT_STATE: "SET_DEFAULT_STATE",
 
   ROUTE_CHANGE: "@@router/LOCATION_CHANGE",
 
