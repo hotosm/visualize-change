@@ -26,7 +26,7 @@ const MAP_CONFIG_SCHEMA = j.object().keys({
     .max(22),
   startDate: j.number(), // timestamp
   endDate: j.number(), // timestamp
-  interval: j.string().valid("hours", "days", "weeks"),
+  interval: j.string().valid("hours", "days", "weeks", "months", "years"),
   style: j.object() // TODO: Need to add better validation for this
 });
 
