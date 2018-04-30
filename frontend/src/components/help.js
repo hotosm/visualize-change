@@ -31,6 +31,8 @@ class HelpPopover extends React.Component {
     const {
       id,
       tutorialMode,
+      content,
+      targetContent,
       visiblePopovers,
       showPopover,
       hidePopover,
@@ -40,30 +42,33 @@ class HelpPopover extends React.Component {
 
     const slideIndex = HELP_SLIDE_ORDER.findIndex(slideId => id === slideId);
     const isLast = slideIndex >= HELP_SLIDE_ORDER.length - 1;
+
+    const popoverContent = content || (
+      <div className="help-popover" onClick={ev => ev.stopPropagation()}>
+        <Button className="close-button" icon="cross" onClick={() => setTutorialModeOff() && hidePopover(id)} />
+        <div className="help-content">{HELP_TEXTS[id]}</div>
+        {tutorialMode && (
+          <Button
+            className="action-button"
+            onClick={ev => {
+              ev.stopPropagation();
+              isLast
+                ? hidePopover(id) && setTutorialModeOff() && changeSidebarTab("simpleEdit")
+                : goToNextInTutorial(id);
+            }}
+          >
+            {isLast ? "Close" : "Next"}
+          </Button>
+        )}
+      </div>
+    );
+
     return (
       <Popover
         isOpen={visiblePopovers.includes(id)}
         onClose={() => hidePopover(id)}
         preventOverflow={{ enabled: true, boundariesElement: "scrollParent" }}
-        content={
-          <div className="help-popover" onClick={ev => ev.stopPropagation()}>
-            <Button className="close-button" icon="cross" onClick={() => setTutorialModeOff() && hidePopover(id)} />
-            <div className="help-content">{HELP_TEXTS[id]}</div>
-            {tutorialMode && (
-              <Button
-                className="action-button"
-                onClick={ev => {
-                  ev.stopPropagation();
-                  isLast
-                    ? hidePopover(id) && setTutorialModeOff() && changeSidebarTab("simpleEdit")
-                    : goToNextInTutorial(id);
-                }}
-              >
-                {isLast ? "Close" : "Next"}
-              </Button>
-            )}
-          </div>
-        }
+        content={popoverContent}
         target={
           <Button
             className="help-button"
@@ -72,7 +77,9 @@ class HelpPopover extends React.Component {
               ev.stopPropagation();
               showPopover(id);
             }}
-          />
+          >
+            {targetContent || null}
+          </Button>
         }
       />
     );

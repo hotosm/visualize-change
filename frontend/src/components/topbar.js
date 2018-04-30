@@ -7,7 +7,9 @@ const { connect } = require("react-redux");
 const { Link } = require("react-router-dom");
 
 const { TOPBAR_TITLE } = require("../constans/index");
-const { setTutorialModeOn } = require("../actions");
+const { setTutorialModeOn, goTo } = require("../actions");
+
+const HelpPopoverConnected = require("./help");
 
 const isLinkDisabled = path => path !== "view" && path !== "edit";
 
@@ -31,6 +33,7 @@ const Topbar = ({
   isFullScreenMode,
   onShareClick,
   setTutorialModeOn,
+  goTo,
   isSidebarOpen,
   isMapLoaded
 }) => (
@@ -87,9 +90,20 @@ const Topbar = ({
           <Button icon="share" disabled={!onShareClick} onClick={onShareClick}>
             Share
           </Button>
-          <Button icon="help" onClick={setTutorialModeOn}>
-            Help
-          </Button>
+          <HelpPopoverConnected
+            content={
+              <div className="help-popover">
+                <Button icon="help" onClick={setTutorialModeOn}>
+                  Show tutorial
+                </Button>
+                <Button icon="book" onClick={() => goTo("/learn")}>
+                  Read Overview
+                </Button>
+              </div>
+            }
+            targetContent="Help"
+            id="main-help"
+          />
         </ButtonGroup>
       </NavbarGroup>
     </Navbar>
@@ -102,5 +116,5 @@ module.exports = connect(
     isMapLoaded: ui.mapLoaded,
     isSidebarOpen: ui.sidebarOpen
   }),
-  { setTutorialModeOn }
+  { setTutorialModeOn, goTo }
 )(Topbar);

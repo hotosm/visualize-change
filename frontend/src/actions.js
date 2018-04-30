@@ -62,11 +62,13 @@ const sendToRenderer = ({ email, format, size }) => (dispatch, getState) => {
     },
     method: "post",
     body: JSON.stringify(mapConfig)
-  }).then(res => {
-    if (res.ok) {
-      dispatch(action(EXPORT_RENDER_QUEUED));
-    }
-  });
+  })
+    .then(res => {
+      if (res.ok) {
+        dispatch(action(EXPORT_RENDER_QUEUED));
+      }
+    })
+    .catch(err => console.log("err", err));
 };
 
 const exportDataFetching = data => action(EXPORT_DATA_FETCHING, data);
@@ -144,6 +146,7 @@ module.exports = {
   hidePlayerPanel: () => action(HIDE_PLAYER_PANEL),
   setMapLoading: () => action(MAP_LOADING),
   setMapLoaded: () => action(MAP_LOADED),
+  goTo: url => dispatch => dispatch(push(url)),
 
   setMetadata: (name, value) => action(SET_METADATA, { name, value }),
 

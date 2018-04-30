@@ -422,20 +422,37 @@ body {
   right: 0;
   bottom: 0;
   background: white;
+  overflow: scroll;
 
   .about-page__content {
     h2 {
-      margin-bottom: 50px;
+      margin-bottom: 30px;
+      text-align: center;
+      text-decoration: underline;
+      color: @red;
     }
-    margin-top: 50px;
-    height: 90vh;
+    h3 {
+      margin: 20px 0 15px;
+    }
+    a {
+      color: @red;
+    }
+    padding: 100px 0;
+    height: 100%;
     display: flex;
-    align-items: center;
-    justify-content: center;
     flex-flow: column;
     max-width: 600px;
     text-align: justify;
     margin: 0 auto;
+    ol {
+      padding: 0 0 0 16px;
+      li {
+        line-height: 30px;
+      }
+    }
+    p {
+      line-height: 30px;
+    }
   }
 }
 .pt-toast-container.pt-toast-container-top {
@@ -517,8 +534,11 @@ body {
 }
 
 .pt-button:not([class*="pt-intent-"]):active,
-.pt-button:not([class*="pt-intent-"]).pt-active {
+.pt-button:not([class*="pt-intent-"]).pt-active,
+.pt-button-group.pt-minimal .pt-button:active,
+.pt-button-group.pt-minimal .pt-button.pt-active {
   background: @pale-red;
+  color: @red;
 }
 
 // Datepicker
@@ -814,6 +834,9 @@ a.pt-button.start-button {
 .help-popover {
   padding: 25px;
   max-width: 250px;
+  display: flex;
+  flex-flow: column;
+  align-items: flex-start;
 }
 
 .hot-theme .eye-icon .pt-icon {
@@ -889,6 +912,7 @@ a.pt-button.start-button {
   align-items: center;
   justify-content: center;
   font-family: sans-serif;
+  z-index: 10;
 
   .overlay-text {
     padding: 20px 0;
