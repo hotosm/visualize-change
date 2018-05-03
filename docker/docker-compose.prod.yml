@@ -32,12 +32,16 @@ services:
       dockerfile: docker/frontend/Dockerfile.prod
       args:
         - NODE_ENV=production
-        - MAPBOX_ACCESS_TOKEN # env passed from shell, to dockerfile arg, so we can build using env variables
+        - MAPBOX_ACCESS_TOKEN       # env passed from shell, to dockerfile arg, so we can build using env variables
+        - MAP_VECTOR_SOURCE_MAXZOOM # env passed from shell, to dockerfile arg, so we can build using env variables
+        - MAP_LAYER_MINZOOM         # env passed from shell, to dockerfile arg, so we can build using env variables
     image: hot-mapping-vis-frontend-prod
     restart: on-failure
     environment:
       - NODE_ENV=production
-      - MAPBOX_ACCESS_TOKEN # env passed from shell
+      - MAPBOX_ACCESS_TOKEN       # env passed from shell
+      - MAP_VECTOR_SOURCE_MAXZOOM # env passed from shell
+      - MAP_LAYER_MINZOOM         # env passed from shell
     expose:
       - 3000
 
@@ -52,7 +56,9 @@ services:
     environment:
       - NODE_ENV=production
       - RENDER_QUEUE=render_queue
-      - MAPBOX_ACCESS_TOKEN # env passed from shell
+      - MAPBOX_ACCESS_TOKEN       # env passed from shell
+      - MAP_VECTOR_SOURCE_MAXZOOM # env passed from shell
+      - MAP_LAYER_MINZOOM         # env passed from shell
     depends_on:
       - rabbitmq
     volumes:

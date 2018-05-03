@@ -23,7 +23,9 @@ services:
     restart: on-failure
     environment:
       - NODE_ENV=development
-      - MAPBOX_ACCESS_TOKEN # env passed from shell
+      - MAPBOX_ACCESS_TOKEN       # env passed from shell
+      - MAP_VECTOR_SOURCE_MAXZOOM # env passed from shell
+      - MAP_LAYER_MINZOOM         # env passed from shell
     volumes:
       - ./../frontend:/app
       - /app/node_modules # prefer container's node_modules instead of volume-mounted ones
@@ -39,7 +41,9 @@ services:
     environment:
       - NODE_ENV=development
       - RENDER_QUEUE=render_queue
-      - MAPBOX_ACCESS_TOKEN # env passed from shell
+      - MAPBOX_ACCESS_TOKEN       # env passed from shell
+      - MAP_VECTOR_SOURCE_MAXZOOM # env passed from shell
+      - MAP_LAYER_MINZOOM         # env passed from shell
     depends_on:
       - rabbitmq
     volumes:

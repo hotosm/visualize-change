@@ -15,7 +15,9 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
-      "process.env.MAPBOX_ACCESS_TOKEN": JSON.stringify(process.env.MAPBOX_ACCESS_TOKEN)
+      "process.env.MAPBOX_ACCESS_TOKEN": JSON.stringify(process.env.MAPBOX_ACCESS_TOKEN),
+      "process.env.MAP_VECTOR_SOURCE_MAXZOOM": JSON.stringify(process.env.MAP_VECTOR_SOURCE_MAXZOOM),
+      "process.env.MAP_LAYER_MINZOOM": JSON.stringify(process.env.MAP_LAYER_MINZOOM)
     })
   ],
 
