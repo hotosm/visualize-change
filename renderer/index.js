@@ -49,9 +49,12 @@ amqp.connect("amqp://rabbitmq", (err, connection) => {
       const successRender = () => {
         const replyMsg = JSON.stringify({
           email: renderConfig.email,
-          dir: renderConfig.dir
+          dir: renderConfig.dir,
+          format: renderConfig.format
         });
+
         logger.debug("renderer replying to server", { msg: replyMsg });
+
         channel.sendToQueue(msg.properties.replyTo, Buffer.from(replyMsg), {
           correlationId: msg.properties.correlationId
         });
