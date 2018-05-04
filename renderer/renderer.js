@@ -8,12 +8,12 @@ if (!process.env.LOCAL_DEBUG) {
 
 const { RENDERING_SHOT, RENDERING_DONE } = require("./common");
 
-const envToInt = (envKey, notFound) => {
-  return process.env[envKey] ? parseInt(process.env[envKey]) : notFound;
+const envToInt = (envVal, notFound) => {
+  return envVal ? parseInt(envVal) : notFound;
 };
 
-const MAP_VECTOR_SOURCE_MAXZOOM = envToInt("MAP_VECTOR_SOURCE_MAXZOOM", 12);
-const MAP_LAYER_MINZOOM = envToInt("MAP_LAYER_MINZOOM", 12);
+const MAP_VECTOR_SOURCE_MAXZOOM = envToInt(process.env.MAP_VECTOR_SOURCE_MAXZOOM, 12);
+const MAP_LAYER_MINZOOM = envToInt(process.env.MAP_LAYER_MINZOOM, 12);
 
 const moment = require("moment");
 const mapboxgl = require("mapbox-gl");
