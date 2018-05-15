@@ -17,12 +17,14 @@ A toolkit to visualize changes in OSM, part of the OSM Analytics ecosystem. Work
 Some keys are required for app to work properly:
 
 ```
-MAILGUN_API_KEY=...     # api key for mailgun
-MAILGUN_DOMAIN=...      # domain from mailgun
-MAPBOX_ACCESS_TOKEN=... # access token for mapbox
-SERVER_DOMAIN=...       # main domain of the server (http://SERVER_DOMAIN/), used for making URL in email
-POSTGRES_PASSWORD=...   # password to be used for postgres DB
-POSTGRES_USER=...       # user to be used for postgres DB
+MAILGUN_API_KEY=...           # api key for mailgun
+MAILGUN_DOMAIN=...            # domain from mailgun
+MAPBOX_ACCESS_TOKEN=...       # access token for mapbox
+SERVER_DOMAIN=...             # main domain of the server (http://SERVER_DOMAIN/), used for making URL in email
+POSTGRES_PASSWORD=...         # password to be used for postgres DB
+POSTGRES_USER=...             # user to be used for postgres DB
+MAP_VECTOR_SOURCE_MAXZOOM=12  # `maxzoom` value used for vector tile source (should be kept to 12)
+MAP_LAYER_MINZOOM=12          # `minzoom` value used for roads and buildings layers (for unprocessed tiles should be kept at 12, for processed can be set to 0)
 ```
 
 For dev, this could be set in `PROJECT_ROOT/.env`, for production use it's preffered to `export` them in the shell.
@@ -32,7 +34,7 @@ For dev, this could be set in `PROJECT_ROOT/.env`, for production use it's preff
 1. `yarn install`
 2. `./scripts/setup-docker-data-folders.sh`
 3. `./scripts/get-indonesia-tiles.sh` (test tiles for `dev`, final application will use tiles for the whole earth)
-4. optionally generated underzoom for tiles (this takes a while) `./scripts/tiles-add-underzoom.sh`
+4. optionally generated underzoom for tiles (this takes a while) `./scripts/tiles-add-underzoom.sh` - `env`'s `MAP_LAYER_MINZOOM` should be set to `0` if using underzoom
 5. `yarn run build:dev` or `./scripts/build.dev.sh`
 
 ## dev run
@@ -44,7 +46,7 @@ For dev, this could be set in `PROJECT_ROOT/.env`, for production use it's preff
 
 1. `./scripts/get-indonesia-tiles.sh` (test tiles for now) OR `./scripts/get-earth-tiles.sh` (whole earth if you have the hard drive space)
 2. `./scripts/setup-docker-data-folders.sh`
-3. optionally generated underzoom for tiles (this takes a while) `./scripts/tiles-add-underzoom.sh`
+3. optionally generated underzoom for tiles (this takes a while) `./scripts/tiles-add-underzoom.sh` - `env`'s `MAP_LAYER_MINZOOM` should be set to `0` if using underzoom
 4. `yarn run build:prod` or `./scripts/build.prod.sh`
 
 ## prod run

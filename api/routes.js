@@ -170,7 +170,7 @@ module.exports = ({ channel, db }, callback) => {
 
             your render is ready at:
 
-            ${SERVER_DOMAIN}/renders/${replyContent.dir}/render.mp4
+            ${SERVER_DOMAIN}/renders/${replyContent.dir}/render.${replyContent.format}
 
             Cheers!
           `

@@ -13,6 +13,13 @@ const parseValue = value => (typeof value === "object" ? rgbaObjectToString(valu
 
 mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
 
+const envToInt = (envVal, notFound) => {
+  return envVal ? parseInt(envVal) : notFound;
+};
+
+const MAP_VECTOR_SOURCE_MAXZOOM = envToInt(process.env.MAP_VECTOR_SOURCE_MAXZOOM, 12);
+const MAP_LAYER_MINZOOM = envToInt(process.env.MAP_LAYER_MINZOOM, 12);
+
 const { Intent, Spinner } = require("@blueprintjs/core");
 
 const AppToaster = require("./toaster");
@@ -69,7 +76,7 @@ const setupMap = map => {
   map.addSource(sourceId, {
     type: "vector",
     tiles: [document.location.origin + "/api/tile/{z}/{x}/{y}"],
-    maxzoom: 12
+    maxzoom: MAP_VECTOR_SOURCE_MAXZOOM
   });
 
   const firstSymbolId = map.getStyle().layers.filter(d => d.type === "symbol")[0].id;
@@ -85,7 +92,7 @@ const setupMap = map => {
         "line-join": "round",
         "line-cap": "round"
       },
-      minzoom: 12
+      minzoom: MAP_LAYER_MINZOOM
     },
     firstSymbolId
   );
@@ -102,7 +109,7 @@ const setupMap = map => {
         "line-join": "round",
         "line-cap": "round"
       },
-      minzoom: 12
+      minzoom: MAP_LAYER_MINZOOM
     },
     firstSymbolId
   );
@@ -119,7 +126,7 @@ const setupMap = map => {
         "line-join": "round",
         "line-cap": "round"
       },
-      minzoom: 12
+      minzoom: MAP_LAYER_MINZOOM
     },
     firstSymbolId
   );
@@ -136,7 +143,7 @@ const setupMap = map => {
         "line-join": "round",
         "line-cap": "round"
       },
-      minzoom: 12
+      minzoom: MAP_LAYER_MINZOOM
     },
     firstSymbolId
   );
@@ -332,20 +339,20 @@ class Map extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.mapCoordinates.zoom < 12 && AppToaster.getToasts().length < 1) {
+    if (nextProps.mapCoordinates.zoom < MAP_LAYER_MINZOOM && AppToaster.getToasts().length < 1) {
       this.toastKey = AppToaster.show({
         key: "zoom",
         message: "Zoom in to see data.",
         intent: Intent.DANGER,
         timeout: 0,
         action: {
-          onClick: () => this.map.setZoom(12),
+          onClick: () => this.map.setZoom(MAP_LAYER_MINZOOM),
           text: "Take me to supported zoom levels."
         }
       });
     }
 
-    if (nextProps.mapCoordinates.zoom >= 12 && this.toastKey) {
+    if (nextProps.mapCoordinates.zoom >= MAP_LAYER_MINZOOM && this.toastKey) {
       AppToaster.dismiss(this.toastKey);
     }
 

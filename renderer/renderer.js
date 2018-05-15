@@ -8,6 +8,13 @@ if (!process.env.LOCAL_DEBUG) {
 
 const { RENDERING_SHOT, RENDERING_DONE } = require("./common");
 
+const envToInt = (envVal, notFound) => {
+  return envVal ? parseInt(envVal) : notFound;
+};
+
+const MAP_VECTOR_SOURCE_MAXZOOM = envToInt(process.env.MAP_VECTOR_SOURCE_MAXZOOM, 12);
+const MAP_LAYER_MINZOOM = envToInt(process.env.MAP_LAYER_MINZOOM, 12);
+
 const moment = require("moment");
 const mapboxgl = require("mapbox-gl");
 const { ipcRenderer, remote } = require("electron");
@@ -98,7 +105,7 @@ map.on("load", () => {
         ? "http://localhost:4000/tile/{z}/{x}/{y}" // tiles from docker when running electron on host machine
         : "http://api:4000/tile/{z}/{x}/{y}" // docker api address inside of docker-compoes
     ],
-    maxzoom: 12
+    maxzoom: MAP_VECTOR_SOURCE_MAXZOOM
   });
 
   map.addLayer(
@@ -112,7 +119,7 @@ map.on("load", () => {
         "line-join": "round",
         "line-cap": "round"
       },
-      minzoom: 12
+      minzoom: MAP_LAYER_MINZOOM
     },
     firstSymbolId
   );
@@ -129,7 +136,7 @@ map.on("load", () => {
         "line-join": "round",
         "line-cap": "round"
       },
-      minzoom: 12
+      minzoom: MAP_LAYER_MINZOOM
     },
     firstSymbolId
   );
@@ -146,7 +153,7 @@ map.on("load", () => {
         "line-join": "round",
         "line-cap": "round"
       },
-      minzoom: 12
+      minzoom: MAP_LAYER_MINZOOM
     },
     firstSymbolId
   );
@@ -163,7 +170,7 @@ map.on("load", () => {
         "line-join": "round",
         "line-cap": "round"
       },
-      minzoom: 12
+      minzoom: MAP_LAYER_MINZOOM
     },
     firstSymbolId
   );
