@@ -226,7 +226,7 @@ const getLocation = callback => {
   const defaultLocation = { lat: 0, lng: 0, zoom: 1 };
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
-      ({ coords }) => callback({ lat: coords.latitude, lng: coords.longitude, zoom: 12 }),
+      ({ coords }) => callback({ lat: coords.latitude, lng: coords.longitude, zoom: 12.5 }),
       () => callback(defaultLocation),
       { timeout: 6000, enableHighAccuracy: false }
     );
@@ -276,7 +276,7 @@ class Map extends React.Component {
       if (e.result && e.result.center) {
         this.map.flyTo({
           center: e.result.center,
-          zoom: 12,
+          zoom: 12.5,
           speed: 2.0
         });
       }
