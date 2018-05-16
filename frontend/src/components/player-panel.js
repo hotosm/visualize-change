@@ -43,7 +43,7 @@ class PlayerPanel extends React.Component {
   }
 
   render() {
-    const { date, togglePlay, toggleFullscreen, isFullScreenMode, isMapLoaded } = this.props;
+    const { date, togglePlay, toggleFullscreen, isFullScreenMode, isMapLoaded, windowSize } = this.props;
 
     const max = this.props.date.end ? this.calcValueFromDates(this.props.date.end) : 1;
     const value = this.calcValueFromDates(this.props.date.selected);
@@ -60,6 +60,7 @@ class PlayerPanel extends React.Component {
           />
           <div className="map-footer__progressbar">
             <Slider
+              windowSize={windowSize}
               isFullScreenMode={isFullScreenMode}
               disabled={date.isPlaying}
               min={0}
@@ -90,7 +91,8 @@ const PlayerPanelConnected = connect(
     date,
     isSidebarOpen: ui.sidebarOpen,
     isFullScreenMode: ui.fullScreenMode,
-    isMapLoaded: ui.mapLoaded
+    isMapLoaded: ui.mapLoaded,
+    windowSize: ui.windowSize
   }),
   {
     togglePlay,

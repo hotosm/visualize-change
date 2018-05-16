@@ -117,6 +117,7 @@ const DEFAULT_STATE = {
     visiblePopoversIds: [],
     tutorialMode: false,
     selectedSidebarTabId: "basicEdit",
+    windowSize: { width: null, height: null },
     mapLoaded: true
   },
   date: {
@@ -192,6 +193,7 @@ module.exports = {
   MAP_LOADED: "MAP_LOADED",
 
   SET_APP_READY: "SET_APP_READY",
+  WINDOW_RESIZE: "WINDOW_RESIZE",
 
   HELP_SLIDE_ORDER: ["bottombar-help", "basic-tab-help", "describe-help", "dates-help", "styles-help"],
 

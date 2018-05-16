@@ -48,7 +48,8 @@ const {
   showPlayerPanel,
   showExportMenu,
   showPopover,
-  setCoordinates
+  setCoordinates,
+  onWindowResize
 } = require("./actions");
 
 const { isChanged, isEditMode } = require("./selectors");
@@ -66,6 +67,10 @@ class MainContainer extends React.Component {
     return props.match.path.split("/")[1] === "edit";
   }
 
+  setWindowSize() {
+    this.props.onWindowResize({ width: window.innerWidth, height: window.innerHeight });
+  }
+
   componentDidMount() {
     const id = this.props.match.params.id;
     const isFirstStarted = !localStorage.getItem("hot-changevis-used");
@@ -79,6 +84,13 @@ class MainContainer extends React.Component {
     } else {
       this.props.getExportById(id);
     }
+
+    this.setWindowSize();
+    window.addEventListener("resize", this.setWindowSize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.setWindowSize);
   }
 
   onUnload(ev) {
@@ -154,7 +166,8 @@ const MainContainerConnected = connect(
     setNewEdit,
     showExportMenu,
     showPopover,
-    setCoordinates
+    setCoordinates,
+    onWindowResize
   }
 )(MainContainer);
 

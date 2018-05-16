@@ -18,6 +18,7 @@ const {
   HELP_SLIDE_ORDER,
   MAP_LOADING,
   MAP_LOADED,
+  WINDOW_RESIZE,
   DEFAULT_STATE
 } = require("../constans/index");
 
@@ -88,6 +89,8 @@ module.exports = (state = DEFAULT_STATE.ui, { type, payload }) => {
     case MAP_LOADED:
       return Object.assign({}, state, { mapLoaded: true });
       break;
+    case WINDOW_RESIZE:
+      return Object.assign({}, state, { windowSize: payload });
     default:
       return state;
   }
