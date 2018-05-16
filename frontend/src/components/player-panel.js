@@ -30,7 +30,7 @@ class PlayerPanel extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     // TODO: Fix this, naive implementation
-    if (nextProps.date.isPlaying) {
+    if (nextProps.date.isPlaying && nextProps.isMapLoaded) {
       this.playTimer = setTimeout(() => {
         const next = moment(this.props.date.selected)
           .add(1, this.props.date.interval)
@@ -90,6 +90,7 @@ const PlayerPanelConnected = connect(
     date,
     isSidebarOpen: ui.sidebarOpen,
     isFullScreenMode: ui.fullScreenMode,
+    isMapLoaded: ui.mapLoaded,
     windowSize: ui.windowSize
   }),
   {
