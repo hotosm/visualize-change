@@ -145,9 +145,7 @@ module.exports = {
   toggleFullscreen: () => action(TOGGLE_FULLSCREEN),
   showPlayerPanel: () => action(SHOW_PLAYER_PANEL),
   hidePlayerPanel: () => action(HIDE_PLAYER_PANEL),
-  onWindowResize: ({ width, height }) => {
-    return action(WINDOW_RESIZE, { width, height });
-  },
+  onWindowResize: ({ width, height }) => action(WINDOW_RESIZE, { width, height }),
   setMapLoading: () => action(MAP_LOADING),
   setMapLoaded: () => action(MAP_LOADED),
   goTo: url => dispatch => dispatch(push(url)),
