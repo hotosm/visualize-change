@@ -14,3 +14,8 @@ docker/data/
 # env
 .env
 .envrc
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
