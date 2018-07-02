@@ -20,10 +20,6 @@ jobs:
             ./get-indonesia-tiles.sh
             ./setup-docker-data-folders.sh
             ./build.prod.sh
-      - run:
-          name: push repos
-          command: |
-
       - deploy:
           name: Deploy to elastic beanstalk
           command: |
