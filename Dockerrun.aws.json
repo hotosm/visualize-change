@@ -1,0 +1,168 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "volumes": [
+    {
+      "name": "tiles",
+      "host": {
+        "sourcePath": "/var/app/current/docker/data/tiles"
+      }
+    },
+    {
+      "name": "server",
+      "host": {
+        "sourcePath": "/var/app/current/docker/data/capture"
+      }
+    },
+    {
+      "name": "db",
+      "host": {
+        "sourcePath": "/var/app/current/docker/data/db"
+      }
+    },
+    {
+      "name": "initsh",
+      "host": {
+        "sourcePath": "/var/app/current/db/init.sh"
+      }
+    },
+    {
+      "name": "rabbitmq",
+      "host": {
+        "sourcePath": "/var/app/current/docker/data/rabbitmq"
+      }
+    }
+  ],
+  "containerDefinitions": [
+    {
+      "name": "tile-processor",
+      "image": "quay.io/hotosm/hot-mapping-vis-tile-processor:latest",
+      "essential": true,
+      "memory": 256,
+      "environment": [
+        {
+          "name": "GENERATE_UNDERZOOM",
+          "value": "0"
+        }
+      ],
+      "mountPoints": [
+        {
+          "sourceVolume": "tiles",
+          "containerPath": "/data/tiles"
+        }
+      ]
+    },
+    {
+      "name": "server",
+      "image": "quay.io/hotosm/hot-mapping-vis-server:latest",
+      "essential": true,
+      "memory": 256,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 80
+        },
+        {
+          "hostPort": 8080,
+          "containerPort": 80
+        }
+      ],
+      "links": ["api", "frontend"],
+      "mountPoints": [
+        {
+          "sourceVolume": "server",
+          "containerPath": "/data/capture"
+        }
+      ]
+    },
+    {
+      "name": "frontend",
+      "image": "quay.io/hotosm/hot-mapping-vis-frontend-prod:latest",
+      "essential": true,
+      "memory": 256,
+      "environment": [
+        {
+          "name": "NODE_ENV",
+          "value": "production"
+        }
+      ]
+    },
+    {
+      "name": "renderer",
+      "image": "quay.io/hotosm/hot-mapping-vis-renderer-prod:latest",
+      "essential": true,
+      "memory": 256,
+      "environment": [
+        {
+          "name": "NODE_ENV",
+          "value": "production"
+        },
+        {
+          "name": "RENDER_QUEUE",
+          "value": "render_queue"
+        }
+      ],
+      "links": ["rabbitmq"],
+      "mountPoints": [
+        {
+          "sourceVolume": "server",
+          "containerPath": "/data/capture"
+        }
+      ]
+    },
+    {
+      "name": "api",
+      "image": "quay.io/hotosm/hot-mapping-vis-api-prod:latest",
+      "essential": true,
+      "memory": 256,
+      "environment": [
+        {
+          "name": "NODE_ENV",
+          "value": "production"
+        },
+        {
+          "name": "RENDER_QUEUE",
+          "value": "render_queue"
+        },
+        {
+          "name": "MAILGUN_FROM",
+          "value": "visualize@hotosmmail.org"
+        }
+      ],
+      "links": ["db", "rabbitmq"],
+      "mountPoints": [
+        {
+          "sourceVolume": "tiles",
+          "containerPath": "/data/tiles"
+        }
+      ]
+    },
+    {
+      "name": "db",
+      "image": "postgres",
+      "essential": true,
+      "memory": 256,
+      "mountPoints": [
+        {
+          "sourceVolume": "db",
+          "containerPath": "/var/lib/postgresql/data"
+        },
+        {
+          "sourceVolume": "initsh",
+          "containerPath": "/docker-entrypoint-initdb.d/init.sh"
+        }
+      ]
+    },
+    {
+      "name": "rabbitmq",
+      "image": "rabbitmq:3",
+      "essential": true,
+      "memory": 256,
+      "mountPoints": [
+        {
+          "sourceVolume": "rabbitmq",
+          "containerPath": "/var/lib/rabbitmq"
+        }
+      ]
+    }
+  ]
+}

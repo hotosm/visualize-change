@@ -1,0 +1,31 @@
+version: 2
+jobs:
+  build:
+    working_directory: /app
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - run:
+          name: Install Docker Compose
+          command: |
+            curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+            chmod +x ~/docker-compose
+            sudo mv ~/docker-compose /usr/local/bin/docker-compose
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Setup scripts
+          working_directory: /app/scripts
+          command: |
+            ./get-indonesia-tiles.sh
+            ./setup-docker-data-folders.sh
+            ./build.prod.sh
+      - run:
+          name: push repos
+          command: |
+
+      - deploy:
+          name: Deploy to elastic beanstalk
+          command: |
+            chmod +x /app/.circleci/eb_deploy.sh
+            /app/.circleci/eb_deploy.sh
