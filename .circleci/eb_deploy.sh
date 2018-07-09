@@ -45,7 +45,7 @@ elif [ $CIRCLE_BRANCH == $PROD_BRANCH ]
 fi
 
 # Deploy develop builds to Staging environment
-docker login quay.io -u $QUAY_USER -p $QUAY_TOKEN
+echo $QUAY_TOKEN | docker login quay.io -u $QUAY_USER --password-stdin
 
 docker commit $(docker ps -f "ancestor=hot-mapping-vis-frontend-prod" -ql) quay.io/hotosm/hot-mapping-vis-frontend-$DEPLOY_BRANCH
 docker commit $(docker ps -f "ancestor=hot-mapping-vis-tile-processor" -ql) quay.io/hotosm/hot-mapping-vis-tile-processor-$DEPLOY_BRANCH
