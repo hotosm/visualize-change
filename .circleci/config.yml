@@ -39,7 +39,7 @@ jobs:
       - deploy:
           name: Deploy to elastic beanstalk
           command: |
-            docker-compose -f -f /app/docker/docker-compose.prod.yml up
+            docker-compose -f /app/docker/docker-compose.prod.yml up
             docker login quay.io -u $QUAY_USER -p $QUAY_TOKEN
             chmod +x /app/.circleci/eb_deploy.sh
             /app/.circleci/eb_deploy.sh
