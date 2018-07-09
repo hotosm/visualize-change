@@ -18,7 +18,7 @@ jobs:
       - setup_remote_docker
       - restore_cache:
           keys:
-            tiles-cache-{{ checksum "tiles.mbtiles" }}
+            tiles-cache-{{ checksum "/app/docker/data/tiles/tiles.mbtiles" }}
             tiles-cache-
       - run:
           name: Setup scripts
@@ -30,6 +30,7 @@ jobs:
             if [ ! -f /app/docker/data/tiles/indonesia.mbtiles.gz ]; then
               curl -o /app/docker/data/tiles/indonesia.mbtiles.gz https://s3.amazonaws.com/mapbox/osm-qa-tiles-production/latest.country/indonesia.mbtiles.gz
               gunzip /app/docker/data/tiles/indonesia.mbtiles.gz
+              mv /app/docker/data/tiles/indonesia.mbtiles /app/docker/data/tiles/tiles.mbtiles
             fi
             mkdir -p /app/docker/data/capture /app/docker/data/db /app/docker/data/rabbitmq data/tiles > /dev/null
       - save_cache:
@@ -40,7 +41,6 @@ jobs:
           name: Deploy to elastic beanstalk
           command: |
             docker-compose -f /app/docker/docker-compose.prod.yml up -d
-            docker login quay.io -u $QUAY_USER -p $QUAY_TOKEN
             chmod +x /app/.circleci/eb_deploy.sh
             /app/.circleci/eb_deploy.sh
       - run:
