@@ -3,18 +3,18 @@ jobs:
   build:
     working_directory: /app
     docker:
-      - image: docker:stable-git
+      - image: quay.io/hotosm/visualize-change-baseimage:latest
     steps:
       - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            apk update && apk add --no-cache \
-              py-pip=9.0.1-r1 \
-              curl curl-dev bash
-            pip install \
-              awscli==1.11.76 \
-              docker-compose
+      # - run:
+      #     name: Install dependencies
+      #     command: |
+      #       apk update && apk add --no-cache \
+      #         py-pip=9.0.1-r1 \
+      #         curl curl-dev bash
+      #       pip install \
+      #         awscli==1.11.76 \
+      #         docker-compose
       - setup_remote_docker
       - restore_cache:
           keys:
@@ -35,10 +35,11 @@ jobs:
       - save_cache:
           paths:
             - /app/docker/data/tiles/
-          key: tiles-cache-{{ checksum "tiles.mbtiles" }}
+          key: tiles-cache-{{ checksum "/app/docker/data/tiles/tiles.mbtiles" }}
       - deploy:
           name: Deploy to elastic beanstalk
           command: |
+            docker-compose -f -f /app/docker/docker-compose.prod.yml up
             docker login quay.io -u $QUAY_USER -p $QUAY_TOKEN
             chmod +x /app/.circleci/eb_deploy.sh
             /app/.circleci/eb_deploy.sh
