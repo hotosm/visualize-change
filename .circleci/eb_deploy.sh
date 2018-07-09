@@ -3,7 +3,7 @@ set -xev # halt script on error
 
 # demo and stage branch are set via environment variables in CircleCI
 # DEMO_BRANCH="testing branch"
-# DEV_BRANCH="develop"
+DEV_BRANCH="develop"
 PROD_BRANCH="master"
 
 # DEMO_ENV="visualize-change-demo"
@@ -20,8 +20,6 @@ echo Running HOT Visualize Change Deployment, current branch is $CIRCLE_BRANCH
 #         return
 # fi
 
-# Login to quay to push images
-docker login quay.io -u $QUAY_USER -p $QUAY_TOKEN
 
 # Set Version Number
 VERSION=v.0.0.$CIRCLE_BUILD_NUM-$(echo $CIRCLE_BRANCH | tr -cd '[[:alnum:]]._-')
@@ -47,11 +45,11 @@ elif [ $CIRCLE_BRANCH == $PROD_BRANCH ]
 fi
 
 # Deploy develop builds to Staging environment
-docker commit ${docker ps -f "ancestor=hot-mapping-vis-frontend-prod" -ql} quay.io/hotosm/hot-mapping-vis-frontend-$DEPLOY_BRANCH
-docker commit ${docker ps -f "ancestor=hot-mapping-vis-tile-processor" -ql} quay.io/hotosm/hot-mapping-vis-tile-processor-$DEPLOY_BRANCH
-docker commit ${docker ps -f "ancestor=hot-mapping-vis-api-prod" -ql} quay.io/hotosm/hot-mapping-vis-api-$DEPLOY_BRANCH
-docker commit ${docker ps -f "ancestor=hot-mapping-vis-renderer-prod" -ql} quay.io/hotosm/hot-mapping-vis-renderer-$DEPLOY_BRANCH
-docker commit ${docker ps -f "ancestor=hot-mapping-vis-server" -ql} quay.io/hotosm/hot-mapping-vis-server-$DEPLOY_BRANCH
+docker commit $(docker ps -f "ancestor=hot-mapping-vis-frontend-prod" -ql) quay.io/hotosm/hot-mapping-vis-frontend-$DEPLOY_BRANCH
+docker commit $(docker ps -f "ancestor=hot-mapping-vis-tile-processor" -ql) quay.io/hotosm/hot-mapping-vis-tile-processor-$DEPLOY_BRANCH
+docker commit $(docker ps -f "ancestor=hot-mapping-vis-api-prod" -ql) quay.io/hotosm/hot-mapping-vis-api-$DEPLOY_BRANCH
+docker commit $(docker ps -f "ancestor=hot-mapping-vis-renderer-prod" -ql) quay.io/hotosm/hot-mapping-vis-renderer-$DEPLOY_BRANCH
+docker commit $(docker ps -f "ancestor=hot-mapping-vis-server" -ql) quay.io/hotosm/hot-mapping-vis-server-$DEPLOY_BRANCH
 docker push quay.io/hotosm/hot-mapping-vis-frontend-$DEPLOY_BRANCH
 docker push quay.io/hotosm/hot-mapping-vis-tile-processor-$DEPLOY_BRANCH
 docker push quay.io/hotosm/hot-mapping-vis-api-$DEPLOY_BRANCH

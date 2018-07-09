@@ -3,26 +3,47 @@ jobs:
   build:
     working_directory: /app
     docker:
-      - image: docker:17.05.0-ce-git
+      - image: docker:stable-git
     steps:
-      - run:
-          name: Install Docker Compose
-          command: |
-            apk update && apk add curl curl-dev bash
-            curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
-            chmod +x ~/docker-compose
-            sudo mv ~/docker-compose /usr/local/bin/docker-compose
       - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            apk update && apk add --no-cache \
+              py-pip=9.0.1-r1 \
+              curl curl-dev bash
+            pip install \
+              awscli==1.11.76 \
+              docker-compose
       - setup_remote_docker
+      - restore_cache:
+          keys:
+            tiles-cache-{{ checksum "tiles.mbtiles" }}
+            tiles-cache-
       - run:
           name: Setup scripts
           working_directory: /app/scripts
           command: |
-            ./get-indonesia-tiles.sh
-            ./setup-docker-data-folders.sh
-            ./build.prod.sh
+            set -x
+            docker-compose -f /app/docker/docker-compose.prod.yml build
+            mkdir -p /app/docker/data/tiles
+            if [ ! -f /app/docker/data/tiles/indonesia.mbtiles.gz ]; then
+              curl -o /app/docker/data/tiles/indonesia.mbtiles.gz https://s3.amazonaws.com/mapbox/osm-qa-tiles-production/latest.country/indonesia.mbtiles.gz
+              gunzip /app/docker/data/tiles/indonesia.mbtiles.gz
+            fi
+            mkdir -p /app/docker/data/capture /app/docker/data/db /app/docker/data/rabbitmq data/tiles > /dev/null
+      - save_cache:
+          paths:
+            - /app/docker/data/tiles/
+          key: tiles-cache-{{ checksum "tiles.mbtiles" }}
       - deploy:
           name: Deploy to elastic beanstalk
           command: |
+            docker login quay.io -u $QUAY_USER -p $QUAY_TOKEN
             chmod +x /app/.circleci/eb_deploy.sh
             /app/.circleci/eb_deploy.sh
+      - run:
+          name: Save Docker image layer cache
+          command: |
+            mkdir -p /caches
+            docker save -o /caches/app.tar app
