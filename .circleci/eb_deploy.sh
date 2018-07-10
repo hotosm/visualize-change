@@ -58,4 +58,4 @@ docker push quay.io/hotosm/hot-mapping-vis-server-$DEPLOY_BRANCH
 
 eb use $DEPLOY_ENV
 echo Deploying $VERSION to $DEPLOY_ENV
-eb deploy -l $VERSION
+eb deploy -l $VERSION --timeout 20
