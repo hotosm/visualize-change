@@ -35,7 +35,7 @@
   "containerDefinitions": [
     {
       "name": "tile-processor",
-      "image": "quay.io/hotosm/hot-mapping-vis-tile-processor:latest",
+      "image": "quay.io/hotosm/hot-mapping-vis-tile-processor-develop:latest",
       "essential": true,
       "memory": 256,
       "environment": [
@@ -53,7 +53,7 @@
     },
     {
       "name": "server",
-      "image": "quay.io/hotosm/hot-mapping-vis-server:latest",
+      "image": "quay.io/hotosm/hot-mapping-vis-server-develop:latest",
       "essential": true,
       "memory": 256,
       "portMappings": [
@@ -76,7 +76,7 @@
     },
     {
       "name": "frontend",
-      "image": "quay.io/hotosm/hot-mapping-vis-frontend-prod:latest",
+      "image": "quay.io/hotosm/hot-mapping-vis-frontend-develop:latest",
       "essential": true,
       "memory": 256,
       "environment": [
@@ -88,7 +88,7 @@
     },
     {
       "name": "renderer",
-      "image": "quay.io/hotosm/hot-mapping-vis-renderer-prod:latest",
+      "image": "quay.io/hotosm/hot-mapping-vis-renderer-develop:latest",
       "essential": true,
       "memory": 256,
       "environment": [
@@ -111,7 +111,7 @@
     },
     {
       "name": "api",
-      "image": "quay.io/hotosm/hot-mapping-vis-api-prod:latest",
+      "image": "quay.io/hotosm/hot-mapping-vis-api-develop:latest",
       "essential": true,
       "memory": 256,
       "environment": [
