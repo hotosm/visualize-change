@@ -7,10 +7,6 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - restore_cache:
-          keys:
-            tiles-cache-{{ checksum "/app/docker/data/tiles/tiles.mbtiles" }}
-            tiles-cache-
       - run:
           name: Setup scripts
           working_directory: /app/scripts
@@ -24,10 +20,6 @@ jobs:
               mv /app/docker/data/tiles/indonesia.mbtiles /app/docker/data/tiles/tiles.mbtiles
             fi
             mkdir -p /app/docker/data/capture /app/docker/data/db /app/docker/data/rabbitmq data/tiles > /dev/null
-      - save_cache:
-          paths:
-            - /app/docker/data/tiles/
-          key: tiles-cache-{{ checksum "/app/docker/data/tiles/tiles.mbtiles" }}
       - deploy:
           name: Deploy to elastic beanstalk
           command: |
