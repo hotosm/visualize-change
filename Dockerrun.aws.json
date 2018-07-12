@@ -79,7 +79,6 @@
       "image": "quay.io/hotosm/hot-mapping-vis-frontend-develop:latest",
       "essential": true,
       "memory": 256,
-      "links": ["api"],
       "environment": [
         {
           "name": "NODE_ENV",

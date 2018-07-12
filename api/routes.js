@@ -129,6 +129,7 @@ const initRoutes = ({ queueRender, exportsAdd, exportsGetById, exportsUpdate }, 
       mbtiles.getTile(z, x, y, (err, data, headers) => {
         if (err) {
           res.status(404);
+          res.send(err.message);
           res.end();
         } else {
           res.writeHead(200, Object.assign(headers, { "Cache-Control": "private, max-age=3600" }));
