@@ -66,7 +66,7 @@
           "containerPort": 80
         }
       ],
-      "links": ["api", "frontend"],
+      "links": ["api:api", "frontend:frontend"],
       "mountPoints": [
         {
           "sourceVolume": "server",
@@ -101,7 +101,7 @@
           "value": "render_queue"
         }
       ],
-      "links": ["rabbitmq"],
+      "links": ["rabbitmq:rabbitmq"],
       "mountPoints": [
         {
           "sourceVolume": "server",
@@ -128,7 +128,7 @@
           "value": "visualize@hotosmmail.org"
         }
       ],
-      "links": ["db", "rabbitmq"],
+      "links": ["db:db", "rabbitmq:rabbitmq"],
       "mountPoints": [
         {
           "sourceVolume": "tiles",
