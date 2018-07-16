@@ -42,8 +42,12 @@ elif [ $CIRCLE_BRANCH == $PROD_BRANCH ]
   then
     DEPLOY_ENV=$PROD_ENV
     DEPLOY_BRANCH=$PROD_BRANCH
+else
+  echo "No suitable Deployment branch for $CIRCLE_BRANCH. Ignore this if testing a pull request. Exiting..."
+  exit 0
 fi
 
+echo "Deploying to $DEPLOY_BRANCH"
 
 docker commit $(docker ps -f "ancestor=hot-mapping-vis-frontend-prod" -ql) quay.io/hotosm/hot-mapping-vis-frontend-$DEPLOY_BRANCH
 docker commit $(docker ps -f "ancestor=hot-mapping-vis-tile-processor" -ql) quay.io/hotosm/hot-mapping-vis-tile-processor-$DEPLOY_BRANCH
