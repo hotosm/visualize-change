@@ -13,6 +13,15 @@ jobs:
           command: |
             set -x
             docker-compose -f /app/docker/docker-compose.prod.yml build
+  deploy:
+    working_directory: /app
+    docker:
+      - image: quay.io/hotosm/visualize-change-baseimage:latest
+    steps:
+      - run:
+          name: Deploy to AWS
+          command: |
+            set -x
             mkdir -p /app/docker/data/tiles
             if [ ! -f /app/docker/data/tiles/indonesia.mbtiles.gz ]; then
               curl -o /app/docker/data/tiles/indonesia.mbtiles.gz https://s3.amazonaws.com/mapbox/osm-qa-tiles-production/latest.country/indonesia.mbtiles.gz
@@ -20,10 +29,21 @@ jobs:
               mv /app/docker/data/tiles/indonesia.mbtiles /app/docker/data/tiles/tiles.mbtiles
             fi
             mkdir -p /app/docker/data/capture /app/docker/data/db /app/docker/data/rabbitmq data/tiles > /dev/null
-      - deploy:
-          name: Deploy to elastic beanstalk
-          command: |
-            docker login quay.io -u $QUAY_USER -p $QUAY_TOKEN
             docker-compose -f /app/docker/docker-compose.prod.yml up -d
+            docker login quay.io -u $QUAY_USER -p $QUAY_TOKEN
             chmod +x /app/.circleci/eb_deploy.sh
             /app/.circleci/eb_deploy.sh
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
+                - develop
