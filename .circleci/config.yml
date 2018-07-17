@@ -13,13 +13,13 @@ jobs:
           command: |
             set -x
             docker-compose -f /app/docker/docker-compose.prod.yml build
-  test:
+  deploy:
     working_directory: /app
     docker:
       - image: quay.io/hotosm/visualize-change-baseimage:latest
     steps:
       - run:
-          name: Test run
+          name: Deploy to AWS
           command: |
             set -x
             mkdir -p /app/docker/data/tiles
@@ -30,14 +30,6 @@ jobs:
             fi
             mkdir -p /app/docker/data/capture /app/docker/data/db /app/docker/data/rabbitmq data/tiles > /dev/null
             docker-compose -f /app/docker/docker-compose.prod.yml up -d
-  deploy:
-    working_directory: /app
-    docker:
-      - image: quay.io/hotosm/visualize-change-baseimage:latest
-    steps:
-      - run:
-          name: Login to Quay.io
-          command: |
             docker login quay.io -u $QUAY_USER -p $QUAY_TOKEN
             chmod +x /app/.circleci/eb_deploy.sh
             /app/.circleci/eb_deploy.sh
@@ -47,12 +39,9 @@ workflows:
   build-deploy:
     jobs:
       - build
-      - test:
-          requires:
-            - build
       - deploy:
           requires:
-            - test
+            - build
           filters:
             branches:
               only:
