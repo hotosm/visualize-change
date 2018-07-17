@@ -7,7 +7,7 @@ DEV_BRANCH="develop"
 PROD_BRANCH="master"
 
 # DEMO_ENV="visualize-change-demo"
-DEV_ENV="visualize-change-dev"
+DEV_ENV="visualize-change-dev-2"
 PROD_ENV="visualize-change-prod"
 
 echo Running HOT Visualize Change Deployment, current branch is $CIRCLE_BRANCH
