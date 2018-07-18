@@ -1,0 +1,4 @@
+docker/data/capture/
+docker/data/db/
+docker/data/rabbitmq/
+docker/data/tiles/

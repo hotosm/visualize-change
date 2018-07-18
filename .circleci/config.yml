@@ -19,7 +19,7 @@ jobs:
               gunzip /app/docker/data/tiles/indonesia.mbtiles.gz
               mv /app/docker/data/tiles/indonesia.mbtiles /app/docker/data/tiles/tiles.mbtiles
             fi
-            mkdir -p /app/docker/data/capture /app/docker/data/db /app/docker/data/rabbitmq data/tiles > /dev/null
+            mkdir -p /app/docker/data/capture /app/docker/data/db /app/docker/data/rabbitmq /app/docker/data/tiles > /dev/null
       - deploy:
           name: Deploy to elastic beanstalk
           command: |
