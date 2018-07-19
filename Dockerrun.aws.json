@@ -4,19 +4,19 @@
     {
       "name": "tiles",
       "host": {
-        "sourcePath": "/var/app/current/docker/data/tiles"
+        "sourcePath": "/efs/data/tiles"
       }
     },
     {
       "name": "server",
       "host": {
-        "sourcePath": "/var/app/current/docker/data/capture"
+        "sourcePath": "/efs/data/capture"
       }
     },
     {
       "name": "db",
       "host": {
-        "sourcePath": "/var/app/current/docker/data/db"
+        "sourcePath": "/efs/data/db"
       }
     },
     {
@@ -28,7 +28,7 @@
     {
       "name": "rabbitmq",
       "host": {
-        "sourcePath": "/var/app/current/docker/data/rabbitmq"
+        "sourcePath": "/efs/data/rabbitmq"
       }
     }
   ],
