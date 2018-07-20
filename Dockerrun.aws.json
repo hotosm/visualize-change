@@ -22,7 +22,7 @@
     {
       "name": "initsh",
       "host": {
-        "sourcePath": "/var/app/current/db/init.sh"
+        "sourcePath": "/var/app/current/db/init.sql"
       }
     },
     {
@@ -148,7 +148,7 @@
         },
         {
           "sourceVolume": "initsh",
-          "containerPath": "/docker-entrypoint-initdb.d/init.sh"
+          "containerPath": "/docker-entrypoint-initdb.d/init.sql"
         }
       ]
     },
