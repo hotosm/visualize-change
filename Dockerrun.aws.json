@@ -91,6 +91,7 @@
       "image": "quay.io/hotosm/hot-mapping-vis-renderer-develop:latest",
       "essential": true,
       "memory": 256,
+      "cpu": 512,
       "environment": [
         {
           "name": "NODE_ENV",
