@@ -37,7 +37,7 @@
       "name": "tile-processor",
       "image": "quay.io/hotosm/hot-mapping-vis-tile-processor-develop:latest",
       "essential": true,
-      "memory": 256,
+      "memory": 512,
       "environment": [
         {
           "name": "GENERATE_UNDERZOOM",
@@ -55,7 +55,7 @@
       "name": "server",
       "image": "quay.io/hotosm/hot-mapping-vis-server-develop:latest",
       "essential": true,
-      "memory": 256,
+      "memory": 512,
       "portMappings": [
         {
           "hostPort": 80,
@@ -78,7 +78,7 @@
       "name": "frontend",
       "image": "quay.io/hotosm/hot-mapping-vis-frontend-develop:latest",
       "essential": true,
-      "memory": 256,
+      "memory": 512,
       "environment": [
         {
           "name": "NODE_ENV",
@@ -90,7 +90,7 @@
       "name": "renderer",
       "image": "quay.io/hotosm/hot-mapping-vis-renderer-develop:latest",
       "essential": true,
-      "memory": 256,
+      "memory": 2048,
       "cpu": 512,
       "environment": [
         {
@@ -114,7 +114,7 @@
       "name": "api",
       "image": "quay.io/hotosm/hot-mapping-vis-api-develop:latest",
       "essential": true,
-      "memory": 256,
+      "memory": 512,
       "environment": [
         {
           "name": "NODE_ENV",
@@ -141,7 +141,7 @@
       "name": "db",
       "image": "postgres",
       "essential": true,
-      "memory": 256,
+      "memory": 512,
       "mountPoints": [
         {
           "sourceVolume": "db",
@@ -157,7 +157,7 @@
       "name": "rabbitmq",
       "image": "rabbitmq:3",
       "essential": true,
-      "memory": 256,
+      "memory": 512,
       "mountPoints": [
         {
           "sourceVolume": "rabbitmq",
