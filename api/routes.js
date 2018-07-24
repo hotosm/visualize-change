@@ -165,15 +165,14 @@ module.exports = ({ channel, db }, callback) => {
         {
           from: process.env.MAILGUN_FROM,
           to: replyContent.email,
-          subject: "HOT Mapping Vis Render",
+          subject: "Your Visualize Change export is ready",
           text: `
             Hi,
 
-            your render is ready at:
+            Your visualization export is ready. Please follow this link to download your file: 
+            ${SERVER_DOMAIN}/renders/${replyContent.dir}/render.${replyContent.format}.
 
-            ${SERVER_DOMAIN}/renders/${replyContent.dir}/render.${replyContent.format}
-
-            Cheers!
+            Humanitarian OpenStreetMap Team
           `
         },
         (err, res) => {
