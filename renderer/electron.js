@@ -7,6 +7,8 @@ const { app, BrowserWindow, ipcMain } = require("electron");
 const logger = require("./logger");
 const { getCaptureDir, RENDERING_SHOT, RENDERING_DONE, RENDERER_TIMEOUT } = require("./common");
 
+const LOCAL_DEBUG = process.env.LOCAL_DEBUG;
+
 if (!process.argv[2]) {
   logger.info("pass stringified JSON data for rendering");
   process.exit(1);
@@ -67,9 +69,11 @@ const convertToVideo = callback => {
 let mainWindow;
 
 app.on("ready", () => {
-  // hide window if we are not debugging
-  const show = process.env.LOCAL_DEBUG ? true : false;
-  mainWindow = new BrowserWindow({ show });
+  // hide window if we are not debugging, and set some web preferences as needed
+  const show = LOCAL_DEBUG ? true : false;
+  const webPreferences = LOCAL_DEBUG ? {} : { webgl: true, offscreen: true };
+
+  mainWindow = new BrowserWindow({ show, webPreferences });
 
   mainWindow.setContentSize(width, height);
   mainWindow.setResizable(false);
@@ -116,6 +120,7 @@ setInterval(() => {
 
   if (time > RENDERER_TIMEOUT) {
     logger.error("renderer timeouted, exiting...");
+    app.quit();
     process.exit(1);
   }
 }, 1000);

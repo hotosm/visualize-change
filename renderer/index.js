@@ -10,23 +10,37 @@ const { getCaptureDir, FINISHED_FLAG_FILENAME } = require("./common");
 
 const RENDER_QUEUE = process.env.RENDER_QUEUE || "render_queue";
 
-const runElectron = (renderingConfig, callback) => {
+const runElectron = (renderConfig, callback) => {
   const electron = spawn(
     "./scripts/xvfb-run",
     [
       "--auto-servernum",
-      "--server-args='-screen 0 1280x720x24'",
+      `--server-args='-screen 0 ${renderConfig.size}x24'`,
       "./scripts/run-electron",
-      `'${renderingConfig}'` // computers are terrible - block shell from dropping quotes
+      `'${JSON.stringify(renderConfig)}'` // computers are terrible - block shell from dropping quotes
     ],
     { cwd: __dirname, shell: true, env: process.env }
   );
 
-  electron.stdout.on("data", data => logger.info(`electron process: ${data.toString()}`));
-  electron.stderr.on("data", data => logger.error(`electron process: ${data.toString()}`));
+  electron.stdout.on("data", data => {
+    console.log("stdout", data.toString());
+    logger.info(`electron process: ${data.toString()}`);
+  });
 
-  electron.on("error", error => callback(error));
-  electron.on("close", code => callback(code === 0 ? null : `exited with ${code}`));
+  electron.stderr.on("data", data => {
+    console.log("stderr", data.toString());
+    logger.error(`electron process: ${data.toString()}`);
+  });
+
+  electron.on("error", error => {
+    console.log("error", error);
+    callback(error);
+  });
+
+  electron.on("close", code => {
+    console.log("close", code);
+    callback(code === 0 ? null : `exited with ${code}`);
+  });
 };
 
 amqp.connect("amqp://rabbitmq", (err, connection) => {
@@ -68,7 +82,7 @@ amqp.connect("amqp://rabbitmq", (err, connection) => {
         logger.debug("this config was previously rendered");
         successRender();
       } else {
-        runElectron(msg.content.toString(), error => {
+        runElectron(renderConfig, error => {
           logger.debug("electron rendering finsished");
 
           if (error) {
