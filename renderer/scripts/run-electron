@@ -3,4 +3,4 @@
 # gpu: https://medium.com/social-tables-tech/how-we-test-webgl-on-continuous-integration-37a1ead55fd7
 # $1 is rendering config json string that electron assumes is first argument
 
-./node_modules/.bin/electron electron.js "$1" --ignore-gpu-blacklist
+./node_modules/.bin/electron electron.js "$1" --ignore-gpu-blacklist --enable-logging
