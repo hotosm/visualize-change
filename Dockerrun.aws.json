@@ -102,7 +102,7 @@
           "value": "render_queue"
         }
       ],
-      "links": ["rabbitmq:rabbitmq", "api:api"],
+      "links": ["rabbitmq:rabbitmq"],
       "mountPoints": [
         {
           "sourceVolume": "server",
