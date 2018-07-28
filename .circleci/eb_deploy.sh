@@ -3,12 +3,12 @@ set -xev # halt script on error
 
 # demo and stage branch are set via environment variables in CircleCI
 # DEMO_BRANCH="testing branch"
-DEV_BRANCH="develop"
-PROD_BRANCH="master"
+DEV_BRANCH="demo"
+PROD_BRANCH="develop"
 
 # DEMO_ENV="visualize-change-demo"
 # DEV_ENV="visualize-change-dev" Set in CircleCI
-PROD_ENV="visualize-change-prod"
+PROD_ENV="visualize-change-dev"
 
 echo Running HOT Visualize Change Deployment, current branch is $CIRCLE_BRANCH
 
