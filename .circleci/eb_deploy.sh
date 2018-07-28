@@ -3,8 +3,8 @@ set -xev # halt script on error
 
 # demo and stage branch are set via environment variables in CircleCI
 # DEMO_BRANCH="testing branch"
-DEV_BRANCH="demo"
-PROD_BRANCH="develop"
+DEV_BRANCH="develop"
+PROD_BRANCH="master"
 
 # DEMO_ENV="visualize-change-demo"
 # DEV_ENV="visualize-change-dev" Set in CircleCI
