@@ -151,7 +151,7 @@ module.exports = {
   TOPBAR_TITLE: "Visualize Change",
 
   DEFAULT_DATE_FORMAT: "YYYY-MM-DD",
-  MAX_ANIMATION_UNITS: 30,
+  MAX_ANIMATION_UNITS: 90,
   INTERVAL_VALUES,
   PAGE_TITLE: "HOT Visualize Change",
   TOPBAR_TITLE: "Visualize Change",

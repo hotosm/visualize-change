@@ -129,6 +129,7 @@ const initRoutes = ({ queueRender, exportsAdd, exportsGetById, exportsUpdate }, 
       mbtiles.getTile(z, x, y, (err, data, headers) => {
         if (err) {
           res.status(404);
+          res.send(err.message);
           res.end();
         } else {
           res.writeHead(200, Object.assign(headers, { "Cache-Control": "private, max-age=3600" }));
@@ -164,15 +165,14 @@ module.exports = ({ channel, db }, callback) => {
         {
           from: process.env.MAILGUN_FROM,
           to: replyContent.email,
-          subject: "HOT Mapping Vis Render",
+          subject: "Your Visualize Change export is ready",
           text: `
             Hi,
 
-            your render is ready at:
+            Your visualization export is ready. Please follow this link to download your file: 
+            ${SERVER_DOMAIN}/renders/${replyContent.dir}/render.${replyContent.format}.
 
-            ${SERVER_DOMAIN}/renders/${replyContent.dir}/render.${replyContent.format}
-
-            Cheers!
+            Humanitarian OpenStreetMap Team
           `
         },
         (err, res) => {

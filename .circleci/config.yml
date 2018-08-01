@@ -1,0 +1,29 @@
+version: 2
+jobs:
+  build:
+    working_directory: /app
+    docker:
+      - image: quay.io/hotosm/visualize-change-baseimage:latest
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Setup scripts
+          working_directory: /app/scripts
+          command: |
+            set -x
+            docker-compose -f /app/docker/docker-compose.prod.yml build
+            mkdir -p /app/docker/data/tiles
+            if [ ! -f /app/docker/data/tiles/indonesia.mbtiles.gz ]; then
+              curl -o /app/docker/data/tiles/indonesia.mbtiles.gz https://s3.amazonaws.com/mapbox/osm-qa-tiles-production/latest.country/indonesia.mbtiles.gz
+              gunzip /app/docker/data/tiles/indonesia.mbtiles.gz
+              mv /app/docker/data/tiles/indonesia.mbtiles /app/docker/data/tiles/tiles.mbtiles
+            fi
+            mkdir -p /app/docker/data/capture /app/docker/data/db /app/docker/data/rabbitmq /app/docker/data/tiles > /dev/null
+      - deploy:
+          name: Deploy to elastic beanstalk
+          command: |
+            docker login quay.io -u $QUAY_USER -p $QUAY_TOKEN
+            docker-compose -f /app/docker/docker-compose.prod.yml up -d
+            chmod +x /app/.circleci/eb_deploy.sh
+            /app/.circleci/eb_deploy.sh

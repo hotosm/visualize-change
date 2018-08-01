@@ -15,10 +15,10 @@
   "license": "MIT",
   "dependencies": {
     "amqplib": "^0.5.2",
-    "electron": "^1.7.10",
+    "electron": "^2.0.5",
     "fluent-ffmpeg": "^2.1.2",
     "left-pad": "^1.2.0",
-    "mapbox-gl": "0.43.0",
+    "mapbox-gl": "0.46.0",
     "moment": "^2.20.1",
     "winston": "^3.0.0-rc1"
   },
