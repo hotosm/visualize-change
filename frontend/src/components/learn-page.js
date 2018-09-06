@@ -75,8 +75,7 @@ const LearnPage = () => (
       </ol>
       <h3>Open Source</h3>
       <p>
-        The Animation toolkit is a collaborative open source project initially created in partnership with HOT and
-        [funder here]. The source code is available on <a href="https://github.com/hotosm/visualize-change">Github</a>
+        The Animation toolkit is a collaborative open source project initially created in partnership with HOT, the Australian Government Department of Foreign Affairs and Trade and the USAID Office of Foreign Disaster Assistance. The source code is available on <a href="https://github.com/hotosm/visualize-change">Github</a>
       </p>
       <p>
         You can help the Toolkit by translating or reporting bugs{" "}
