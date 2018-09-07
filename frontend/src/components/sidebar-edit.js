@@ -245,7 +245,7 @@ const ThemeSelect = ({ styles, onBackgroundStyleChange, isMapLoaded }) => (
           value={styles.background}
           onChange={ev => onBackgroundStyleChange(ev.target.value)}
         >
-          {["light", "dark", "basic", "streets", "bright", "satellite"].map(style => (
+          {["light", "dark", "basic", "streets", "bright"].map(style => (
             <option key={style} value={style}>
               {capitalizeFirstLetter(style)}
             </option>
