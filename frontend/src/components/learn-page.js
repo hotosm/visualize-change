@@ -18,7 +18,7 @@ const LearnPage = () => (
     <div className="about-page__content">
       <h2>Learn Page</h2>
       <p>
-        Welcome to the Animation toolkit for <a href="http://www.openstreetmap.org">OpenStreetMap </a>. With this
+        Welcome to the Animation Toolkit for <a href="http://www.openstreetmap.org">OpenStreetMap </a>. With this
         platform you can create and save visualizations of your OpenStreetMap edits. These animations can provide you
         with an overall view of OpenStreetMap roads and buildings edits as well as the evolving community contributions
         for a specific area. You can find additional information on the functionality and constraints of each section on
@@ -35,7 +35,7 @@ const LearnPage = () => (
       </p>
       <h5>Zoom Levels</h5>
       <p>
-        The OpenStreetMap Animation tool kit is designed for{" "}
+        The OpenStreetMap Animation Toolkit is designed for{" "}
         <a href="https://wiki.openstreetmap.org/wiki/Zoom_levels">Zoom levels 12 and higher</a>. This starts from a town
         perspective (zoom 12) and becomes detailed to zoom 19. To create an animation of edits for larger geographic
         region, we recommend setting up your own instance. You can find instructions on how to do that in the GitHub
@@ -75,7 +75,7 @@ const LearnPage = () => (
       </ol>
       <h3>Open Source</h3>
       <p>
-        The Animation toolkit is a collaborative open source project initially created in partnership with HOT and
+        The Animation Toolkit is a collaborative open source project initially created in partnership with HOT and
         [funder here]. The source code is available on <a href="https://github.com/hotosm/visualize-change">Github</a>
       </p>
       <p>
