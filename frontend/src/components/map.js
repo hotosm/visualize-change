@@ -230,7 +230,7 @@ const MapLegend = ({ features }) => (
 );
 
 const getLocation = callback => {
-  const defaultLocation = { lat: 0, lng: 0, zoom: 1 };
+  const defaultLocation = { lat: -6.121435, lng: 106.841036, zoom: 1 };
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => callback({ lat: coords.latitude, lng: coords.longitude, zoom: 12.5 }),
