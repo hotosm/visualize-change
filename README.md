@@ -1,6 +1,7 @@
 # visualize-change
 
 A toolkit to visualize changes in OSM, part of the OSM Analytics ecosystem. Work in Progress.
+You can view the live project at [Visualize Change](https://visualize-change.hotosm.org/edit)
 
 ## structure
 
