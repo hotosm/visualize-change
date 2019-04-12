@@ -102,7 +102,7 @@ const Resources = {
         "#!/bin/bash",
         "set -x",
         "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - ",
-        'echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list',
+        "echo 'deb https://dl.yarnpkg.com/debian/ stable main' | sudo tee /etc/apt/sources.list.d/yarn.list",
         "sudo apt-get update && sudo apt-get install -y yarn git",
         "https://github.com/hotosm/visualize-change.git /dev/sda1/visualize-change && cd /dev/sda1/visualize-change/ ",
         "git reset --hard ${GitSha}",
