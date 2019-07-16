@@ -15,7 +15,7 @@ const createExportConfig = state => ({
   map: state.map
 });
 
-const getShareUrl = id => `${window.location.host}/view/${id}`;
+const getShareUrl = id => `https://${window.location.host}/view/${id}`;
 
 const isDateSpanAllowed = (v, { start, end }) => {
   const numUnits = moment(end).diff(moment(start), v) || 0;
