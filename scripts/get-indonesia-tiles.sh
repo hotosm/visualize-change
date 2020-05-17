@@ -7,7 +7,7 @@ mkdir -p "$DIR"/../docker/data/tiles
 cd "$DIR"/../docker/data/tiles || exit 1
 
 rm indonesia.mbtiles.gz
-wget https://s3.amazonaws.com/mapbox/osm-qa-tiles-production/latest.country/indonesia.mbtiles.gz
+curl https://s3.amazonaws.com/mapbox/osm-qa-tiles-production/latest.country/indonesia.mbtiles.gz -o indonesia.mbtiles.gz
 gunzip indonesia.mbtiles.gz
 
 mv indonesia.mbtiles tiles.mbtiles
