@@ -15,7 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "amqplib": "^0.5.2",
-    "electron": "^2.0.5",
+    "electron": "^9.4.0",
     "fluent-ffmpeg": "^2.1.2",
     "left-pad": "^1.2.0",
     "mapbox-gl": "0.46.0",
