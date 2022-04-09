@@ -19,7 +19,7 @@
     "fluent-ffmpeg": "^2.1.2",
     "left-pad": "^1.2.0",
     "mapbox-gl": "0.46.0",
-    "moment": "^2.20.1",
+    "moment": "^2.29.2",
     "winston": "^3.0.0-rc1"
   },
   "devDependencies": {
